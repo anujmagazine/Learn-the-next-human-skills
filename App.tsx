@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
 import { AppView, AgentStream, DrillScenario } from './types';
@@ -104,7 +103,7 @@ const App: React.FC = () => {
   };
 
   const renderHub = () => (
-    <div className="max-w-6xl mx-auto py-16 animate-in fade-in duration-700">
+    <div className="max-w-7xl mx-auto py-16 animate-in fade-in duration-700">
       <div className="text-center mb-16">
         <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter text-brand-platinum uppercase leading-tight">
           Learn the Next <span className="gradient-text">Human Skills</span>
@@ -115,16 +114,16 @@ const App: React.FC = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
         {/* Parallelism Tile */}
         <div 
           onClick={() => setView(AppView.LANDING)}
-          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10"
+          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
         >
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-            <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+            <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
           </div>
-          <div className="relative z-10">
+          <div className="relative z-10 flex-1">
             <div className="w-16 h-16 bg-brand-green/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-green/20 group-hover:scale-110 transition-transform">
               <span className="text-3xl">⚡</span>
             </div>
@@ -132,20 +131,20 @@ const App: React.FC = () => {
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               The "Orchestration Gym." Learn to maintain a unified vision while multiple agents bombard you with conflicting logs and critical decisions.
             </p>
-            <div className="flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
-              Launch Skill Trainer <span className="group-hover:translate-x-2 transition-transform">→</span>
-            </div>
+          </div>
+          <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
+            Launch Skill Trainer <span className="group-hover:translate-x-2 transition-transform">→</span>
           </div>
         </div>
 
         {/* Verification Fatigue Tile */}
         <div 
-          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden"
+          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full"
         >
           <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
-            <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
           </div>
-          <div className="relative z-10">
+          <div className="relative z-10 flex-1">
             <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
               <span className="text-3xl">👁️</span>
             </div>
@@ -153,6 +152,31 @@ const App: React.FC = () => {
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               Master high-speed auditing. Train your ability to spot hallucinations and logic errors without succumbing to cognitive exhaustion.
             </p>
+          </div>
+          <div className="relative z-10 mt-auto">
+            <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
+              Coming Soon
+            </div>
+          </div>
+        </div>
+
+        {/* Interview AI Models Tile */}
+        <div 
+          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full"
+        >
+          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
+            <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M11.5 3C7.36 3 4 6.36 4 10.5S7.36 18 11.5 18c1.71 0 3.29-.58 4.55-1.56l4.74 4.74 1.41-1.41-4.74-4.74c.98-1.26 1.56-2.84 1.56-4.55C19 6.36 15.64 3 11.5 3zm0 2C14.54 5 17 7.46 17 10.5S14.54 16 11.5 16 6 13.54 6 10.5 8.46 5 11.5 5z"/></svg>
+          </div>
+          <div className="relative z-10 flex-1">
+            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
+              <span className="text-3xl">🤝</span>
+            </div>
+            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Interview AI Models</h2>
+            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+              Learn the art of "Agent Onboarding." Protocols to stress-test and validate an AI's logic and personality before delegating tasks.
+            </p>
+          </div>
+          <div className="relative z-10 mt-auto">
             <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
               Coming Soon
             </div>
@@ -163,7 +187,7 @@ const App: React.FC = () => {
       <div className="mt-20 glass p-10 rounded-[40px] border-brand-platinum/5 text-center">
         <h3 className="text-sm font-bold text-brand-platinum/30 uppercase tracking-widest mb-6">The Future Skill Matrix</h3>
         <div className="flex flex-wrap justify-center gap-4">
-          {['Context Switching', 'Hallucination Spotting', 'System Prompting', 'Agent Synthesis', 'Strategic De-coupling'].map(skill => (
+          {['Context Switching', 'Hallucination Spotting', 'System Prompting', 'Agent Synthesis', 'Strategic De-coupling', 'Agent Vetting'].map(skill => (
             <span key={skill} className="px-4 py-2 bg-brand-platinum/5 rounded-full text-xs font-medium text-brand-platinum/40 border border-brand-platinum/5">
               {skill}
             </span>
