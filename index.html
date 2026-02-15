@@ -7,21 +7,39 @@
   <title>Learn the Next Human Skills</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#94c840',
+              black: '#000000',
+              platinum: '#e5e6e6',
+              navy: '#121a44',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #020617;
-      color: #f8fafc;
+      background-color: #000000; /* brand-black */
+      color: #e5e6e6; /* brand-platinum */
       overflow-x: hidden;
     }
-    .mono { font-family: 'JetBrains+Mono', monospace; }
     .glass {
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(18, 26, 68, 0.4); /* brand-navy with alpha */
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(229, 230, 230, 0.1); /* brand-platinum border */
     }
     .gradient-text {
-      background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+      background: linear-gradient(135deg, #94c840 0%, #e5e6e6 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }

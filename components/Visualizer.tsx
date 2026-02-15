@@ -12,19 +12,19 @@ const Visualizer: React.FC<VisualizerProps> = ({ taskCount }) => {
 
   const data = [
     { name: 'Doing it yourself', time: serialTime, color: '#475569', label: 'Sequential (Linear)' },
-    { name: 'AI Orchestration', time: parallelTime, color: '#818cf8', label: 'Parallel (Exponential)' },
+    { name: 'AI Orchestration', time: parallelTime, color: '#94c840', label: 'Parallel (Exponential)' },
   ];
 
   const hoursSaved = ((serialTime - parallelTime) / 60).toFixed(1);
 
   return (
-    <div className="glass p-6 rounded-3xl border-indigo-500/20">
+    <div className="glass p-6 rounded-3xl border-brand-green/20">
       <div className="flex justify-between items-start mb-6">
         <div>
-          <h3 className="text-lg font-bold">The Efficiency Gap</h3>
-          <p className="text-xs text-slate-400">Time comparison in minutes</p>
+          <h3 className="text-lg font-bold text-brand-platinum">The Efficiency Gap</h3>
+          <p className="text-xs text-brand-platinum/40">Time comparison in minutes</p>
         </div>
-        <div className="bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full text-[10px] font-bold border border-emerald-500/20">
+        <div className="bg-brand-green/10 text-brand-green px-3 py-1 rounded-full text-[10px] font-bold border border-brand-green/20 uppercase tracking-widest">
           SAVED: {hoursSaved} HOURS
         </div>
       </div>
@@ -36,7 +36,7 @@ const Visualizer: React.FC<VisualizerProps> = ({ taskCount }) => {
             <YAxis dataKey="name" type="category" hide />
             <Tooltip 
               cursor={{ fill: 'transparent' }}
-              contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '12px' }}
+              contentStyle={{ backgroundColor: '#121a44', border: '1px solid rgba(229, 230, 230, 0.1)', borderRadius: '12px', color: '#e5e6e6' }}
             />
             <Bar dataKey="time" radius={[0, 10, 10, 0]} barSize={40}>
               {data.map((entry, index) => (
@@ -48,13 +48,13 @@ const Visualizer: React.FC<VisualizerProps> = ({ taskCount }) => {
       </div>
       
       <div className="mt-4 grid grid-cols-2 gap-4 text-center">
-        <div className="p-3 bg-white/5 rounded-xl">
-          <div className="text-xs text-slate-500 mb-1">Serial Output</div>
-          <div className="font-mono text-sm">1.0x Velocity</div>
+        <div className="p-3 bg-brand-platinum/5 rounded-xl border border-brand-platinum/5">
+          <div className="text-[10px] font-bold text-brand-platinum/30 mb-1 uppercase tracking-widest">Serial Output</div>
+          <div className="font-mono text-sm text-brand-platinum/60">1.0x Velocity</div>
         </div>
-        <div className="p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20">
-          <div className="text-xs text-indigo-400 mb-1">ParaFlow Output</div>
-          <div className="font-mono text-sm text-indigo-200">~{taskCount}x Velocity</div>
+        <div className="p-3 bg-brand-green/10 rounded-xl border border-brand-green/20">
+          <div className="text-[10px] font-bold text-brand-green/60 mb-1 uppercase tracking-widest">Nexus Velocity</div>
+          <div className="font-mono text-sm text-brand-green">~{taskCount}x Velocity</div>
         </div>
       </div>
     </div>

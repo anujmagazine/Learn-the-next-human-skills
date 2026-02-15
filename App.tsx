@@ -31,10 +31,11 @@ const App: React.FC = () => {
   const logContainerRef = useRef<Record<string, HTMLDivElement | null>>({});
 
   const startDrill = (drill: DrillScenario) => {
+    // Using shades from the brand palette for agent colors
     const initialAgents: AgentStream[] = drill.agents.map((role, i) => ({
       id: `agent-${i}`,
       role,
-      color: ['#818cf8', '#fbbf24', '#f472b6', '#34d399'][i % 4],
+      color: ['#94c840', '#e5e6e6', '#80a836', '#c0c2c2'][i % 4],
       logs: [`System: Agent ${role} initialized...`],
       status: 'working',
       currentTask: 'Analyzing baseline scenario...'
@@ -105,10 +106,10 @@ const App: React.FC = () => {
   const renderHub = () => (
     <div className="max-w-6xl mx-auto py-16 animate-in fade-in duration-700">
       <div className="text-center mb-16">
-        <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter text-white uppercase leading-tight">
+        <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter text-brand-platinum uppercase leading-tight">
           Learn the Next <span className="gradient-text">Human Skills</span>
         </h1>
-        <p className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-xl text-brand-platinum/60 max-w-3xl mx-auto leading-relaxed">
           In a world where AI agents produce at infinite scale, the bottleneck is human judgment. 
           Build the cognitive infrastructure to thrive in the age of intelligence.
         </p>
@@ -118,20 +119,20 @@ const App: React.FC = () => {
         {/* Parallelism Tile */}
         <div 
           onClick={() => setView(AppView.LANDING)}
-          className="group relative glass p-10 rounded-[40px] border-white/5 hover:border-indigo-500/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-indigo-500/10"
+          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10"
         >
-          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
             <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
           </div>
           <div className="relative z-10">
-            <div className="w-16 h-16 bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-6 border border-indigo-500/20 group-hover:scale-110 transition-transform">
+            <div className="w-16 h-16 bg-brand-green/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-green/20 group-hover:scale-110 transition-transform">
               <span className="text-3xl">⚡</span>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-white group-hover:text-indigo-400 transition-colors">Parallelism</h2>
-            <p className="text-slate-400 text-lg leading-relaxed mb-8">
+            <h2 className="text-3xl font-bold mb-4 text-brand-platinum group-hover:text-brand-green transition-colors">Parallelism</h2>
+            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               The "Orchestration Gym." Learn to maintain a unified vision while multiple agents bombard you with conflicting logs and critical decisions.
             </p>
-            <div className="flex items-center gap-2 text-indigo-400 font-bold uppercase tracking-widest text-sm">
+            <div className="flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
               Launch Skill Trainer <span className="group-hover:translate-x-2 transition-transform">→</span>
             </div>
           </div>
@@ -139,31 +140,31 @@ const App: React.FC = () => {
 
         {/* Verification Fatigue Tile */}
         <div 
-          className="group relative glass p-10 rounded-[40px] border-white/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden"
+          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden"
         >
-          <div className="absolute top-0 right-0 p-8 opacity-5">
+          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
             <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
           </div>
           <div className="relative z-10">
-            <div className="w-16 h-16 bg-slate-500/10 rounded-2xl flex items-center justify-center mb-6 border border-slate-500/20">
+            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
               <span className="text-3xl">👁️</span>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-white">Verification Fatigue</h2>
-            <p className="text-slate-400 text-lg leading-relaxed mb-8">
+            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Verification Fatigue</h2>
+            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               Master high-speed auditing. Train your ability to spot hallucinations and logic errors without succumbing to cognitive exhaustion.
             </p>
-            <div className="inline-block px-4 py-1 rounded-full bg-slate-800 text-slate-400 text-xs font-bold uppercase tracking-widest">
+            <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
               Coming Soon
             </div>
           </div>
         </div>
       </div>
       
-      <div className="mt-20 glass p-10 rounded-[40px] border-white/5 text-center">
-        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">The Future Skill Matrix</h3>
+      <div className="mt-20 glass p-10 rounded-[40px] border-brand-platinum/5 text-center">
+        <h3 className="text-sm font-bold text-brand-platinum/30 uppercase tracking-widest mb-6">The Future Skill Matrix</h3>
         <div className="flex flex-wrap justify-center gap-4">
           {['Context Switching', 'Hallucination Spotting', 'System Prompting', 'Agent Synthesis', 'Strategic De-coupling'].map(skill => (
-            <span key={skill} className="px-4 py-2 bg-white/5 rounded-full text-xs font-medium text-slate-400 border border-white/5">
+            <span key={skill} className="px-4 py-2 bg-brand-platinum/5 rounded-full text-xs font-medium text-brand-platinum/40 border border-brand-platinum/5">
               {skill}
             </span>
           ))}
@@ -175,34 +176,34 @@ const App: React.FC = () => {
   const renderDrillSelector = () => (
     <div className="max-w-4xl mx-auto py-12 animate-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center gap-4 mb-12">
-        <button onClick={() => setView(AppView.HUB)} className="text-slate-500 hover:text-white transition-colors flex items-center gap-2 font-bold uppercase text-xs tracking-widest">
+        <button onClick={() => setView(AppView.HUB)} className="text-brand-platinum/50 hover:text-brand-green transition-colors flex items-center gap-2 font-bold uppercase text-xs tracking-widest">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
           Back to Skill Hub
         </button>
       </div>
-      <h1 className="text-5xl font-black mb-6 tracking-tighter text-white">
+      <h1 className="text-5xl font-black mb-6 tracking-tighter text-brand-platinum">
         The <span className="gradient-text">Orchestration</span> Gym
       </h1>
-      <p className="text-xl text-slate-400 mb-12 max-w-2xl leading-relaxed">
+      <p className="text-xl text-brand-platinum/60 mb-12 max-w-2xl leading-relaxed">
         Parallelism is a high-stakes cognitive skill. In this gym, you'll manage multiple AI agents simultaneously. Read their logs, catch contradictions, and give directives.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
         {DRILLS.map(drill => (
-          <div key={drill.id} className="glass p-8 rounded-[32px] border-white/5 hover:border-indigo-500/50 transition-all group">
+          <div key={drill.id} className="glass p-8 rounded-[32px] border-brand-platinum/5 hover:border-brand-green/50 transition-all group">
             <div className="flex justify-between items-start mb-4">
               <span className={`text-[10px] font-bold px-2 py-1 rounded border ${
-                drill.difficulty === 'Extreme' ? 'border-red-500/50 text-red-400 bg-red-500/10' : 'border-indigo-500/50 text-indigo-400 bg-indigo-500/10'
+                drill.difficulty === 'Extreme' ? 'border-red-500/50 text-red-400 bg-red-500/10' : 'border-brand-green/50 text-brand-green bg-brand-green/10'
               }`}>
                 {drill.difficulty.toUpperCase()}
               </span>
-              <span className="text-slate-500 text-xs font-mono">{drill.agents.length} AGENTS ACTIVE</span>
+              <span className="text-brand-platinum/40 text-xs font-mono uppercase">Active Agents: {drill.agents.length}</span>
             </div>
-            <h3 className="text-2xl font-bold mb-3 text-white">{drill.title}</h3>
-            <p className="text-slate-400 text-sm mb-8 leading-relaxed">{drill.description}</p>
+            <h3 className="text-2xl font-bold mb-3 text-brand-platinum">{drill.title}</h3>
+            <p className="text-brand-platinum/50 text-sm mb-8 leading-relaxed">{drill.description}</p>
             <button 
               onClick={() => startDrill(drill)}
-              className="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-indigo-600/20 text-white"
+              className="w-full bg-brand-green hover:brightness-110 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-brand-green/10 text-brand-black"
             >
               Start Session
             </button>
@@ -214,22 +215,22 @@ const App: React.FC = () => {
 
   const renderTrainer = () => (
     <div className="h-[80vh] flex flex-col gap-6 animate-in fade-in duration-500">
-      <div className="flex items-center justify-between glass p-4 rounded-2xl border-indigo-500/20">
+      <div className="flex items-center justify-between glass p-4 rounded-2xl border-brand-green/20">
         <div className="flex items-center gap-4">
-          <div className="bg-red-500 w-3 h-3 rounded-full animate-pulse"></div>
+          <div className="bg-brand-green w-3 h-3 rounded-full animate-pulse"></div>
           <div>
-            <h2 className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Live Parallelism Drill</h2>
-            <h1 className="font-bold text-white">{activeDrill?.title}</h1>
+            <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-platinum/40">Live Parallelism Drill</h2>
+            <h1 className="font-bold text-brand-platinum">{activeDrill?.title}</h1>
           </div>
         </div>
         <div className="flex gap-4">
-          <div className="text-center px-4 border-r border-white/5">
-            <div className="text-[10px] font-bold text-slate-500 uppercase">Directives</div>
-            <div className="font-mono text-emerald-400">{stats.interventions}</div>
+          <div className="text-center px-4 border-r border-brand-platinum/5">
+            <div className="text-[10px] font-bold text-brand-platinum/40 uppercase">Directives</div>
+            <div className="font-mono text-brand-green">{stats.interventions}</div>
           </div>
           <button 
             onClick={() => { setView(AppView.LANDING); setIsDrillRunning(false); }}
-            className="bg-slate-800 hover:bg-slate-700 text-white px-4 py-1 rounded-lg text-xs font-bold transition-all border border-white/5"
+            className="bg-brand-platinum/5 hover:bg-brand-platinum/10 text-brand-platinum px-4 py-1 rounded-lg text-xs font-bold transition-all border border-brand-platinum/5"
           >
             Abort Session
           </button>
@@ -241,21 +242,21 @@ const App: React.FC = () => {
           <div 
             key={agent.id}
             className={`flex flex-col glass rounded-2xl border-t-4 overflow-hidden transition-all ${
-              agent.status === 'awaiting_input' ? 'ring-2 ring-amber-500 animate-pulse bg-amber-500/5' : ''
+              agent.status === 'awaiting_input' ? 'ring-2 ring-brand-green animate-pulse bg-brand-green/5' : ''
             }`}
             style={{ borderTopColor: agent.color }}
           >
-            <div className="p-3 bg-white/5 flex justify-between items-center border-b border-white/5">
+            <div className="p-3 bg-brand-platinum/5 flex justify-between items-center border-b border-brand-platinum/5">
               <span className="font-bold text-xs uppercase tracking-wider" style={{ color: agent.color }}>
                 {agent.role}
               </span>
-              <span className="text-[10px] text-slate-500 font-mono">
-                {agent.status === 'working' ? 'EXECUTING...' : 'AWAITING RESPONSE'}
+              <span className="text-[10px] text-brand-platinum/30 font-mono">
+                {agent.status === 'working' ? 'EXECUTING...' : 'HALTED'}
               </span>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-3 font-mono text-[11px] scrollbar-hide">
               {agent.logs.map((log, i) => (
-                <div key={i} className={log.startsWith('Human') ? 'text-indigo-300' : 'text-slate-400'}>
+                <div key={i} className={log.startsWith('Human') ? 'text-brand-green' : 'text-brand-platinum/40'}>
                   <span className="opacity-30 mr-2">[{i}]</span> {log}
                 </div>
               ))}
@@ -266,25 +267,25 @@ const App: React.FC = () => {
       </div>
 
       {intervention && (
-        <div className="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-6">
-          <div className="glass w-full max-w-2xl rounded-[32px] p-10 border-amber-500/30 shadow-2xl shadow-amber-500/10">
+        <div className="fixed inset-0 z-[100] bg-brand-black/90 backdrop-blur-md flex items-center justify-center p-6">
+          <div className="glass w-full max-w-2xl rounded-[32px] p-10 border-brand-green/30 shadow-2xl shadow-brand-green/10">
             <div className="mb-6">
-              <span className="text-[10px] font-black uppercase tracking-widest text-amber-500 px-3 py-1 bg-amber-500/10 rounded-full border border-amber-500/20">
+              <span className="text-[10px] font-black uppercase tracking-widest text-brand-green px-3 py-1 bg-brand-green/10 rounded-full border border-brand-green/20">
                 Action Required: {agents.find(a => a.id === intervention.agentId)?.role}
               </span>
             </div>
-            <h2 className="text-2xl font-bold mb-6 leading-tight text-white">
+            <h2 className="text-2xl font-bold mb-6 leading-tight text-brand-platinum">
               {intervention.prompt}
             </h2>
-            <p className="text-xs text-slate-500 mb-8 italic">
-              Careful: Your directive must maintain alignment across all active streams. Check other terminal logs.
+            <p className="text-xs text-brand-platinum/40 mb-8 italic">
+              Critical Synchronization: Your directive must align across all active streams.
             </p>
             <div className="flex gap-3">
               <input 
                 autoFocus
                 type="text" 
-                placeholder="Give your directive..." 
-                className="flex-1 bg-slate-900 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition-all text-white"
+                placeholder="Directive for the agent..." 
+                className="flex-1 bg-brand-black/50 border border-brand-platinum/10 rounded-xl px-4 py-3 outline-none focus:border-brand-green transition-all text-brand-platinum"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleInterventionResponse((e.target as HTMLInputElement).value);
                 }}
@@ -294,7 +295,7 @@ const App: React.FC = () => {
                    const input = (e.currentTarget.previousSibling as HTMLInputElement).value;
                    handleInterventionResponse(input);
                 }}
-                className="bg-indigo-600 px-6 py-3 rounded-xl font-bold hover:bg-indigo-500 transition-all text-white"
+                className="bg-brand-green px-6 py-3 rounded-xl font-bold hover:brightness-110 transition-all text-brand-black"
               >
                 Send
               </button>
