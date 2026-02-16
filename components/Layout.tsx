@@ -51,7 +51,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeView, setView }) => {
       </main>
 
       <footer className="py-12 border-t border-brand-platinum/5 text-center text-brand-platinum/20 text-[10px] font-bold uppercase tracking-[0.3em]">
-        <p>© 2024 LEARN THE NEXT HUMAN SKILLS — EVOLVING FOR THE AGENTIC AGE</p>
+        <p>© 2024 MASTER THE NEXT HUMAN SKILLS — EVOLVING FOR THE AGENTIC AGE</p>
       </footer>
     </div>
   );

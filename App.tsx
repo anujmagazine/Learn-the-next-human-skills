@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
 import { AppView, AgentStream, DrillScenario } from './types';
@@ -115,7 +116,7 @@ const App: React.FC = () => {
     <div className="max-w-7xl mx-auto py-16 animate-in fade-in duration-700">
       <div className="text-center mb-16">
         <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter text-brand-platinum uppercase leading-tight">
-          Learn the Next <span className="gradient-text">Human Skills</span>
+          Master the Next <span className="gradient-text">Human Skills</span>
         </h1>
         <p className="text-xl text-brand-platinum/60 max-w-3xl mx-auto leading-relaxed">
           In a world where AI agents produce at infinite scale, the bottleneck is human judgment. 
