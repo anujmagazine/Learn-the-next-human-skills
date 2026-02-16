@@ -5,6 +5,13 @@ import { orchestrationService } from './services/gemini';
 
 const DRILLS: DrillScenario[] = [
   {
+    id: 'swarm-1',
+    title: 'The Swarm Architect',
+    difficulty: 'Extreme',
+    description: 'Inspired by Boris Cherny (Claude Code). Manage 8 concurrent agents: 4 in terminals, 3 in web sessions, and 1 on mobile. Coordinate a massive refactor while shipping new features in real-time.',
+    agents: ['Terminal-1 (Auth)', 'Terminal-2 (Engine)', 'Terminal-3 (UI)', 'Terminal-4 (Testing)', 'Web-A (Research)', 'Web-B (Docs)', 'Web-C (Simplification)', 'Mobile-Review']
+  },
+  {
     id: 'crisis-1',
     title: 'The Global Launch Pivot',
     difficulty: 'Hard',
@@ -30,14 +37,13 @@ const App: React.FC = () => {
   const logContainerRef = useRef<Record<string, HTMLDivElement | null>>({});
 
   const startDrill = (drill: DrillScenario) => {
-    // Using shades from the brand palette for agent colors
     const initialAgents: AgentStream[] = drill.agents.map((role, i) => ({
       id: `agent-${i}`,
       role,
-      color: ['#94c840', '#e5e6e6', '#80a836', '#c0c2c2'][i % 4],
-      logs: [`System: Agent ${role} initialized...`],
+      color: i < 4 ? '#94c840' : i < 7 ? '#e5e6e6' : '#80a836', // Terminal vs Web vs Mobile
+      logs: [`System: Agent ${role} initialized. Connection secure.`],
       status: 'working',
-      currentTask: 'Analyzing baseline scenario...'
+      currentTask: 'Awaiting first synchronization directive...'
     }));
     setAgents(initialAgents);
     setActiveDrill(drill);
@@ -48,6 +54,9 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (!isDrillRunning || !activeDrill || intervention) return;
+
+    // High velocity simulation: 1.5 seconds per update for the Swarm drill, 4s for others
+    const tickRate = activeDrill.id === 'swarm-1' ? 1500 : 4000;
 
     const interval = setInterval(async () => {
       const randomIndex = Math.floor(Math.random() * agents.length);
@@ -70,7 +79,7 @@ const App: React.FC = () => {
           if (a.id === agent.id) {
             const newLogs = [...a.logs, update.text];
             if (update.needsInput) {
-              setIntervention({ agentId: a.id, prompt: update.prompt || "Awaiting directive..." });
+              setIntervention({ agentId: a.id, prompt: update.prompt || "Decision required for next commit." });
               return { ...a, logs: newLogs, status: 'awaiting_input' };
             }
             return { ...a, logs: newLogs, status: 'working' };
@@ -80,7 +89,7 @@ const App: React.FC = () => {
       } catch (e) {
         console.error("Agent update failed", e);
       }
-    }, 4000);
+    }, tickRate);
 
     return () => clearInterval(interval);
   }, [isDrillRunning, activeDrill, agents, intervention]);
@@ -92,7 +101,7 @@ const App: React.FC = () => {
       if (a.id === intervention.agentId) {
         return { 
           ...a, 
-          logs: [...a.logs, `Human Directive: ${response}`],
+          logs: [...a.logs, `Human Approval: ${response}`],
           status: 'working' 
         };
       }
@@ -187,7 +196,7 @@ const App: React.FC = () => {
       <div className="mt-20 glass p-10 rounded-[40px] border-brand-platinum/5 text-center">
         <h3 className="text-sm font-bold text-brand-platinum/30 uppercase tracking-widest mb-6">The Future Skill Matrix</h3>
         <div className="flex flex-wrap justify-center gap-4">
-          {['Context Switching', 'Hallucination Spotting', 'System Prompting', 'Agent Synthesis', 'Strategic De-coupling', 'Agent Vetting'].map(skill => (
+          {['Context Switching', 'Hallucination Spotting', 'System Prompting', 'Agent Synthesis', 'Strategic De-coupling', 'Agent Vetting', 'Multi-instance Swarming'].map(skill => (
             <span key={skill} className="px-4 py-2 bg-brand-platinum/5 rounded-full text-xs font-medium text-brand-platinum/40 border border-brand-platinum/5">
               {skill}
             </span>
@@ -198,38 +207,57 @@ const App: React.FC = () => {
   );
 
   const renderDrillSelector = () => (
-    <div className="max-w-4xl mx-auto py-12 animate-in slide-in-from-bottom-4 duration-500">
+    <div className="max-w-6xl mx-auto py-12 animate-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center gap-4 mb-12">
         <button onClick={() => setView(AppView.HUB)} className="text-brand-platinum/50 hover:text-brand-green transition-colors flex items-center gap-2 font-bold uppercase text-xs tracking-widest">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
           Back to Skill Hub
         </button>
       </div>
-      <h1 className="text-5xl font-black mb-6 tracking-tighter text-brand-platinum">
-        The <span className="gradient-text">Orchestration</span> Gym
-      </h1>
-      <p className="text-xl text-brand-platinum/60 mb-12 max-w-2xl leading-relaxed">
-        Parallelism is a high-stakes cognitive skill. In this gym, you'll manage multiple AI agents simultaneously. Read their logs, catch contradictions, and give directives.
-      </p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div>
+          <h1 className="text-5xl font-black mb-6 tracking-tighter text-brand-platinum">
+            The <span className="gradient-text">Orchestration</span> Gym
+          </h1>
+          <p className="text-xl text-brand-platinum/60 max-w-2xl leading-relaxed">
+            Parallelism is a high-stakes cognitive skill. In this gym, you'll manage multiple AI agents simultaneously. Read their logs, catch contradictions, and give directives.
+          </p>
+        </div>
+        <div className="hidden lg:block glass p-6 rounded-3xl border-brand-green/20 max-w-xs">
+           <div className="flex items-center gap-3 mb-2">
+             <div className="w-2 h-2 rounded-full bg-brand-green animate-pulse"></div>
+             <span className="text-[10px] font-bold text-brand-green uppercase tracking-widest">System Tip</span>
+           </div>
+           <p className="text-[11px] text-brand-platinum/50 italic leading-relaxed">
+             "The best orchestrators use 'Hand-offs' to bounce sessions between web and terminal contexts." — @bcherny
+           </p>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
         {DRILLS.map(drill => (
-          <div key={drill.id} className="glass p-8 rounded-[32px] border-brand-platinum/5 hover:border-brand-green/50 transition-all group">
+          <div key={drill.id} className={`glass p-8 rounded-[32px] border-brand-platinum/5 hover:border-brand-green/50 transition-all group flex flex-col ${drill.id === 'swarm-1' ? 'ring-1 ring-brand-green/30 bg-brand-green/[0.02]' : ''}`}>
             <div className="flex justify-between items-start mb-4">
               <span className={`text-[10px] font-bold px-2 py-1 rounded border ${
                 drill.difficulty === 'Extreme' ? 'border-red-500/50 text-red-400 bg-red-500/10' : 'border-brand-green/50 text-brand-green bg-brand-green/10'
               }`}>
                 {drill.difficulty.toUpperCase()}
               </span>
-              <span className="text-brand-platinum/40 text-xs font-mono uppercase">Active Agents: {drill.agents.length}</span>
+              <span className="text-brand-platinum/40 text-[10px] font-mono uppercase">Sessions: {drill.agents.length}</span>
             </div>
             <h3 className="text-2xl font-bold mb-3 text-brand-platinum">{drill.title}</h3>
-            <p className="text-brand-platinum/50 text-sm mb-8 leading-relaxed">{drill.description}</p>
+            <p className="text-brand-platinum/50 text-sm mb-8 leading-relaxed flex-1">{drill.description}</p>
+            {drill.id === 'swarm-1' && (
+              <div className="mb-6 flex gap-1">
+                <span className="text-[9px] font-bold text-brand-green bg-brand-green/10 px-2 py-1 rounded border border-brand-green/20">MULTIMODAL</span>
+                <span className="text-[9px] font-bold text-brand-platinum/40 bg-white/5 px-2 py-1 rounded border border-white/5 uppercase">High Velocity</span>
+              </div>
+            )}
             <button 
               onClick={() => startDrill(drill)}
-              className="w-full bg-brand-green hover:brightness-110 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-brand-green/10 text-brand-black"
+              className="w-full bg-brand-green hover:brightness-110 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-brand-green/10 text-brand-black uppercase tracking-widest text-xs"
             >
-              Start Session
+              Initialize {drill.id === 'swarm-1' ? 'Swarm' : 'Drill'}
             </button>
           </div>
         ))}
@@ -243,49 +271,62 @@ const App: React.FC = () => {
         <div className="flex items-center gap-4">
           <div className="bg-brand-green w-3 h-3 rounded-full animate-pulse"></div>
           <div>
-            <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-platinum/40">Live Parallelism Drill</h2>
+            <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-platinum/40">Parallelism Simulation</h2>
             <h1 className="font-bold text-brand-platinum">{activeDrill?.title}</h1>
           </div>
         </div>
-        <div className="flex gap-4">
-          <div className="text-center px-4 border-r border-brand-platinum/5">
-            <div className="text-[10px] font-bold text-brand-platinum/40 uppercase">Directives</div>
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:block text-right pr-4 border-r border-brand-platinum/5">
+            <div className="text-[9px] font-bold text-brand-platinum/30 uppercase">Cognitive Load</div>
+            <div className="text-xs font-mono text-brand-platinum">
+              {activeDrill?.id === 'swarm-1' ? 'MAXIMAL (SWARM)' : 'HIGH'}
+            </div>
+          </div>
+          <div className="text-center px-4">
+            <div className="text-[10px] font-bold text-brand-platinum/40 uppercase">Hand-offs</div>
             <div className="font-mono text-brand-green">{stats.interventions}</div>
           </div>
           <button 
             onClick={() => { setView(AppView.LANDING); setIsDrillRunning(false); }}
-            className="bg-brand-platinum/5 hover:bg-brand-platinum/10 text-brand-platinum px-4 py-1 rounded-lg text-xs font-bold transition-all border border-brand-platinum/5"
+            className="bg-brand-platinum/5 hover:bg-brand-platinum/10 text-brand-platinum px-4 py-2 rounded-lg text-xs font-bold transition-all border border-brand-platinum/5 uppercase tracking-widest"
           >
-            Abort Session
+            End Session
           </button>
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-hidden">
+      <div className={`flex-1 grid gap-4 overflow-hidden ${
+        activeDrill?.id === 'swarm-1' ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 md:grid-cols-2'
+      }`}>
         {agents.map(agent => (
           <div 
             key={agent.id}
-            className={`flex flex-col glass rounded-2xl border-t-4 overflow-hidden transition-all ${
-              agent.status === 'awaiting_input' ? 'ring-2 ring-brand-green animate-pulse bg-brand-green/5' : ''
+            className={`flex flex-col glass rounded-xl border-t-2 overflow-hidden transition-all relative ${
+              agent.status === 'awaiting_input' ? 'ring-2 ring-brand-green animate-pulse bg-brand-green/5 z-10 scale-105' : 'opacity-80 hover:opacity-100'
             }`}
             style={{ borderTopColor: agent.color }}
           >
-            <div className="p-3 bg-brand-platinum/5 flex justify-between items-center border-b border-brand-platinum/5">
-              <span className="font-bold text-xs uppercase tracking-wider" style={{ color: agent.color }}>
+            <div className="p-2 bg-brand-platinum/5 flex justify-between items-center border-b border-brand-platinum/5">
+              <span className="font-bold text-[10px] uppercase tracking-wider truncate mr-2" style={{ color: agent.color }}>
                 {agent.role}
               </span>
-              <span className="text-[10px] text-brand-platinum/30 font-mono">
-                {agent.status === 'working' ? 'EXECUTING...' : 'HALTED'}
+              <span className="text-[8px] text-brand-platinum/30 font-mono">
+                {agent.status === 'working' ? 'POLLING' : 'LOCKED'}
               </span>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 space-y-3 font-mono text-[11px] scrollbar-hide">
+            <div className="flex-1 overflow-y-auto p-3 space-y-2 font-mono text-[9px] scrollbar-hide">
               {agent.logs.map((log, i) => (
-                <div key={i} className={log.startsWith('Human') ? 'text-brand-green' : 'text-brand-platinum/40'}>
-                  <span className="opacity-30 mr-2">[{i}]</span> {log}
+                <div key={i} className={log.startsWith('Human') ? 'text-brand-green border-l-2 border-brand-green/30 pl-2' : 'text-brand-platinum/40'}>
+                  {log}
                 </div>
               ))}
               <div ref={el => logContainerRef.current[agent.id] = el}></div>
             </div>
+            {agent.status === 'awaiting_input' && (
+               <div className="absolute inset-x-0 bottom-0 p-2 bg-brand-navy/90 backdrop-blur-sm border-t border-brand-green/20">
+                  <div className="text-[8px] font-bold text-brand-green uppercase mb-1">Attention Required</div>
+               </div>
+            )}
           </div>
         ))}
       </div>
@@ -293,22 +334,23 @@ const App: React.FC = () => {
       {intervention && (
         <div className="fixed inset-0 z-[100] bg-brand-black/90 backdrop-blur-md flex items-center justify-center p-6">
           <div className="glass w-full max-w-2xl rounded-[32px] p-10 border-brand-green/30 shadow-2xl shadow-brand-green/10">
-            <div className="mb-6">
+            <div className="mb-6 flex justify-between items-center">
               <span className="text-[10px] font-black uppercase tracking-widest text-brand-green px-3 py-1 bg-brand-green/10 rounded-full border border-brand-green/20">
-                Action Required: {agents.find(a => a.id === intervention.agentId)?.role}
+                Context Switch: {agents.find(a => a.id === intervention.agentId)?.role}
               </span>
+              <span className="text-[10px] text-brand-platinum/30 font-mono uppercase">Agent Swarm Active</span>
             </div>
             <h2 className="text-2xl font-bold mb-6 leading-tight text-brand-platinum">
               {intervention.prompt}
             </h2>
             <p className="text-xs text-brand-platinum/40 mb-8 italic">
-              Critical Synchronization: Your directive must align across all active streams.
+              Strategy Tip: Use the context from your other {agents.length - 1} active instances to guide this directive.
             </p>
             <div className="flex gap-3">
               <input 
                 autoFocus
                 type="text" 
-                placeholder="Directive for the agent..." 
+                placeholder="Type directive (e.g., 'teleport to web-A', 'refactor', 'merge')..." 
                 className="flex-1 bg-brand-black/50 border border-brand-platinum/10 rounded-xl px-4 py-3 outline-none focus:border-brand-green transition-all text-brand-platinum"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleInterventionResponse((e.target as HTMLInputElement).value);
