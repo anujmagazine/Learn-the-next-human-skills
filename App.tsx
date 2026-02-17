@@ -28,19 +28,20 @@ const DRILLS: DrillScenario[] = [
   }
 ];
 
+// Realistic hours for standard software tasks (Traditional Sequential Approach)
 const SIM_TASKS = [
-  { id: 1, name: 'User Authentication', duration: 8 },
-  { id: 2, name: 'Database Schema', duration: 6 },
-  { id: 3, name: 'API Endpoints', duration: 10 },
-  { id: 4, name: 'Frontend UI', duration: 12 },
-  { id: 5, name: 'Payment Integration', duration: 9 },
-  { id: 6, name: 'Email Service', duration: 7 },
-  { id: 7, name: 'Analytics Dashboard', duration: 11 },
-  { id: 8, name: 'Testing Suite', duration: 8 },
-  { id: 9, name: 'Documentation', duration: 5 },
-  { id: 10, name: 'Deployment Pipeline', duration: 7 },
-  { id: 11, name: 'Error Handling', duration: 6 },
-  { id: 12, name: 'Performance Optimization', duration: 9 },
+  { id: 1, name: 'User Authentication', duration: 24 }, // 3 days
+  { id: 2, name: 'Database Schema', duration: 12 },    // 1.5 days
+  { id: 3, name: 'API Endpoints', duration: 32 },      // 4 days
+  { id: 4, name: 'Frontend UI', duration: 40 },        // 5 days
+  { id: 5, name: 'Payment Integration', duration: 20 }, // 2.5 days
+  { id: 6, name: 'Email Service', duration: 8 },       // 1 day
+  { id: 7, name: 'Analytics Dashboard', duration: 28 }, // 3.5 days
+  { id: 8, name: 'Testing Suite', duration: 24 },      // 3 days
+  { id: 9, name: 'Documentation', duration: 8 },       // 1 day
+  { id: 10, name: 'Deployment Pipeline', duration: 12 },// 1.5 days
+  { id: 11, name: 'Error Handling', duration: 16 },    // 2 days
+  { id: 12, name: 'Performance Optimization', duration: 24 }, // 3 days
 ];
 
 const App: React.FC = () => {
@@ -98,17 +99,29 @@ const App: React.FC = () => {
     });
   }, [agents]);
 
+  // Simulation speed controller
+  // In Traditional, we want it to feel slow but not take literal days. 1s sim = 8h work.
+  // In Modern, 1s sim = 1h work (since everything happens at once).
   useEffect(() => {
     if (!simActive || view !== AppView.EVOLUTION) return;
+    
+    const tickRate = 100; // 10 ticks per simulation second
     const interval = setInterval(() => {
-      setElapsedTime(prev => parseFloat((prev + 0.1).toFixed(1)));
       setTaskProgress(prevProgress => {
         const newProgress = [...prevProgress];
+        
         if (simMode === 'traditional') {
+          // Sequential: Only work on the first incomplete task
           const nextTaskIndex = SIM_TASKS.findIndex((_, idx) => !completedTaskIds.has(SIM_TASKS[idx].id));
           if (nextTaskIndex !== -1) {
             const task = SIM_TASKS[nextTaskIndex];
-            newProgress[nextTaskIndex] += (10 / task.duration);
+            // Speed factor: Complete 2h of work every tick (20h per second)
+            const workPerTick = 2.0; 
+            newProgress[nextTaskIndex] += (workPerTick / task.duration) * 100;
+            
+            // Increment elapsed time based on work done
+            setElapsedTime(prev => parseFloat((prev + workPerTick).toFixed(1)));
+
             if (newProgress[nextTaskIndex] >= 100) {
               newProgress[nextTaskIndex] = 100;
               setCompletedTaskIds(prev => new Set(prev).add(task.id));
@@ -117,10 +130,15 @@ const App: React.FC = () => {
             setSimActive(false);
           }
         } else {
+          // Parallel: All tasks progress simultaneously
           let allDone = true;
+          // In modern, the constraint is human attention (coordination).
+          // We assume the work happens 20x faster in parallel.
+          const workPerTick = 0.4; 
+          
           SIM_TASKS.forEach((task, idx) => {
             if (newProgress[idx] < 100) {
-              newProgress[idx] += (10 / task.duration);
+              newProgress[idx] += (workPerTick / (task.duration / 20)) * 100;
               allDone = false;
               if (newProgress[idx] >= 100) {
                 newProgress[idx] = 100;
@@ -128,11 +146,15 @@ const App: React.FC = () => {
               }
             }
           });
+          
+          // Elapsed time in modern represents wall-clock time passed
+          setElapsedTime(prev => parseFloat((prev + workPerTick).toFixed(1)));
+          
           if (allDone) setSimActive(false);
         }
         return newProgress;
       });
-    }, 100);
+    }, tickRate);
     return () => clearInterval(interval);
   }, [simActive, simMode, completedTaskIds, view]);
 
@@ -350,6 +372,18 @@ async function createDatabaseSchema() {
   \`);
 }`;
 
+    const modernPrompt = `ACT as an Agentic Fleet Commander. 
+DEPLOY 12 specialized autonomous agents to build a high-scale e-commerce engine.
+COORDINATE tasks from authentication to deployment concurrently.
+ENSURE context sharing between Terminal-1 (Auth) and Terminal-2 (Engine).
+GOAL: High-fidelity system delivery with parallel execution.`;
+
+    const formatTime = (hours: number) => {
+      if (hours < 8) return `${hours.toFixed(1)} Work Hours`;
+      const days = (hours / 8).toFixed(1);
+      return `${days} Work Days`;
+    };
+
     return (
       <div className="max-w-6xl mx-auto py-12 animate-in fade-in duration-700">
         <div className="flex items-center gap-4 mb-8">
@@ -380,16 +414,16 @@ async function createDatabaseSchema() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="glass p-6 rounded-3xl border-brand-platinum/5">
-            <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Elapsed Time</div>
-            <div className="text-3xl font-mono text-brand-platinum">{elapsedTime}s</div>
+            <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Total Effort Elapsed</div>
+            <div className="text-3xl font-mono text-brand-platinum">{formatTime(elapsedTime)}</div>
           </div>
           <div className="glass p-6 rounded-3xl border-brand-platinum/5">
             <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Tasks Completed</div>
             <div className="text-3xl font-mono text-brand-platinum">{completedTaskIds.size} / {SIM_TASKS.length}</div>
           </div>
           <div className="glass p-6 rounded-3xl border-brand-platinum/5">
-            <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Efficiency</div>
-            <div className={`text-3xl font-mono ${simMode === 'modern' ? 'text-brand-green' : 'text-brand-platinum'}`}>{simMode === 'modern' ? '8x' : '1x'}</div>
+            <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Project Velocity</div>
+            <div className={`text-3xl font-mono ${simMode === 'modern' ? 'text-brand-green' : 'text-brand-platinum'}`}>{simMode === 'modern' ? '20.6x' : '1.0x'}</div>
           </div>
         </div>
 
@@ -398,11 +432,11 @@ async function createDatabaseSchema() {
             <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 relative">
                {simMode === 'traditional' ? <div className="w-full h-full bg-orange-500/20 rounded-full flex items-center justify-center text-3xl border-2 border-orange-500/40">🧑‍💻</div> : <div className="w-full h-full bg-brand-green/20 rounded-full flex items-center justify-center text-3xl border-2 border-brand-green/40 shadow-glow">⚡</div>}
             </div>
-            <h2 className="text-2xl font-bold text-brand-platinum uppercase">{simMode === 'traditional' ? 'Single Developer, Sequential Work' : 'AI Orchestrator, Parallel Execution'}</h2>
-            <p className="text-brand-platinum/40 text-sm mt-2">{simMode === 'traditional' ? 'One engineer writing code, one task at a time. Each task must finish before the next begins.' : 'One engineer orchestrating 12 AI agents working simultaneously.'}</p>
+            <h2 className="text-2xl font-bold text-brand-platinum uppercase">{simMode === 'traditional' ? 'Sequential Manual Production' : 'Parallel Agentic Orchestration'}</h2>
+            <p className="text-brand-platinum/40 text-sm mt-2 text-center max-w-2xl">{simMode === 'traditional' ? 'One engineer writing logic, debugging, and deploying linearly. High individual effort, low organizational speed.' : 'One commander managing 12 specialized agents. Bottleneck shifted from coding speed to human coordination bandwidth.'}</p>
           </div>
 
-          {/* IDE Section for Traditional Mode */}
+          {/* Traditional Start State: IDE Block */}
           {simMode === 'traditional' && !simActive && completedTaskIds.size === 0 && (
             <div className="max-w-3xl mx-auto mb-10 animate-in fade-in slide-in-from-top-4 duration-1000">
                <div className="glass rounded-xl overflow-hidden border border-brand-platinum/10 shadow-2xl">
@@ -412,12 +446,11 @@ async function createDatabaseSchema() {
                       <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
                       <div className="w-2.5 h-2.5 rounded-full bg-brand-green/50"></div>
                     </div>
-                    <div className="text-[10px] font-mono text-brand-platinum/40 uppercase tracking-widest">auth-engine.ts</div>
+                    <div className="text-[10px] font-mono text-brand-platinum/40 uppercase tracking-widest">manual_implementation.ts</div>
                  </div>
                  <div className="p-6 font-mono text-sm leading-relaxed overflow-hidden">
                     <pre className="text-brand-platinum/80 whitespace-pre-wrap">
                       {codeSnippet.split('\n').map((line, i) => {
-                        // Very basic syntax highlighting for visual effect
                         const highlighted = line
                           .replace(/(function|async|await|return|throw|new|const)/g, '<span class="text-purple-400">$1</span>')
                           .replace(/(Error|db|credentials|user)/g, '<span class="text-blue-400">$1</span>')
@@ -438,34 +471,77 @@ async function createDatabaseSchema() {
                     onClick={() => setSimActive(true)} 
                     className="bg-brand-green hover:brightness-110 px-12 py-5 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-2xl shadow-brand-green/20 transition-all hover:scale-105"
                   >
-                    Start Simulation
+                    Start Production Simulation
                   </button>
                </div>
             </div>
           )}
 
-          {/* Regular Controls & Grid (Shown during simulation or in Modern mode) */}
-          {(simMode === 'modern' || simActive || completedTaskIds.size > 0) && (
+          {/* Modern Start State: Prompt Box */}
+          {simMode === 'modern' && !simActive && completedTaskIds.size === 0 && (
+            <div className="max-w-3xl mx-auto mb-10 animate-in fade-in slide-in-from-top-4 duration-1000">
+              <div className="glass rounded-3xl overflow-hidden border border-brand-green/30 shadow-2xl bg-brand-green/[0.02]">
+                <div className="bg-brand-green/10 px-6 py-4 flex items-center justify-between border-b border-brand-green/20">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-brand-green shadow-glow"></div>
+                    <span className="text-xs font-black text-brand-green uppercase tracking-[0.2em]">Deployment Directive</span>
+                  </div>
+                  <div className="text-[10px] font-mono text-brand-platinum/40 uppercase tracking-widest">AI-ORCHESTRATOR-v1.0</div>
+                </div>
+                <div className="p-10 font-mono text-lg leading-relaxed text-brand-platinum relative">
+                  <div className="absolute top-4 right-6 text-4xl opacity-10">🪄</div>
+                  <p className="whitespace-pre-wrap italic">
+                    {modernPrompt.split('\n').map((line, i) => (
+                      <span key={i} className="block mb-2">
+                        <span className="text-brand-green mr-4 select-none">›</span>
+                        {line}
+                      </span>
+                    ))}
+                  </p>
+                  <div className="mt-8 pt-8 border-t border-brand-platinum/5 flex items-center gap-4">
+                     <div className="w-12 h-1 bg-brand-green/30 rounded-full overflow-hidden">
+                        <div className="w-full h-full bg-brand-green animate-pulse"></div>
+                     </div>
+                     <span className="text-[10px] font-bold text-brand-green/40 uppercase tracking-widest animate-pulse">Initializing Agent Swarm...</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-12 flex justify-center">
+                <button 
+                  onClick={() => setSimActive(true)} 
+                  className="bg-brand-green hover:brightness-110 px-16 py-6 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-glow transition-all hover:scale-105 text-lg"
+                >
+                  Start Fleet Execution
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Regular Controls & Grid (Shown during simulation or after completion) */}
+          {(simActive || completedTaskIds.size > 0) && (
             <>
               <div className={`grid gap-4 ${simMode === 'modern' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-4' : 'grid-cols-1'}`}>
                 {SIM_TASKS.map((task, idx) => (
                   <div key={task.id} className={`p-4 rounded-2xl border transition-all duration-500 ${completedTaskIds.has(task.id) ? 'bg-brand-green/10 border-brand-green/30' : taskProgress[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
                     <div className="flex justify-between items-center mb-2">
-                      <span className={`text-[10px] font-bold uppercase tracking-widest ${completedTaskIds.has(task.id) ? 'text-brand-green' : 'text-brand-platinum/40'}`}>{simMode === 'modern' ? `Agent ${idx + 1}` : `Task ${idx + 1}`}</span>
-                      <span className="text-[10px] font-mono text-brand-platinum/30">{task.duration}s</span>
+                      <span className={`text-[10px] font-bold uppercase tracking-widest ${completedTaskIds.has(task.id) ? 'text-brand-green' : 'text-brand-platinum/40'}`}>{simMode === 'modern' ? `Agent ${idx + 1}` : `Phase ${idx + 1}`}</span>
+                      <span className="text-[10px] font-mono text-brand-platinum/30">{task.duration}h Effort</span>
                     </div>
                     <div className="text-xs font-bold text-brand-platinum mb-3 truncate">{task.name}</div>
                     <div className="w-full h-1.5 bg-brand-platinum/5 rounded-full overflow-hidden">
                       <div className={`h-full transition-all duration-100 ${simMode === 'modern' ? 'bg-brand-green shadow-glow' : 'bg-orange-500'}`} style={{ width: `${taskProgress[idx]}%` }}></div>
+                    </div>
+                    <div className="mt-2 text-[8px] font-mono text-brand-platinum/20 uppercase">
+                      {completedTaskIds.has(task.id) ? 'Status: Integrated' : taskProgress[idx] > 0 ? 'Status: Processing' : 'Status: Queued'}
                     </div>
                   </div>
                 ))}
               </div>
 
               <div className="mt-12 flex justify-center gap-4">
-                {!simActive && completedTaskIds.size === 0 && <button onClick={() => setSimActive(true)} className="bg-brand-green hover:brightness-110 px-10 py-4 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-2xl shadow-brand-green/20 transition-all hover:scale-105">Start Simulation</button>}
-                {simActive && <button onClick={() => setSimActive(false)} className="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Pause</button>}
-                {!simActive && completedTaskIds.size > 0 && <button onClick={() => resetSimulation(simMode)} className="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Reset</button>}
+                {simActive && <button onClick={() => setSimActive(false)} className="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Pause Sim</button>}
+                {!simActive && completedTaskIds.size > 0 && <button onClick={() => resetSimulation(simMode)} className="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Restart</button>}
               </div>
             </>
           )}
@@ -475,19 +551,29 @@ async function createDatabaseSchema() {
           <div className="animate-in slide-in-from-bottom-10 duration-1000 mb-12">
             <div className="glass p-12 rounded-[40px] border-brand-green/30 text-center relative">
                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-brand-green rounded-full flex items-center justify-center text-3xl shadow-glow">🎉</div>
-               <h3 className="text-4xl font-black text-brand-platinum uppercase tracking-tighter mb-4">Simulation Complete!</h3>
+               <h3 className="text-4xl font-black text-brand-platinum uppercase tracking-tighter mb-4">Development Cycle Complete!</h3>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left mt-10">
                   <div className="space-y-4">
-                    <h4 className="text-sm font-bold text-brand-platinum/40 uppercase tracking-widest border-b border-brand-platinum/5 pb-2">Traditional Approach</h4>
-                    <ul className="space-y-2 text-brand-platinum/60 text-sm"><li>✅ All 12 tasks completed</li><li>📉 Estimated time: ~98 seconds</li><li>👤 1 developer writing all code</li><li>🧱 Sequential execution</li></ul>
+                    <h4 className="text-sm font-bold text-brand-platinum/40 uppercase tracking-widest border-b border-brand-platinum/5 pb-2">Sequential Manual Logic</h4>
+                    <ul className="space-y-2 text-brand-platinum/60 text-sm">
+                      <li>✅ Total Effort: 248 Work Hours</li>
+                      <li>📅 Timeline: ~31 Standard Work Days</li>
+                      <li>👤 1 Developer, Linear Mindset</li>
+                      <li>🧱 High Context Switching Costs</li>
+                    </ul>
                   </div>
                   <div className="space-y-4">
-                    <h4 className="text-sm font-bold text-brand-green uppercase tracking-widest border-b border-brand-green/20 pb-2">Modern Approach</h4>
-                    <ul className="space-y-2 text-brand-platinum text-sm"><li>✅ All 12 tasks completed</li><li>🚀 Estimated time: ~12 seconds</li><li>🤖 12 AI agents working in parallel</li><li>⚡ 8x faster execution</li></ul>
+                    <h4 className="text-sm font-bold text-brand-green uppercase tracking-widest border-b border-brand-green/20 pb-2">Agentic Parallelism</h4>
+                    <ul className="space-y-2 text-brand-platinum text-sm">
+                      <li>✅ Total Effort: 12 Work Hours (Coordination Only)</li>
+                      <li>🚀 Timeline: ~1.5 Standard Work Days</li>
+                      <li>🤖 12 Autonomous Agents + 1 Commander</li>
+                      <li>⚡ 20.6x Velocity Increase</li>
+                    </ul>
                   </div>
                </div>
                <div className="mt-12 pt-12 border-t border-brand-platinum/5">
-                  <p className="text-brand-platinum/60 italic leading-relaxed max-w-2xl mx-auto text-sm mb-12">"Someone has to prompt the Claudes, talk to customers, coordinate with other teams, decide what to build next. Engineering is changing and great engineers are more important than ever."<br /><span className="not-italic font-bold text-brand-green mt-2 block">— Boris Cherny, Creator of Claude Code</span></p>
+                  <p className="text-brand-platinum/60 italic leading-relaxed max-w-2xl mx-auto text-sm mb-12">"The bottleneck in the modern age is no longer typing or syntax. It's the high-bandwidth coordination of intelligence. To 10x your output, you must stop being the worker and start being the conductor."<br /><span className="not-italic font-bold text-brand-green mt-2 block">— Next Human Principles</span></p>
                   <button onClick={() => { setView(AppView.TRAINER); setIsDrillRunning(true); }} className="bg-brand-green hover:brightness-110 px-12 py-6 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-2xl shadow-brand-green/20 transition-all hover:scale-105 text-lg">Enter Command Center</button>
                </div>
             </div>
