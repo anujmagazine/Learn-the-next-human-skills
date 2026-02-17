@@ -331,104 +331,171 @@ const App: React.FC = () => {
     </div>
   );
 
-  const renderEvolution = () => (
-    <div className="max-w-6xl mx-auto py-12 animate-in fade-in duration-700">
-      <div className="flex items-center gap-4 mb-8">
-        <button 
-          onClick={() => setView(AppView.LANDING)} 
-          className="text-brand-platinum/50 hover:text-brand-green transition-colors flex items-center gap-2 font-bold uppercase text-xs tracking-widest"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-          Back to Missions
-        </button>
-      </div>
+  const renderEvolution = () => {
+    const codeSnippet = `function authenticateUser(credentials) {
+  // Manual authentication logic
+  const user = db.findUser(credentials.email);
+  if (user && verifyPassword(credentials.password, user.hash)) {
+    return generateToken(user.id);
+  }
+  throw new Error("Invalid credentials");
+}
 
-      <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-brand-platinum uppercase">
-          The Evolution of <span className="gradient-text">Engineering</span>
-        </h1>
-        <p className="text-brand-platinum/60 text-lg max-w-2xl mx-auto">
-          From sequential coding to parallel AI orchestration—see how engineering transformed from writing every line to conducting an orchestra.
-        </p>
-      </div>
+async function createDatabaseSchema() {
+  // Manual SQL implementation...
+  const schema = await db.executeRaw(\`
+    CREATE TABLE users (
+      id UUID PRIMARY KEY,
+      email VARCHAR(255) UNIQUE...
+  \`);
+}`;
 
-      <div className="flex justify-center mb-12">
-        <div className="glass p-1 rounded-2xl flex border border-brand-platinum/10">
-          <button onClick={() => resetSimulation('traditional')} className={`px-6 py-3 rounded-xl text-sm font-bold transition-all uppercase tracking-widest ${simMode === 'traditional' ? 'bg-brand-platinum/20 text-brand-platinum' : 'text-brand-platinum/40 hover:text-brand-platinum'}`}>Traditional (Before)</button>
-          <button onClick={() => resetSimulation('modern')} className={`px-6 py-3 rounded-xl text-sm font-bold transition-all uppercase tracking-widest ${simMode === 'modern' ? 'bg-brand-green/20 text-brand-green' : 'text-brand-platinum/40 hover:text-brand-green'}`}>Modern (After)</button>
+    return (
+      <div className="max-w-6xl mx-auto py-12 animate-in fade-in duration-700">
+        <div className="flex items-center gap-4 mb-8">
+          <button 
+            onClick={() => setView(AppView.LANDING)} 
+            className="text-brand-platinum/50 hover:text-brand-green transition-colors flex items-center gap-2 font-bold uppercase text-xs tracking-widest"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            Back to Missions
+          </button>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="glass p-6 rounded-3xl border-brand-platinum/5">
-          <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Elapsed Time</div>
-          <div className="text-3xl font-mono text-brand-platinum">{elapsedTime}s</div>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-brand-platinum uppercase">
+            The Evolution of <span className="gradient-text">Engineering</span>
+          </h1>
+          <p className="text-brand-platinum/60 text-lg max-w-2xl mx-auto">
+            From sequential coding to parallel AI orchestration—see how engineering transformed from writing every line to conducting an orchestra.
+          </p>
         </div>
-        <div className="glass p-6 rounded-3xl border-brand-platinum/5">
-          <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Tasks Completed</div>
-          <div className="text-3xl font-mono text-brand-platinum">{completedTaskIds.size} / {SIM_TASKS.length}</div>
-        </div>
-        <div className="glass p-6 rounded-3xl border-brand-platinum/5">
-          <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Efficiency</div>
-          <div className={`text-3xl font-mono ${simMode === 'modern' ? 'text-brand-green' : 'text-brand-platinum'}`}>{simMode === 'modern' ? '8x' : '1x'}</div>
-        </div>
-      </div>
 
-      <div className="glass rounded-[40px] border-brand-platinum/10 p-10 mb-12 relative overflow-hidden">
-        <div className="flex flex-col items-center mb-10">
-          <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 relative">
-             {simMode === 'traditional' ? <div className="w-full h-full bg-orange-500/20 rounded-full flex items-center justify-center text-3xl border-2 border-orange-500/40">🧑‍💻</div> : <div className="w-full h-full bg-brand-green/20 rounded-full flex items-center justify-center text-3xl border-2 border-brand-green/40 shadow-glow">⚡</div>}
+        <div className="flex justify-center mb-12">
+          <div className="glass p-1 rounded-2xl flex border border-brand-platinum/10">
+            <button onClick={() => resetSimulation('traditional')} className={`px-6 py-3 rounded-xl text-sm font-bold transition-all uppercase tracking-widest ${simMode === 'traditional' ? 'bg-brand-platinum/20 text-brand-platinum' : 'text-brand-platinum/40 hover:text-brand-platinum'}`}>Traditional (Before)</button>
+            <button onClick={() => resetSimulation('modern')} className={`px-6 py-3 rounded-xl text-sm font-bold transition-all uppercase tracking-widest ${simMode === 'modern' ? 'bg-brand-green/20 text-brand-green' : 'text-brand-platinum/40 hover:text-brand-green'}`}>Modern (After)</button>
           </div>
-          <h2 className="text-2xl font-bold text-brand-platinum uppercase">{simMode === 'traditional' ? 'Single Developer, Sequential Work' : 'AI Orchestrator, Parallel Execution'}</h2>
-          <p className="text-brand-platinum/40 text-sm mt-2">{simMode === 'traditional' ? 'One engineer writing code, one task at a time. Each task must finish before the next begins.' : 'One engineer orchestrating 12 AI agents working simultaneously.'}</p>
         </div>
 
-        <div className={`grid gap-4 ${simMode === 'modern' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-4' : 'grid-cols-1'}`}>
-          {SIM_TASKS.map((task, idx) => (
-            <div key={task.id} className={`p-4 rounded-2xl border transition-all duration-500 ${completedTaskIds.has(task.id) ? 'bg-brand-green/10 border-brand-green/30' : taskProgress[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
-              <div className="flex justify-between items-center mb-2">
-                <span className={`text-[10px] font-bold uppercase tracking-widest ${completedTaskIds.has(task.id) ? 'text-brand-green' : 'text-brand-platinum/40'}`}>{simMode === 'modern' ? `Agent ${idx + 1}` : `Task ${idx + 1}`}</span>
-                <span className="text-[10px] font-mono text-brand-platinum/30">{task.duration}s</span>
-              </div>
-              <div className="text-xs font-bold text-brand-platinum mb-3 truncate">{task.name}</div>
-              <div className="w-full h-1.5 bg-brand-platinum/5 rounded-full overflow-hidden">
-                <div className={`h-full transition-all duration-100 ${simMode === 'modern' ? 'bg-brand-green shadow-glow' : 'bg-orange-500'}`} style={{ width: `${taskProgress[idx]}%` }}></div>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="glass p-6 rounded-3xl border-brand-platinum/5">
+            <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Elapsed Time</div>
+            <div className="text-3xl font-mono text-brand-platinum">{elapsedTime}s</div>
+          </div>
+          <div className="glass p-6 rounded-3xl border-brand-platinum/5">
+            <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Tasks Completed</div>
+            <div className="text-3xl font-mono text-brand-platinum">{completedTaskIds.size} / {SIM_TASKS.length}</div>
+          </div>
+          <div className="glass p-6 rounded-3xl border-brand-platinum/5">
+            <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Efficiency</div>
+            <div className={`text-3xl font-mono ${simMode === 'modern' ? 'text-brand-green' : 'text-brand-platinum'}`}>{simMode === 'modern' ? '8x' : '1x'}</div>
+          </div>
+        </div>
+
+        <div className="glass rounded-[40px] border-brand-platinum/10 p-10 mb-12 relative overflow-hidden">
+          <div className="flex flex-col items-center mb-10">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 relative">
+               {simMode === 'traditional' ? <div className="w-full h-full bg-orange-500/20 rounded-full flex items-center justify-center text-3xl border-2 border-orange-500/40">🧑‍💻</div> : <div className="w-full h-full bg-brand-green/20 rounded-full flex items-center justify-center text-3xl border-2 border-brand-green/40 shadow-glow">⚡</div>}
             </div>
-          ))}
-        </div>
-
-        <div className="mt-12 flex justify-center gap-4">
-          {!simActive && completedTaskIds.size === 0 && <button onClick={() => setSimActive(true)} className="bg-brand-green hover:brightness-110 px-10 py-4 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-2xl shadow-brand-green/20 transition-all hover:scale-105">Start Simulation</button>}
-          {simActive && <button onClick={() => setSimActive(false)} className="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Pause</button>}
-          {!simActive && completedTaskIds.size > 0 && <button onClick={() => resetSimulation(simMode)} className="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Reset</button>}
-        </div>
-      </div>
-
-      {completedTaskIds.size === SIM_TASKS.length && !simActive && (
-        <div className="animate-in slide-in-from-bottom-10 duration-1000 mb-12">
-          <div className="glass p-12 rounded-[40px] border-brand-green/30 text-center relative">
-             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-brand-green rounded-full flex items-center justify-center text-3xl shadow-glow">🎉</div>
-             <h3 className="text-4xl font-black text-brand-platinum uppercase tracking-tighter mb-4">Simulation Complete!</h3>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left mt-10">
-                <div className="space-y-4">
-                  <h4 className="text-sm font-bold text-brand-platinum/40 uppercase tracking-widest border-b border-brand-platinum/5 pb-2">Traditional Approach</h4>
-                  <ul className="space-y-2 text-brand-platinum/60 text-sm"><li>✅ All 12 tasks completed</li><li>📉 Estimated time: ~98 seconds</li><li>👤 1 developer writing all code</li><li>🧱 Sequential execution</li></ul>
-                </div>
-                <div className="space-y-4">
-                  <h4 className="text-sm font-bold text-brand-green uppercase tracking-widest border-b border-brand-green/20 pb-2">Modern Approach</h4>
-                  <ul className="space-y-2 text-brand-platinum text-sm"><li>✅ All 12 tasks completed</li><li>🚀 Estimated time: ~12 seconds</li><li>🤖 12 AI agents working in parallel</li><li>⚡ 8x faster execution</li></ul>
-                </div>
-             </div>
-             <div className="mt-12 pt-12 border-t border-brand-platinum/5">
-                <p className="text-brand-platinum/60 italic leading-relaxed max-w-2xl mx-auto text-sm mb-12">"Someone has to prompt the Claudes, talk to customers, coordinate with other teams, decide what to build next. Engineering is changing and great engineers are more important than ever."<br /><span className="not-italic font-bold text-brand-green mt-2 block">— Boris Cherny, Creator of Claude Code</span></p>
-                <button onClick={() => { setView(AppView.TRAINER); setIsDrillRunning(true); }} className="bg-brand-green hover:brightness-110 px-12 py-6 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-2xl shadow-brand-green/20 transition-all hover:scale-105 text-lg">Enter Command Center</button>
-             </div>
+            <h2 className="text-2xl font-bold text-brand-platinum uppercase">{simMode === 'traditional' ? 'Single Developer, Sequential Work' : 'AI Orchestrator, Parallel Execution'}</h2>
+            <p className="text-brand-platinum/40 text-sm mt-2">{simMode === 'traditional' ? 'One engineer writing code, one task at a time. Each task must finish before the next begins.' : 'One engineer orchestrating 12 AI agents working simultaneously.'}</p>
           </div>
+
+          {/* IDE Section for Traditional Mode */}
+          {simMode === 'traditional' && !simActive && completedTaskIds.size === 0 && (
+            <div className="max-w-3xl mx-auto mb-10 animate-in fade-in slide-in-from-top-4 duration-1000">
+               <div className="glass rounded-xl overflow-hidden border border-brand-platinum/10 shadow-2xl">
+                 <div className="bg-brand-navy/60 px-4 py-2 flex items-center justify-between border-b border-brand-platinum/5">
+                    <div className="flex gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
+                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
+                      <div className="w-2.5 h-2.5 rounded-full bg-brand-green/50"></div>
+                    </div>
+                    <div className="text-[10px] font-mono text-brand-platinum/40 uppercase tracking-widest">auth-engine.ts</div>
+                 </div>
+                 <div className="p-6 font-mono text-sm leading-relaxed overflow-hidden">
+                    <pre className="text-brand-platinum/80 whitespace-pre-wrap">
+                      {codeSnippet.split('\n').map((line, i) => {
+                        // Very basic syntax highlighting for visual effect
+                        const highlighted = line
+                          .replace(/(function|async|await|return|throw|new|const)/g, '<span class="text-purple-400">$1</span>')
+                          .replace(/(Error|db|credentials|user)/g, '<span class="text-blue-400">$1</span>')
+                          .replace(/(\".*?\")/g, '<span class="text-brand-green">$1</span>');
+                        return (
+                          <div key={i} className="flex gap-4">
+                            <span className="text-brand-platinum/20 w-4 text-right select-none">{i + 1}</span>
+                            <span dangerouslySetInnerHTML={{ __html: highlighted }} />
+                          </div>
+                        );
+                      })}
+                    </pre>
+                 </div>
+               </div>
+               
+               <div className="mt-12 flex justify-center">
+                  <button 
+                    onClick={() => setSimActive(true)} 
+                    className="bg-brand-green hover:brightness-110 px-12 py-5 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-2xl shadow-brand-green/20 transition-all hover:scale-105"
+                  >
+                    Start Simulation
+                  </button>
+               </div>
+            </div>
+          )}
+
+          {/* Regular Controls & Grid (Shown during simulation or in Modern mode) */}
+          {(simMode === 'modern' || simActive || completedTaskIds.size > 0) && (
+            <>
+              <div className={`grid gap-4 ${simMode === 'modern' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-4' : 'grid-cols-1'}`}>
+                {SIM_TASKS.map((task, idx) => (
+                  <div key={task.id} className={`p-4 rounded-2xl border transition-all duration-500 ${completedTaskIds.has(task.id) ? 'bg-brand-green/10 border-brand-green/30' : taskProgress[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className={`text-[10px] font-bold uppercase tracking-widest ${completedTaskIds.has(task.id) ? 'text-brand-green' : 'text-brand-platinum/40'}`}>{simMode === 'modern' ? `Agent ${idx + 1}` : `Task ${idx + 1}`}</span>
+                      <span className="text-[10px] font-mono text-brand-platinum/30">{task.duration}s</span>
+                    </div>
+                    <div className="text-xs font-bold text-brand-platinum mb-3 truncate">{task.name}</div>
+                    <div className="w-full h-1.5 bg-brand-platinum/5 rounded-full overflow-hidden">
+                      <div className={`h-full transition-all duration-100 ${simMode === 'modern' ? 'bg-brand-green shadow-glow' : 'bg-orange-500'}`} style={{ width: `${taskProgress[idx]}%` }}></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-12 flex justify-center gap-4">
+                {!simActive && completedTaskIds.size === 0 && <button onClick={() => setSimActive(true)} className="bg-brand-green hover:brightness-110 px-10 py-4 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-2xl shadow-brand-green/20 transition-all hover:scale-105">Start Simulation</button>}
+                {simActive && <button onClick={() => setSimActive(false)} className="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Pause</button>}
+                {!simActive && completedTaskIds.size > 0 && <button onClick={() => resetSimulation(simMode)} className="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Reset</button>}
+              </div>
+            </>
+          )}
         </div>
-      )}
-    </div>
-  );
+
+        {completedTaskIds.size === SIM_TASKS.length && !simActive && (
+          <div className="animate-in slide-in-from-bottom-10 duration-1000 mb-12">
+            <div className="glass p-12 rounded-[40px] border-brand-green/30 text-center relative">
+               <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-brand-green rounded-full flex items-center justify-center text-3xl shadow-glow">🎉</div>
+               <h3 className="text-4xl font-black text-brand-platinum uppercase tracking-tighter mb-4">Simulation Complete!</h3>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left mt-10">
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-bold text-brand-platinum/40 uppercase tracking-widest border-b border-brand-platinum/5 pb-2">Traditional Approach</h4>
+                    <ul className="space-y-2 text-brand-platinum/60 text-sm"><li>✅ All 12 tasks completed</li><li>📉 Estimated time: ~98 seconds</li><li>👤 1 developer writing all code</li><li>🧱 Sequential execution</li></ul>
+                  </div>
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-bold text-brand-green uppercase tracking-widest border-b border-brand-green/20 pb-2">Modern Approach</h4>
+                    <ul className="space-y-2 text-brand-platinum text-sm"><li>✅ All 12 tasks completed</li><li>🚀 Estimated time: ~12 seconds</li><li>🤖 12 AI agents working in parallel</li><li>⚡ 8x faster execution</li></ul>
+                  </div>
+               </div>
+               <div className="mt-12 pt-12 border-t border-brand-platinum/5">
+                  <p className="text-brand-platinum/60 italic leading-relaxed max-w-2xl mx-auto text-sm mb-12">"Someone has to prompt the Claudes, talk to customers, coordinate with other teams, decide what to build next. Engineering is changing and great engineers are more important than ever."<br /><span className="not-italic font-bold text-brand-green mt-2 block">— Boris Cherny, Creator of Claude Code</span></p>
+                  <button onClick={() => { setView(AppView.TRAINER); setIsDrillRunning(true); }} className="bg-brand-green hover:brightness-110 px-12 py-6 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-2xl shadow-brand-green/20 transition-all hover:scale-105 text-lg">Enter Command Center</button>
+               </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const renderTrainer = () => (
     <div className="h-[80vh] flex flex-col gap-6 animate-in fade-in duration-500">
