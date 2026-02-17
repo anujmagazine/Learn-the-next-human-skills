@@ -8,9 +8,9 @@ import Visualizer from './components/Visualizer';
 const DRILLS: DrillScenario[] = [
   {
     id: 'swarm-1',
-    title: 'The Swarm Architect',
+    title: 'The Agent Fleet Commander',
     difficulty: 'Extreme',
-    description: 'Inspired by Boris Cherny (Claude Code). Manage 8 concurrent agents: 4 in terminals, 3 in web sessions, and 1 on mobile. Coordinate a massive refactor while shipping new features in real-time.',
+    description: 'Stop being the coder and start being the Commander. Manage 8 concurrent AI agents simultaneously to refactor, test, and ship at 10x speed. Inspired by Boris Cherny’s multi-agent workflow.',
     agents: ['Terminal-1 (Auth)', 'Terminal-2 (Engine)', 'Terminal-3 (UI)', 'Terminal-4 (Testing)', 'Web-A (Research)', 'Web-B (Docs)', 'Web-C (Simplification)', 'Mobile-Review']
   },
   {
@@ -33,7 +33,7 @@ const EVOLUTION_DATA = [
   {
     aspect: "Primary Worker",
     before: "Human developer writes most/all code manually",
-    after: "AI agents write/test/refactor code; human orchestrates"
+    after: "AI agents (the fleet) write/test/refactor code; human orchestrates"
   },
   {
     aspect: "Workflow Style",
@@ -43,17 +43,17 @@ const EVOLUTION_DATA = [
   {
     aspect: "Active Sessions",
     before: "1 (single editor/IDE session)",
-    after: "5 in terminal + 5-10 in web/mobile = 10–15+ concurrent"
+    after: "5 in terminal + 5-10 in web/mobile = 10–15+ concurrent agents"
   },
   {
     aspect: "Human Role",
     before: "Main coder, tester, reviewer",
-    after: "Commander/fleet manager: assign, review, approve"
+    after: "Commander/fleet manager: assign, review, and approve hand-offs"
   },
   {
     aspect: "Speed",
     before: "Linear progress; limited by human typing speed",
-    after: "Massive acceleration; hundreds of commits/month"
+    after: "Massive acceleration; hundreds of commits per month"
   }
 ];
 
@@ -78,7 +78,7 @@ const App: React.FC = () => {
     setAgents(initialAgents);
     setActiveDrill(drill);
     
-    // If it's the swarm architect, show evolution first
+    // If it's the fleet commander drill, show evolution first
     if (drill.id === 'swarm-1') {
       setView(AppView.EVOLUTION);
     } else {
@@ -266,15 +266,15 @@ const App: React.FC = () => {
             <p className="text-brand-platinum/50 text-sm mb-8 leading-relaxed flex-1">{drill.description}</p>
             {drill.id === 'swarm-1' && (
               <div className="mb-6 flex gap-1">
-                <span className="text-[9px] font-bold text-brand-green bg-brand-green/10 px-2 py-1 rounded border border-brand-green/20">SWARM WALKTHROUGH</span>
-                <span className="text-[9px] font-bold text-brand-platinum/40 bg-white/5 px-2 py-1 rounded border border-white/5 uppercase">Evolution Aware</span>
+                <span className="text-[9px] font-bold text-brand-green bg-brand-green/10 px-2 py-1 rounded border border-brand-green/20 uppercase tracking-widest">Commander Briefing</span>
+                <span className="text-[9px] font-bold text-brand-platinum/40 bg-white/5 px-2 py-1 rounded border border-white/5 uppercase">High-Velocity Workflow</span>
               </div>
             )}
             <button 
               onClick={() => startDrill(drill)}
               className="w-full bg-brand-green hover:brightness-110 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-brand-green/10 text-brand-black uppercase tracking-widest text-xs"
             >
-              Initialize {drill.id === 'swarm-1' ? 'Swarm' : 'Drill'}
+              {drill.id === 'swarm-1' ? 'Initialize Fleet' : `Start ${drill.title}`}
             </button>
           </div>
         ))}
@@ -286,7 +286,7 @@ const App: React.FC = () => {
     <div className="max-w-6xl mx-auto py-12 animate-in fade-in duration-700">
       <div className="text-center mb-16">
         <h1 className="text-5xl font-black mb-4 tracking-tighter text-brand-platinum uppercase">The Agentic <span className="text-brand-green">Evolution</span></h1>
-        <p className="text-brand-platinum/60 text-lg">Understand the shift before you orchestrate.</p>
+        <p className="text-brand-platinum/60 text-lg">Understand the shift from Developer to Commander.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
@@ -295,7 +295,7 @@ const App: React.FC = () => {
             <div className="absolute top-0 right-0 w-32 h-32 bg-brand-platinum/5 rounded-bl-full -mr-10 -mt-10"></div>
             <h2 className="text-2xl font-bold mb-6 text-brand-platinum/40 flex items-center gap-3">
               <span className="w-8 h-8 rounded-full border border-brand-platinum/20 flex items-center justify-center text-xs">01</span>
-              Traditional Development
+              Traditional Sequential Way
             </h2>
             <div className="space-y-4">
                {EVOLUTION_DATA.map((item, i) => (
@@ -313,7 +313,7 @@ const App: React.FC = () => {
             <div className="absolute top-0 right-0 w-32 h-32 bg-brand-green/5 rounded-bl-full -mr-10 -mt-10"></div>
             <h2 className="text-2xl font-bold mb-6 text-brand-green flex items-center gap-3">
               <span className="w-8 h-8 rounded-full border border-brand-green/40 flex items-center justify-center text-xs">02</span>
-              Agentic Orchestration
+              New Agent Fleet Way
             </h2>
             <div className="space-y-4">
                {EVOLUTION_DATA.map((item, i) => (
@@ -331,7 +331,7 @@ const App: React.FC = () => {
         <div>
           <h3 className="text-3xl font-black text-brand-platinum uppercase tracking-tighter mb-4">Ready to command the fleet?</h3>
           <p className="text-brand-platinum/60 leading-relaxed mb-8">
-            You are no longer the one typing every line. You are the commander. You manage 10-15 parallel sessions. You resolve contradictions. You merge breakthroughs.
+            You are no longer the one typing every line. You are the commander. You manage 8+ parallel sessions. You resolve contradictions. You merge breakthroughs.
           </p>
           <button 
             onClick={() => { setView(AppView.TRAINER); setIsDrillRunning(true); }}
@@ -349,9 +349,9 @@ const App: React.FC = () => {
     <div className="h-[80vh] flex flex-col gap-6 animate-in fade-in duration-500">
       <div className="flex items-center justify-between glass p-4 rounded-2xl border-brand-green/20">
         <div className="flex items-center gap-4">
-          <div className="bg-brand-green w-3 h-3 rounded-full animate-pulse"></div>
+          <div className="bg-brand-green w-3 h-3 rounded-full animate-pulse shadow-lg shadow-brand-green/40"></div>
           <div>
-            <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-platinum/40">Parallelism Simulation</h2>
+            <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-platinum/40">Active Fleet Command</h2>
             <h1 className="font-bold text-brand-platinum">{activeDrill?.title}</h1>
           </div>
         </div>
@@ -359,18 +359,18 @@ const App: React.FC = () => {
           <div className="hidden sm:block text-right pr-4 border-r border-brand-platinum/5">
             <div className="text-[9px] font-bold text-brand-platinum/30 uppercase">Cognitive Load</div>
             <div className="text-xs font-mono text-brand-platinum">
-              {activeDrill?.id === 'swarm-1' ? 'MAXIMAL (SWARM)' : 'HIGH'}
+              {activeDrill?.id === 'swarm-1' ? 'MAXIMAL (FLEET)' : 'HIGH'}
             </div>
           </div>
           <div className="text-center px-4">
-            <div className="text-[10px] font-bold text-brand-platinum/40 uppercase">Hand-offs</div>
+            <div className="text-[10px] font-bold text-brand-platinum/40 uppercase">Fleet Hand-offs</div>
             <div className="font-mono text-brand-green">{stats.interventions}</div>
           </div>
           <button 
             onClick={() => { setView(AppView.LANDING); setIsDrillRunning(false); }}
             className="bg-brand-platinum/5 hover:bg-brand-platinum/10 text-brand-platinum px-4 py-2 rounded-lg text-xs font-bold transition-all border border-brand-platinum/5 uppercase tracking-widest"
           >
-            End Session
+            End Mission
           </button>
         </div>
       </div>
@@ -416,21 +416,21 @@ const App: React.FC = () => {
           <div className="glass w-full max-w-2xl rounded-[32px] p-10 border-brand-green/30 shadow-2xl shadow-brand-green/10">
             <div className="mb-6 flex justify-between items-center">
               <span className="text-[10px] font-black uppercase tracking-widest text-brand-green px-3 py-1 bg-brand-green/10 rounded-full border border-brand-green/20">
-                Context Switch: {agents.find(a => a.id === intervention.agentId)?.role}
+                Commander Decision: {agents.find(a => a.id === intervention.agentId)?.role}
               </span>
-              <span className="text-[10px] text-brand-platinum/30 font-mono uppercase">Agent Swarm Active</span>
+              <span className="text-[10px] text-brand-platinum/30 font-mono uppercase">Agent Fleet Active</span>
             </div>
             <h2 className="text-2xl font-bold mb-6 leading-tight text-brand-platinum">
               {intervention.prompt}
             </h2>
             <p className="text-xs text-brand-platinum/40 mb-8 italic">
-              Strategy Tip: Use the context from your other {agents.length - 1} active instances to guide this directive.
+              Strategy Tip: As a Commander, use the context from your other {agents.length - 1} active instances to guide this directive.
             </p>
             <div className="flex gap-3">
               <input 
                 autoFocus
                 type="text" 
-                placeholder="Type directive (e.g., 'teleport to web-A', 'refactor', 'merge')..." 
+                placeholder="Give your directive to the agent..." 
                 className="flex-1 bg-brand-black/50 border border-brand-platinum/10 rounded-xl px-4 py-3 outline-none focus:border-brand-green transition-all text-brand-platinum"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleInterventionResponse((e.target as HTMLInputElement).value);
@@ -441,7 +441,7 @@ const App: React.FC = () => {
                    const input = (e.currentTarget.previousSibling as HTMLInputElement).value;
                    handleInterventionResponse(input);
                 }}
-                className="bg-brand-green px-6 py-3 rounded-xl font-bold hover:brightness-110 transition-all text-brand-black"
+                className="bg-brand-green px-6 py-3 rounded-xl font-bold hover:brightness-110 transition-all text-brand-black uppercase tracking-widest text-xs"
               >
                 Send
               </button>
