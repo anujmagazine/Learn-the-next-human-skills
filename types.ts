@@ -4,7 +4,8 @@ export enum AppView {
   TRAINER = 'trainer',
   LEARN = 'learn',
   DASHBOARD = 'dashboard',
-  LANDING = 'landing' // This acts as the Drill Selector for Parallelism
+  LANDING = 'landing',
+  EVOLUTION = 'evolution'
 }
 
 export interface AgentStream {

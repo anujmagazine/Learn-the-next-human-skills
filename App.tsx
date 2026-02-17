@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
 import { AppView, AgentStream, DrillScenario } from './types';
 import { orchestrationService } from './services/gemini';
+import Visualizer from './components/Visualizer';
 
 const DRILLS: DrillScenario[] = [
   {
@@ -27,6 +29,34 @@ const DRILLS: DrillScenario[] = [
   }
 ];
 
+const EVOLUTION_DATA = [
+  {
+    aspect: "Primary Worker",
+    before: "Human developer writes most/all code manually",
+    after: "AI agents write/test/refactor code; human orchestrates"
+  },
+  {
+    aspect: "Workflow Style",
+    before: "Sequential: plan → code → test → review → repeat",
+    after: "Highly parallel: 10–15+ agents working simultaneously"
+  },
+  {
+    aspect: "Active Sessions",
+    before: "1 (single editor/IDE session)",
+    after: "5 in terminal + 5-10 in web/mobile = 10–15+ concurrent"
+  },
+  {
+    aspect: "Human Role",
+    before: "Main coder, tester, reviewer",
+    after: "Commander/fleet manager: assign, review, approve"
+  },
+  {
+    aspect: "Speed",
+    before: "Linear progress; limited by human typing speed",
+    after: "Massive acceleration; hundreds of commits/month"
+  }
+];
+
 const App: React.FC = () => {
   const [view, setView] = useState<AppView>(AppView.HUB);
   const [activeDrill, setActiveDrill] = useState<DrillScenario | null>(null);
@@ -40,22 +70,27 @@ const App: React.FC = () => {
     const initialAgents: AgentStream[] = drill.agents.map((role, i) => ({
       id: `agent-${i}`,
       role,
-      color: i < 4 ? '#94c840' : i < 7 ? '#e5e6e6' : '#80a836', // Terminal vs Web vs Mobile
+      color: i < 4 ? '#94c840' : i < 7 ? '#e5e6e6' : '#80a836',
       logs: [`System: Agent ${role} initialized. Connection secure.`],
       status: 'working',
       currentTask: 'Awaiting first synchronization directive...'
     }));
     setAgents(initialAgents);
     setActiveDrill(drill);
-    setView(AppView.TRAINER);
-    setIsDrillRunning(true);
+    
+    // If it's the swarm architect, show evolution first
+    if (drill.id === 'swarm-1') {
+      setView(AppView.EVOLUTION);
+    } else {
+      setView(AppView.TRAINER);
+      setIsDrillRunning(true);
+    }
     setStats({ switches: 0, interventions: 0 });
   };
 
   useEffect(() => {
     if (!isDrillRunning || !activeDrill || intervention) return;
 
-    // High velocity simulation: 1.5 seconds per update for the Swarm drill, 4s for others
     const tickRate = activeDrill.id === 'swarm-1' ? 1500 : 4000;
 
     const interval = setInterval(async () => {
@@ -124,7 +159,6 @@ const App: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
-        {/* Parallelism Tile */}
         <div 
           onClick={() => setView(AppView.LANDING)}
           className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
@@ -146,10 +180,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Verification Fatigue Tile */}
-        <div 
-          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full"
-        >
+        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
           <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
             <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
           </div>
@@ -169,10 +200,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Interview AI Models Tile */}
-        <div 
-          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full"
-        >
+        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
           <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
             <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M11.5 3C7.36 3 4 6.36 4 10.5S7.36 18 11.5 18c1.71 0 3.29-.58 4.55-1.56l4.74 4.74 1.41-1.41-4.74-4.74c.98-1.26 1.56-2.84 1.56-4.55C19 6.36 15.64 3 11.5 3zm0 2C14.54 5 17 7.46 17 10.5S14.54 16 11.5 16 6 13.54 6 10.5 8.46 5 11.5 5z"/></svg>
           </div>
@@ -190,17 +218,6 @@ const App: React.FC = () => {
               Coming Soon
             </div>
           </div>
-        </div>
-      </div>
-      
-      <div className="mt-20 glass p-10 rounded-[40px] border-brand-platinum/5 text-center">
-        <h3 className="text-sm font-bold text-brand-platinum/30 uppercase tracking-widest mb-6">The Future Skill Matrix</h3>
-        <div className="flex flex-wrap justify-center gap-4">
-          {['Context Switching', 'Hallucination Spotting', 'System Prompting', 'Agent Synthesis', 'Strategic De-coupling', 'Agent Vetting', 'Multi-instance Swarming'].map(skill => (
-            <span key={skill} className="px-4 py-2 bg-brand-platinum/5 rounded-full text-xs font-medium text-brand-platinum/40 border border-brand-platinum/5">
-              {skill}
-            </span>
-          ))}
         </div>
       </div>
     </div>
@@ -249,8 +266,8 @@ const App: React.FC = () => {
             <p className="text-brand-platinum/50 text-sm mb-8 leading-relaxed flex-1">{drill.description}</p>
             {drill.id === 'swarm-1' && (
               <div className="mb-6 flex gap-1">
-                <span className="text-[9px] font-bold text-brand-green bg-brand-green/10 px-2 py-1 rounded border border-brand-green/20">MULTIMODAL</span>
-                <span className="text-[9px] font-bold text-brand-platinum/40 bg-white/5 px-2 py-1 rounded border border-white/5 uppercase">High Velocity</span>
+                <span className="text-[9px] font-bold text-brand-green bg-brand-green/10 px-2 py-1 rounded border border-brand-green/20">SWARM WALKTHROUGH</span>
+                <span className="text-[9px] font-bold text-brand-platinum/40 bg-white/5 px-2 py-1 rounded border border-white/5 uppercase">Evolution Aware</span>
               </div>
             )}
             <button 
@@ -261,6 +278,69 @@ const App: React.FC = () => {
             </button>
           </div>
         ))}
+      </div>
+    </div>
+  );
+
+  const renderEvolution = () => (
+    <div className="max-w-6xl mx-auto py-12 animate-in fade-in duration-700">
+      <div className="text-center mb-16">
+        <h1 className="text-5xl font-black mb-4 tracking-tighter text-brand-platinum uppercase">The Agentic <span className="text-brand-green">Evolution</span></h1>
+        <p className="text-brand-platinum/60 text-lg">Understand the shift before you orchestrate.</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+        <div className="space-y-6">
+          <div className="glass p-8 rounded-[32px] border-brand-platinum/5 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-platinum/5 rounded-bl-full -mr-10 -mt-10"></div>
+            <h2 className="text-2xl font-bold mb-6 text-brand-platinum/40 flex items-center gap-3">
+              <span className="w-8 h-8 rounded-full border border-brand-platinum/20 flex items-center justify-center text-xs">01</span>
+              Traditional Development
+            </h2>
+            <div className="space-y-4">
+               {EVOLUTION_DATA.map((item, i) => (
+                 <div key={i} className="flex flex-col gap-1 border-b border-brand-platinum/5 pb-3">
+                    <span className="text-[10px] font-bold text-brand-platinum/20 uppercase tracking-widest">{item.aspect}</span>
+                    <span className="text-sm text-brand-platinum/60">{item.before}</span>
+                 </div>
+               ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="glass p-8 rounded-[32px] border-brand-green/20 relative overflow-hidden group bg-brand-green/[0.02] ring-1 ring-brand-green/10">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-green/5 rounded-bl-full -mr-10 -mt-10"></div>
+            <h2 className="text-2xl font-bold mb-6 text-brand-green flex items-center gap-3">
+              <span className="w-8 h-8 rounded-full border border-brand-green/40 flex items-center justify-center text-xs">02</span>
+              Agentic Orchestration
+            </h2>
+            <div className="space-y-4">
+               {EVOLUTION_DATA.map((item, i) => (
+                 <div key={i} className="flex flex-col gap-1 border-b border-brand-green/10 pb-3">
+                    <span className="text-[10px] font-bold text-brand-green/40 uppercase tracking-widest">{item.aspect}</span>
+                    <span className="text-sm text-brand-platinum">{item.after}</span>
+                 </div>
+               ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center glass p-10 rounded-[40px] border-brand-platinum/10">
+        <div>
+          <h3 className="text-3xl font-black text-brand-platinum uppercase tracking-tighter mb-4">Ready to command the fleet?</h3>
+          <p className="text-brand-platinum/60 leading-relaxed mb-8">
+            You are no longer the one typing every line. You are the commander. You manage 10-15 parallel sessions. You resolve contradictions. You merge breakthroughs.
+          </p>
+          <button 
+            onClick={() => { setView(AppView.TRAINER); setIsDrillRunning(true); }}
+            className="bg-brand-green hover:brightness-110 px-10 py-5 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-2xl shadow-brand-green/20 transition-all hover:scale-105"
+          >
+            Enter Command Center
+          </button>
+        </div>
+        <Visualizer taskCount={8} />
       </div>
     </div>
   );
@@ -377,6 +457,7 @@ const App: React.FC = () => {
       case AppView.HUB: return renderHub();
       case AppView.LANDING: return renderDrillSelector();
       case AppView.TRAINER: return renderTrainer();
+      case AppView.EVOLUTION: return renderEvolution();
       default: return renderHub();
     }
   };
