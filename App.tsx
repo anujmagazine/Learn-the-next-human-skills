@@ -188,6 +188,7 @@ const App: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+        {/* Parallelism - Active */}
         <div 
           onClick={() => setView(AppView.LANDING)}
           className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
@@ -209,6 +210,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
+        {/* Verification Fatigue - Coming Soon */}
         <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
           <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
             <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
@@ -229,6 +231,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
+        {/* Interview AI Models - Coming Soon */}
         <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
           <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
             <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M11.5 3C7.36 3 4 6.36 4 10.5S7.36 18 11.5 18c1.71 0 3.29-.58 4.55-1.56l4.74 4.74 1.41-1.41-4.74-4.74c.98-1.26 1.56-2.84 1.56-4.55C19 6.36 15.64 3 11.5 3zm0 2C14.54 5 17 7.46 17 10.5S14.54 16 11.5 16 6 13.54 6 10.5 8.46 5 11.5 5z"/></svg>
@@ -240,6 +243,27 @@ const App: React.FC = () => {
             <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Interview AI Models</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               Learn the art of "Agent Onboarding." Protocols to stress-test and validate an AI's logic and personality before delegating tasks.
+            </p>
+          </div>
+          <div className="relative z-10 mt-auto">
+            <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
+              Coming Soon
+            </div>
+          </div>
+        </div>
+
+        {/* Resist Intellectual Laziness - Coming Soon */}
+        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
+          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
+            <svg className="w-24 h-24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          </div>
+          <div className="relative z-10 flex-1">
+            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
+              <span className="text-3xl">🛡️</span>
+            </div>
+            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Resist Intellectual Laziness</h2>
+            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+              Use AI without switching off your own thinking. Build habits that keep your reasoning, judgment, and creativity sharp.
             </p>
           </div>
           <div className="relative z-10 mt-auto">
@@ -309,6 +333,16 @@ const App: React.FC = () => {
 
   const renderEvolution = () => (
     <div className="max-w-6xl mx-auto py-12 animate-in fade-in duration-700">
+      <div className="flex items-center gap-4 mb-8">
+        <button 
+          onClick={() => setView(AppView.LANDING)} 
+          className="text-brand-platinum/50 hover:text-brand-green transition-colors flex items-center gap-2 font-bold uppercase text-xs tracking-widest"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+          Back to Missions
+        </button>
+      </div>
+
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-brand-platinum uppercase">
           The Evolution of <span className="gradient-text">Engineering</span>
