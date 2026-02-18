@@ -28,20 +28,19 @@ const DRILLS: DrillScenario[] = [
   }
 ];
 
-// Realistic hours for standard software tasks (Traditional Sequential Approach)
 const SIM_TASKS = [
-  { id: 1, name: 'User Authentication', duration: 24 }, // 3 days
-  { id: 2, name: 'Database Schema', duration: 12 },    // 1.5 days
-  { id: 3, name: 'API Endpoints', duration: 32 },      // 4 days
-  { id: 4, name: 'Frontend UI', duration: 40 },        // 5 days
-  { id: 5, name: 'Payment Integration', duration: 20 }, // 2.5 days
-  { id: 6, name: 'Email Service', duration: 8 },       // 1 day
-  { id: 7, name: 'Analytics Dashboard', duration: 28 }, // 3.5 days
-  { id: 8, name: 'Testing Suite', duration: 24 },      // 3 days
-  { id: 9, name: 'Documentation', duration: 8 },       // 1 day
-  { id: 10, name: 'Deployment Pipeline', duration: 12 },// 1.5 days
-  { id: 11, name: 'Error Handling', duration: 16 },    // 2 days
-  { id: 12, name: 'Performance Optimization', duration: 24 }, // 3 days
+  { id: 1, name: 'User Authentication', duration: 24 },
+  { id: 2, name: 'Database Schema', duration: 12 },
+  { id: 3, name: 'API Endpoints', duration: 32 },
+  { id: 4, name: 'Frontend UI', duration: 40 },
+  { id: 5, name: 'Payment Integration', duration: 20 },
+  { id: 6, name: 'Email Service', duration: 8 },
+  { id: 7, name: 'Analytics Dashboard', duration: 28 },
+  { id: 8, name: 'Testing Suite', duration: 24 },
+  { id: 9, name: 'Documentation', duration: 8 },
+  { id: 10, name: 'Deployment Pipeline', duration: 12 },
+  { id: 11, name: 'Error Handling', duration: 16 },
+  { id: 12, name: 'Performance Optimization', duration: 24 },
 ];
 
 const App: React.FC = () => {
@@ -53,12 +52,18 @@ const App: React.FC = () => {
   const [stats, setStats] = useState({ switches: 0, interventions: 0 });
   const logContainerRef = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Simulation States
-  const [simMode, setSimMode] = useState<'traditional' | 'modern'>('traditional');
+  // Unified Simulation States
   const [simActive, setSimActive] = useState(false);
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const [taskProgress, setTaskProgress] = useState<number[]>(new Array(SIM_TASKS.length).fill(0));
-  const [completedTaskIds, setCompletedTaskIds] = useState<Set<number>>(new Set());
+  
+  // Traditional states
+  const [elapsedTrad, setElapsedTrad] = useState(0);
+  const [progressTrad, setProgressTrad] = useState<number[]>(new Array(SIM_TASKS.length).fill(0));
+  const [completedTrad, setCompletedTrad] = useState<Set<number>>(new Set());
+
+  // Modern states
+  const [elapsedModern, setElapsedModern] = useState(0);
+  const [progressModern, setProgressModern] = useState<number[]>(new Array(SIM_TASKS.length).fill(0));
+  const [completedModern, setCompletedModern] = useState<Set<number>>(new Set());
 
   const startDrill = (drill: DrillScenario) => {
     const initialAgents: AgentStream[] = drill.agents.map((role, i) => ({
@@ -74,7 +79,7 @@ const App: React.FC = () => {
     
     if (drill.id === 'swarm-1') {
       setView(AppView.EVOLUTION);
-      resetSimulation('traditional');
+      resetSimulations();
     } else {
       setView(AppView.TRAINER);
       setIsDrillRunning(true);
@@ -82,81 +87,83 @@ const App: React.FC = () => {
     setStats({ switches: 0, interventions: 0 });
   };
 
-  const resetSimulation = (mode: 'traditional' | 'modern') => {
-    setSimMode(mode);
+  const resetSimulations = () => {
     setSimActive(false);
-    setElapsedTime(0);
-    setTaskProgress(new Array(SIM_TASKS.length).fill(0));
-    setCompletedTaskIds(new Set());
+    setElapsedTrad(0);
+    setProgressTrad(new Array(SIM_TASKS.length).fill(0));
+    setCompletedTrad(new Set());
+    setElapsedModern(0);
+    setProgressModern(new Array(SIM_TASKS.length).fill(0));
+    setCompletedModern(new Set());
   };
 
   useEffect(() => {
-    agents.forEach(agent => {
-      const container = logContainerRef.current[agent.id];
-      if (container) {
-        container.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  }, [agents]);
-
-  // Simulation speed controller
-  // In Traditional, we want it to feel slow but not take literal days. 1s sim = 8h work.
-  // In Modern, 1s sim = 1h work (since everything happens at once).
-  useEffect(() => {
     if (!simActive || view !== AppView.EVOLUTION) return;
     
-    const tickRate = 100; // 10 ticks per simulation second
     const interval = setInterval(() => {
-      setTaskProgress(prevProgress => {
-        const newProgress = [...prevProgress];
-        
-        if (simMode === 'traditional') {
-          // Sequential: Only work on the first incomplete task
-          const nextTaskIndex = SIM_TASKS.findIndex((_, idx) => !completedTaskIds.has(SIM_TASKS[idx].id));
-          if (nextTaskIndex !== -1) {
-            const task = SIM_TASKS[nextTaskIndex];
-            // Speed factor: Complete 2h of work every tick (20h per second)
-            const workPerTick = 2.0; 
-            newProgress[nextTaskIndex] += (workPerTick / task.duration) * 100;
-            
-            // Increment elapsed time based on work done
-            setElapsedTime(prev => parseFloat((prev + workPerTick).toFixed(1)));
-
-            if (newProgress[nextTaskIndex] >= 100) {
-              newProgress[nextTaskIndex] = 100;
-              setCompletedTaskIds(prev => new Set(prev).add(task.id));
+      // Tick Traditional (Sequential)
+      setCompletedTrad(prevCompleted => {
+        const nextTaskIndex = SIM_TASKS.findIndex(t => !prevCompleted.has(t.id));
+        if (nextTaskIndex !== -1) {
+          const task = SIM_TASKS[nextTaskIndex];
+          const workPerTick = 2.0; 
+          setElapsedTrad(prev => prev + workPerTick);
+          setProgressTrad(prev => {
+            const next = [...prev];
+            next[nextTaskIndex] += (workPerTick / task.duration) * 100;
+            if (next[nextTaskIndex] >= 100) {
+              next[nextTaskIndex] = 100;
+              return next;
             }
-          } else {
-            setSimActive(false);
-          }
-        } else {
-          // Parallel: All tasks progress simultaneously
-          let allDone = true;
-          // In modern, the constraint is human attention (coordination).
-          // We assume the work happens 20x faster in parallel.
-          const workPerTick = 0.4; 
+            return next;
+          });
           
+          if (progressTrad[nextTaskIndex] + (workPerTick / task.duration) * 100 >= 100) {
+            const newSet = new Set(prevCompleted);
+            newSet.add(task.id);
+            return newSet;
+          }
+        }
+        return prevCompleted;
+      });
+
+      // Tick Modern (Parallel)
+      setCompletedModern(prevCompleted => {
+        const workPerTick = 0.4;
+        setElapsedModern(prev => prev + workPerTick);
+        const newSet = new Set(prevCompleted);
+        let allDone = true;
+
+        setProgressModern(prev => {
+          const next = [...prev];
           SIM_TASKS.forEach((task, idx) => {
-            if (newProgress[idx] < 100) {
-              newProgress[idx] += (workPerTick / (task.duration / 20)) * 100;
+            if (next[idx] < 100) {
+              next[idx] += (workPerTick / (task.duration / 20)) * 100;
               allDone = false;
-              if (newProgress[idx] >= 100) {
-                newProgress[idx] = 100;
-                setCompletedTaskIds(prev => new Set(prev).add(task.id));
+              if (next[idx] >= 100) {
+                next[idx] = 100;
+                newSet.add(task.id);
               }
             }
           });
-          
-          // Elapsed time in modern represents wall-clock time passed
-          setElapsedTime(prev => parseFloat((prev + workPerTick).toFixed(1)));
-          
-          if (allDone) setSimActive(false);
+          return next;
+        });
+
+        if (allDone) {
+          // If everything finished, don't necessarily stop simulation until both are done
+          // But effectively ticks will do nothing for this branch
         }
-        return newProgress;
+        return newSet;
       });
-    }, tickRate);
+
+      // Stop if both done
+      if (completedTrad.size === SIM_TASKS.length && completedModern.size === SIM_TASKS.length) {
+        setSimActive(false);
+      }
+    }, 100);
+
     return () => clearInterval(interval);
-  }, [simActive, simMode, completedTaskIds, view]);
+  }, [simActive, view, progressTrad, progressModern, completedTrad.size, completedModern.size]);
 
   useEffect(() => {
     if (!isDrillRunning || !activeDrill || intervention) return;
@@ -210,7 +217,6 @@ const App: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
-        {/* Parallelism - Active */}
         <div 
           onClick={() => setView(AppView.LANDING)}
           className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
@@ -232,7 +238,6 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Verification Fatigue - Coming Soon */}
         <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
           <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
             <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
@@ -253,7 +258,6 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Interview AI Models - Coming Soon */}
         <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
           <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
             <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M11.5 3C7.36 3 4 6.36 4 10.5S7.36 18 11.5 18c1.71 0 3.29-.58 4.55-1.56l4.74 4.74 1.41-1.41-4.74-4.74c.98-1.26 1.56-2.84 1.56-4.55C19 6.36 15.64 3 11.5 3zm0 2C14.54 5 17 7.46 17 10.5S14.54 16 11.5 16 6 13.54 6 10.5 8.46 5 11.5 5z"/></svg>
@@ -274,7 +278,6 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Resist Intellectual Laziness - Coming Soon */}
         <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
           <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
             <svg className="w-24 h-24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
@@ -293,17 +296,6 @@ const App: React.FC = () => {
               Coming Soon
             </div>
           </div>
-        </div>
-      </div>
-      
-      <div className="mt-20 glass p-10 rounded-[40px] border-brand-platinum/5 text-center">
-        <h3 className="text-sm font-bold text-brand-platinum/30 uppercase tracking-widest mb-6">The Future Skill Matrix</h3>
-        <div className="flex flex-wrap justify-center gap-4">
-          {['Context Switching', 'Hallucination Spotting', 'System Prompting', 'Agent Synthesis', 'Strategic De-coupling', 'Agent Vetting', 'Multi-instance Swarming'].map(skill => (
-            <span key={skill} className="px-4 py-2 bg-brand-platinum/5 rounded-full text-xs font-medium text-brand-platinum/40 border border-brand-platinum/5">
-              {skill}
-            </span>
-          ))}
         </div>
       </div>
     </div>
@@ -384,8 +376,10 @@ GOAL: High-fidelity system delivery with parallel execution.`;
       return `${days} Work Days`;
     };
 
+    const isDone = completedTrad.size === SIM_TASKS.length && completedModern.size === SIM_TASKS.length;
+
     return (
-      <div className="max-w-6xl mx-auto py-12 animate-in fade-in duration-700">
+      <div className="max-w-7xl mx-auto py-12 animate-in fade-in duration-700">
         <div className="flex items-center gap-4 mb-8">
           <button 
             onClick={() => setView(AppView.LANDING)} 
@@ -396,189 +390,162 @@ GOAL: High-fidelity system delivery with parallel execution.`;
           </button>
         </div>
 
-        <div className="text-center mb-12">
+        <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-brand-platinum uppercase">
             The Evolution of <span className="gradient-text">Engineering</span>
           </h1>
           <p className="text-brand-platinum/60 text-lg max-w-2xl mx-auto">
-            From sequential coding to parallel AI orchestration—see how engineering transformed from writing every line to conducting an orchestra.
+            Witness the paradigm shift from manual sequential production to automated agentic parallelism.
           </p>
         </div>
 
-        <div className="flex justify-center mb-12">
-          <div className="glass p-1 rounded-2xl flex border border-brand-platinum/10">
-            <button onClick={() => resetSimulation('traditional')} className={`px-6 py-3 rounded-xl text-sm font-bold transition-all uppercase tracking-widest ${simMode === 'traditional' ? 'bg-brand-platinum/20 text-brand-platinum' : 'text-brand-platinum/40 hover:text-brand-platinum'}`}>Traditional (Before)</button>
-            <button onClick={() => resetSimulation('modern')} className={`px-6 py-3 rounded-xl text-sm font-bold transition-all uppercase tracking-widest ${simMode === 'modern' ? 'bg-brand-green/20 text-brand-green' : 'text-brand-platinum/40 hover:text-brand-green'}`}>Modern (After)</button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="glass p-6 rounded-3xl border-brand-platinum/5">
-            <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Total Effort Elapsed</div>
-            <div className="text-3xl font-mono text-brand-platinum">{formatTime(elapsedTime)}</div>
-          </div>
-          <div className="glass p-6 rounded-3xl border-brand-platinum/5">
-            <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Tasks Completed</div>
-            <div className="text-3xl font-mono text-brand-platinum">{completedTaskIds.size} / {SIM_TASKS.length}</div>
-          </div>
-          <div className="glass p-6 rounded-3xl border-brand-platinum/5">
-            <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest mb-1">Project Velocity</div>
-            <div className={`text-3xl font-mono ${simMode === 'modern' ? 'text-brand-green' : 'text-brand-platinum'}`}>{simMode === 'modern' ? '20.6x' : '1.0x'}</div>
-          </div>
-        </div>
-
-        <div className="glass rounded-[40px] border-brand-platinum/10 p-10 mb-12 relative overflow-hidden">
-          <div className="flex flex-col items-center mb-10">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 relative">
-               {simMode === 'traditional' ? <div className="w-full h-full bg-orange-500/20 rounded-full flex items-center justify-center text-3xl border-2 border-orange-500/40">🧑‍💻</div> : <div className="w-full h-full bg-brand-green/20 rounded-full flex items-center justify-center text-3xl border-2 border-brand-green/40 shadow-glow">⚡</div>}
-            </div>
-            <h2 className="text-2xl font-bold text-brand-platinum uppercase">{simMode === 'traditional' ? 'Sequential Manual Production' : 'Parallel Agentic Orchestration'}</h2>
-            <p className="text-brand-platinum/40 text-sm mt-2 text-center max-w-2xl">{simMode === 'traditional' ? 'One engineer writing logic, debugging, and deploying linearly. High individual effort, low organizational speed.' : 'One commander managing 12 specialized agents. Bottleneck shifted from coding speed to human coordination bandwidth.'}</p>
-          </div>
-
-          {/* Traditional Start State: IDE Block */}
-          {simMode === 'traditional' && !simActive && completedTaskIds.size === 0 && (
-            <div className="max-w-3xl mx-auto mb-10 animate-in fade-in slide-in-from-top-4 duration-1000">
-               <div className="glass rounded-xl overflow-hidden border border-brand-platinum/10 shadow-2xl">
-                 <div className="bg-brand-navy/60 px-4 py-2 flex items-center justify-between border-b border-brand-platinum/5">
-                    <div className="flex gap-1.5">
-                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
-                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
-                      <div className="w-2.5 h-2.5 rounded-full bg-brand-green/50"></div>
-                    </div>
-                    <div className="text-[10px] font-mono text-brand-platinum/40 uppercase tracking-widest">manual_implementation.ts</div>
-                 </div>
-                 <div className="p-6 font-mono text-sm leading-relaxed overflow-hidden">
-                    <pre className="text-brand-platinum/80 whitespace-pre-wrap">
-                      {codeSnippet.split('\n').map((line, i) => {
-                        const highlighted = line
-                          .replace(/(function|async|await|return|throw|new|const)/g, '<span class="text-purple-400">$1</span>')
-                          .replace(/(Error|db|credentials|user)/g, '<span class="text-blue-400">$1</span>')
-                          .replace(/(\".*?\")/g, '<span class="text-brand-green">$1</span>');
-                        return (
-                          <div key={i} className="flex gap-4">
-                            <span className="text-brand-platinum/20 w-4 text-right select-none">{i + 1}</span>
-                            <span dangerouslySetInnerHTML={{ __html: highlighted }} />
-                          </div>
-                        );
-                      })}
-                    </pre>
-                 </div>
-               </div>
-               
-               <div className="mt-12 flex justify-center">
-                  <button 
-                    onClick={() => setSimActive(true)} 
-                    className="bg-brand-green hover:brightness-110 px-12 py-5 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-2xl shadow-brand-green/20 transition-all hover:scale-105"
-                  >
-                    Start Production Simulation
-                  </button>
-               </div>
-            </div>
-          )}
-
-          {/* Modern Start State: Prompt Box */}
-          {simMode === 'modern' && !simActive && completedTaskIds.size === 0 && (
-            <div className="max-w-3xl mx-auto mb-10 animate-in fade-in slide-in-from-top-4 duration-1000">
-              <div className="glass rounded-3xl overflow-hidden border border-brand-green/30 shadow-2xl bg-brand-green/[0.02]">
-                <div className="bg-brand-green/10 px-6 py-4 flex items-center justify-between border-b border-brand-green/20">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-brand-green shadow-glow"></div>
-                    <span className="text-xs font-black text-brand-green uppercase tracking-[0.2em]">Deployment Directive</span>
-                  </div>
-                  <div className="text-[10px] font-mono text-brand-platinum/40 uppercase tracking-widest">AI-ORCHESTRATOR-v1.0</div>
+        {/* Comparison Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          
+          {/* TRADITIONAL SIDE */}
+          <div className="glass rounded-[40px] border-brand-platinum/10 p-8 flex flex-col relative overflow-hidden">
+             <div className="flex flex-col items-center mb-8">
+                <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center text-2xl border-2 border-orange-500/40 mb-4">🧑‍💻</div>
+                <h2 className="text-xl font-black text-brand-platinum uppercase text-center tracking-tighter">Sequential Manual Production</h2>
+                <div className="mt-2 flex items-center gap-4">
+                   <div className="text-center px-4 border-r border-brand-platinum/10">
+                      <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Effort</div>
+                      <div className="text-lg font-mono text-brand-platinum">{formatTime(elapsedTrad)}</div>
+                   </div>
+                   <div className="text-center px-4">
+                      <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Tasks</div>
+                      <div className="text-lg font-mono text-brand-platinum">{completedTrad.size}/12</div>
+                   </div>
                 </div>
-                <div className="p-10 font-mono text-lg leading-relaxed text-brand-platinum relative">
-                  <div className="absolute top-4 right-6 text-4xl opacity-10">🪄</div>
-                  <p className="whitespace-pre-wrap italic">
-                    {modernPrompt.split('\n').map((line, i) => (
-                      <span key={i} className="block mb-2">
-                        <span className="text-brand-green mr-4 select-none">›</span>
-                        {line}
-                      </span>
-                    ))}
-                  </p>
-                  <div className="mt-8 pt-8 border-t border-brand-platinum/5 flex items-center gap-4">
-                     <div className="w-12 h-1 bg-brand-green/30 rounded-full overflow-hidden">
-                        <div className="w-full h-full bg-brand-green animate-pulse"></div>
+             </div>
+
+             <div className="flex-1">
+               {(!simActive && completedTrad.size === 0) ? (
+                 <div className="glass rounded-xl overflow-hidden border border-brand-platinum/10 shadow-2xl h-full flex flex-col">
+                    <div className="bg-brand-navy/60 px-4 py-2 flex items-center justify-between border-b border-brand-platinum/5">
+                      <div className="flex gap-1.5"><div className="w-2 h-2 rounded-full bg-red-500/50"></div><div className="w-2 h-2 rounded-full bg-yellow-500/50"></div><div className="w-2 h-2 rounded-full bg-brand-green/50"></div></div>
+                      <div className="text-[8px] font-mono text-brand-platinum/40 uppercase tracking-widest">auth-engine.ts</div>
+                    </div>
+                    <div className="p-4 font-mono text-[11px] leading-relaxed overflow-hidden flex-1 opacity-50">
+                       <pre className="text-brand-platinum/80 whitespace-pre-wrap">
+                        {codeSnippet.split('\n').map((line, i) => (
+                           <div key={i} className="flex gap-3"><span className="text-brand-platinum/20 w-3 text-right">{i+1}</span><span>{line}</span></div>
+                        ))}
+                       </pre>
+                    </div>
+                 </div>
+               ) : (
+                 <div className="grid grid-cols-2 gap-3">
+                   {SIM_TASKS.map((task, idx) => (
+                     <div key={task.id} className={`p-3 rounded-xl border transition-all duration-500 ${completedTrad.has(task.id) ? 'bg-orange-500/10 border-orange-500/30' : progressTrad[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
+                       <div className="flex justify-between items-center mb-1">
+                         <span className={`text-[8px] font-bold uppercase tracking-widest ${completedTrad.has(task.id) ? 'text-orange-400' : 'text-brand-platinum/40'}`}>Phase {idx + 1}</span>
+                         <span className="text-[8px] font-mono text-brand-platinum/30">{task.duration}h</span>
+                       </div>
+                       <div className="text-[10px] font-bold text-brand-platinum mb-2 truncate">{task.name}</div>
+                       <div className="w-full h-1 bg-brand-platinum/5 rounded-full overflow-hidden">
+                         <div className="h-full bg-orange-500 transition-all duration-100" style={{ width: `${progressTrad[idx]}%` }}></div>
+                       </div>
                      </div>
-                     <span className="text-[10px] font-bold text-brand-green/40 uppercase tracking-widest animate-pulse">Initializing Agent Swarm...</span>
-                  </div>
+                   ))}
+                 </div>
+               )}
+             </div>
+          </div>
+
+          {/* MODERN SIDE */}
+          <div className="glass rounded-[40px] border-brand-green/20 p-8 flex flex-col relative overflow-hidden bg-brand-green/[0.01]">
+             <div className="flex flex-col items-center mb-8">
+                <div className="w-16 h-16 bg-brand-green/20 rounded-full flex items-center justify-center text-2xl border-2 border-brand-green/40 shadow-glow mb-4">⚡</div>
+                <h2 className="text-xl font-black text-brand-platinum uppercase text-center tracking-tighter">Parallel Agentic Orchestration</h2>
+                <div className="mt-2 flex items-center gap-4">
+                   <div className="text-center px-4 border-r border-brand-platinum/10">
+                      <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Time passed</div>
+                      <div className="text-lg font-mono text-brand-green">{formatTime(elapsedModern)}</div>
+                   </div>
+                   <div className="text-center px-4">
+                      <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Integration</div>
+                      <div className="text-lg font-mono text-brand-green">{completedModern.size}/12</div>
+                   </div>
                 </div>
-              </div>
+             </div>
 
-              <div className="mt-12 flex justify-center">
-                <button 
-                  onClick={() => setSimActive(true)} 
-                  className="bg-brand-green hover:brightness-110 px-16 py-6 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-glow transition-all hover:scale-105 text-lg"
-                >
-                  Start Fleet Execution
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Regular Controls & Grid (Shown during simulation or after completion) */}
-          {(simActive || completedTaskIds.size > 0) && (
-            <>
-              <div className={`grid gap-4 ${simMode === 'modern' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-4' : 'grid-cols-1'}`}>
-                {SIM_TASKS.map((task, idx) => (
-                  <div key={task.id} className={`p-4 rounded-2xl border transition-all duration-500 ${completedTaskIds.has(task.id) ? 'bg-brand-green/10 border-brand-green/30' : taskProgress[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className={`text-[10px] font-bold uppercase tracking-widest ${completedTaskIds.has(task.id) ? 'text-brand-green' : 'text-brand-platinum/40'}`}>{simMode === 'modern' ? `Agent ${idx + 1}` : `Phase ${idx + 1}`}</span>
-                      <span className="text-[10px] font-mono text-brand-platinum/30">{task.duration}h Effort</span>
+             <div className="flex-1">
+               {(!simActive && completedModern.size === 0) ? (
+                 <div className="glass rounded-xl overflow-hidden border border-brand-green/30 shadow-2xl h-full flex flex-col">
+                    <div className="bg-brand-green/10 px-4 py-2 flex items-center justify-between border-b border-brand-green/20">
+                      <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-green shadow-glow"></div><span className="text-[9px] font-black text-brand-green uppercase tracking-widest">Fleet Orchestrator</span></div>
                     </div>
-                    <div className="text-xs font-bold text-brand-platinum mb-3 truncate">{task.name}</div>
-                    <div className="w-full h-1.5 bg-brand-platinum/5 rounded-full overflow-hidden">
-                      <div className={`h-full transition-all duration-100 ${simMode === 'modern' ? 'bg-brand-green shadow-glow' : 'bg-orange-500'}`} style={{ width: `${taskProgress[idx]}%` }}></div>
+                    <div className="p-6 font-mono text-[13px] leading-relaxed italic text-brand-platinum/60 overflow-hidden flex-1">
+                       {modernPrompt.split('\n').map((line, i) => (
+                         <div key={i} className="mb-1"><span className="text-brand-green mr-2">›</span>{line}</div>
+                       ))}
+                       <div className="mt-4 animate-pulse text-[10px] text-brand-green/40 uppercase tracking-widest">Awaiting Command...</div>
                     </div>
-                    <div className="mt-2 text-[8px] font-mono text-brand-platinum/20 uppercase">
-                      {completedTaskIds.has(task.id) ? 'Status: Integrated' : taskProgress[idx] > 0 ? 'Status: Processing' : 'Status: Queued'}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-12 flex justify-center gap-4">
-                {simActive && <button onClick={() => setSimActive(false)} className="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Pause Sim</button>}
-                {!simActive && completedTaskIds.size > 0 && <button onClick={() => resetSimulation(simMode)} className="bg-white/10 hover:bg-white/20 px-10 py-4 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Restart</button>}
-              </div>
-            </>
-          )}
+                 </div>
+               ) : (
+                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                   {SIM_TASKS.map((task, idx) => (
+                     <div key={task.id} className={`p-3 rounded-xl border transition-all duration-500 ${completedModern.has(task.id) ? 'bg-brand-green/10 border-brand-green/30' : progressModern[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
+                       <div className="flex justify-between items-center mb-1">
+                         <span className={`text-[8px] font-bold uppercase tracking-widest ${completedModern.has(task.id) ? 'text-brand-green' : 'text-brand-platinum/40'}`}>Agent {idx + 1}</span>
+                         <span className="text-[8px] font-mono text-brand-platinum/30">{task.duration}h</span>
+                       </div>
+                       <div className="text-[10px] font-bold text-brand-platinum mb-2 truncate">{task.name}</div>
+                       <div className="w-full h-1 bg-brand-platinum/5 rounded-full overflow-hidden">
+                         <div className="h-full bg-brand-green shadow-glow transition-all duration-100" style={{ width: `${progressModern[idx]}%` }}></div>
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+               )}
+             </div>
+          </div>
         </div>
 
-        {completedTaskIds.size === SIM_TASKS.length && !simActive && (
-          <div className="animate-in slide-in-from-bottom-10 duration-1000 mb-12">
-            <div className="glass p-12 rounded-[40px] border-brand-green/30 text-center relative">
-               <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-brand-green rounded-full flex items-center justify-center text-3xl shadow-glow">🎉</div>
-               <h3 className="text-4xl font-black text-brand-platinum uppercase tracking-tighter mb-4">Development Cycle Complete!</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left mt-10">
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-bold text-brand-platinum/40 uppercase tracking-widest border-b border-brand-platinum/5 pb-2">Sequential Manual Logic</h4>
-                    <ul className="space-y-2 text-brand-platinum/60 text-sm">
-                      <li>✅ Total Effort: 248 Work Hours</li>
-                      <li>📅 Timeline: ~31 Standard Work Days</li>
-                      <li>👤 1 Developer, Linear Mindset</li>
-                      <li>🧱 High Context Switching Costs</li>
-                    </ul>
+        {/* Central Controls */}
+        <div className="flex flex-col items-center justify-center gap-6 mt-12 pb-24">
+           {!simActive && completedTrad.size === 0 && (
+              <button 
+                onClick={() => setSimActive(true)} 
+                className="bg-brand-green hover:brightness-110 px-24 py-8 rounded-[32px] font-black text-brand-black uppercase tracking-[0.2em] shadow-glow transition-all hover:scale-105 text-2xl group"
+              >
+                Start Simulation
+                <span className="block text-[10px] opacity-40 group-hover:opacity-100 transition-opacity mt-1">Initialize Production Comparison</span>
+              </button>
+           )}
+           
+           {simActive && (
+             <button onClick={() => setSimActive(false)} className="bg-white/10 hover:bg-white/20 px-12 py-5 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Pause Cycle</button>
+           )}
+           
+           {!simActive && completedTrad.size > 0 && (
+             <button onClick={resetSimulations} className="bg-white/10 hover:bg-white/20 px-12 py-5 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Reset Comparison</button>
+           )}
+
+           {isDone && !simActive && (
+              <div className="mt-16 animate-in slide-in-from-bottom-12 duration-1000 w-full">
+                <div className="glass p-16 rounded-[60px] border-brand-green/30 text-center relative max-w-4xl mx-auto shadow-2xl shadow-brand-green/10">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-brand-green rounded-full flex items-center justify-center text-4xl shadow-glow">🎉</div>
+                  <h3 className="text-5xl font-black text-brand-platinum uppercase tracking-tighter mb-8 leading-none">The Verdict: Parallel Wins</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left mb-12 border-b border-brand-platinum/10 pb-12">
+                     <div className="space-y-3">
+                        <div className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest">Legacy Sequential</div>
+                        <div className="text-4xl font-mono text-brand-platinum">{formatTime(elapsedTrad)}</div>
+                        <p className="text-xs text-brand-platinum/40">100% human labor-bound</p>
+                     </div>
+                     <div className="space-y-3">
+                        <div className="text-[10px] font-bold text-brand-green uppercase tracking-widest">Nexus Parallel</div>
+                        <div className="text-4xl font-mono text-brand-green">{formatTime(elapsedModern)}</div>
+                        <p className="text-xs text-brand-green/60">Powered by agentic fleet management</p>
+                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-bold text-brand-green uppercase tracking-widest border-b border-brand-green/20 pb-2">Agentic Parallelism</h4>
-                    <ul className="space-y-2 text-brand-platinum text-sm">
-                      <li>✅ Total Effort: 12 Work Hours (Coordination Only)</li>
-                      <li>🚀 Timeline: ~1.5 Standard Work Days</li>
-                      <li>🤖 12 Autonomous Agents + 1 Commander</li>
-                      <li>⚡ 20.6x Velocity Increase</li>
-                    </ul>
-                  </div>
-               </div>
-               <div className="mt-12 pt-12 border-t border-brand-platinum/5">
-                  <p className="text-brand-platinum/60 italic leading-relaxed max-w-2xl mx-auto text-sm mb-12">"The bottleneck in the modern age is no longer typing or syntax. It's the high-bandwidth coordination of intelligence. To 10x your output, you must stop being the worker and start being the conductor."<br /><span className="not-italic font-bold text-brand-green mt-2 block">— Next Human Principles</span></p>
-                  <button onClick={() => { setView(AppView.TRAINER); setIsDrillRunning(true); }} className="bg-brand-green hover:brightness-110 px-12 py-6 rounded-2xl font-black text-brand-black uppercase tracking-widest shadow-2xl shadow-brand-green/20 transition-all hover:scale-105 text-lg">Enter Command Center</button>
-               </div>
-            </div>
-          </div>
-        )}
+                  <p className="text-brand-platinum/60 italic leading-relaxed text-lg mb-12">"You aren't coding faster. You are thinking wider. The shift to parallelism is the most significant evolution in human productivity since the assembly line."</p>
+                  <button onClick={() => { setView(AppView.TRAINER); setIsDrillRunning(true); }} className="bg-brand-green hover:brightness-110 px-16 py-8 rounded-3xl font-black text-brand-black uppercase tracking-widest shadow-glow transition-all hover:scale-105 text-xl">Enter Command Center</button>
+                </div>
+              </div>
+           )}
+        </div>
       </div>
     );
   };
