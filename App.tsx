@@ -372,7 +372,7 @@ GOAL: High-fidelity system delivery with parallel execution.`;
     const isDone = completedTrad.size === SIM_TASKS.length && completedModern.size === SIM_TASKS.length;
 
     return (
-      <div className="max-w-7xl mx-auto py-12 animate-in fade-in duration-700 overflow-visible">
+      <div className="max-w-7xl mx-auto py-12 px-20 animate-in fade-in duration-700 overflow-visible">
         <div className="flex items-center gap-4 mb-8">
           <button 
             onClick={() => setView(AppView.LANDING)} 
@@ -393,15 +393,14 @@ GOAL: High-fidelity system delivery with parallel execution.`;
         </div>
 
         {/* Comparison Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-12 relative px-4 overflow-visible">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-12 relative overflow-visible">
           
           {/* TRADITIONAL SIDE */}
           <div className="glass rounded-[40px] border-brand-platinum/10 p-8 flex flex-col relative overflow-visible shadow-2xl">
-             {/* HANDWRITTEN ANNOTATION - LEFT SIDE (Manual code as an input) */}
-             <div className="absolute top-1/2 -left-8 -translate-x-full -translate-y-1/2 hidden lg:flex flex-col items-center pointer-events-none z-50">
-               <span className="font-handwritten text-brand-platinum/90 text-4xl mb-2 whitespace-nowrap rotate-[-5deg]">Manual code as an input</span>
-               <svg className="w-56 h-24 text-brand-platinum/50 overflow-visible" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 100 40">
-                  {/* Arrow pointing from the box towards the text on the left */}
+             {/* HANDWRITTEN ANNOTATION - LEFT SIDE */}
+             <div className="absolute top-1/2 left-0 -translate-x-[calc(100%+1rem)] -translate-y-1/2 hidden lg:flex flex-col items-center pointer-events-none z-50 min-w-[200px]">
+               <span className="font-handwritten text-brand-platinum/90 text-3xl mb-2 whitespace-nowrap rotate-[-5deg]">Manual code as an input</span>
+               <svg className="w-48 h-20 text-brand-platinum/50 overflow-visible" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 100 40">
                   <path d="M100 10 C 70 30, 40 30, 10 15" strokeLinecap="round" strokeDasharray="3,2" />
                   <path d="M10 15 L 28 8 M 10 15 L 22 30" strokeLinejoin="round" />
                </svg>
@@ -459,11 +458,10 @@ GOAL: High-fidelity system delivery with parallel execution.`;
 
           {/* MODERN SIDE */}
           <div className="glass rounded-[40px] border-brand-green/20 p-8 flex flex-col relative overflow-visible bg-brand-green/[0.01] shadow-2xl">
-             {/* HANDWRITTEN ANNOTATION - RIGHT SIDE (Prompt as an input) */}
-             <div className="absolute top-1/2 -right-8 translate-x-full -translate-y-1/2 hidden lg:flex flex-col items-center pointer-events-none z-50">
-               <span className="font-handwritten text-brand-green/90 text-4xl mb-2 whitespace-nowrap rotate-[5deg]">Prompt as an input</span>
-               <svg className="w-56 h-24 text-brand-green/50 overflow-visible" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 100 40">
-                  {/* Arrow pointing from the box towards the text on the right */}
+             {/* HANDWRITTEN ANNOTATION - RIGHT SIDE */}
+             <div className="absolute top-1/2 right-0 translate-x-[calc(100%+1rem)] -translate-y-1/2 hidden lg:flex flex-col items-center pointer-events-none z-50 min-w-[200px]">
+               <span className="font-handwritten text-brand-green/90 text-3xl mb-2 whitespace-nowrap rotate-[5deg]">Prompt as an input</span>
+               <svg className="w-48 h-20 text-brand-green/50 overflow-visible" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 100 40">
                   <path d="M0 10 C 30 30, 60 30, 90 15" strokeLinecap="round" strokeDasharray="3,2" />
                   <path d="M90 15 L 72 8 M 90 15 L 80 30" strokeLinejoin="round" />
                </svg>
