@@ -413,8 +413,9 @@ GOAL: High-fidelity system delivery with parallel execution.`;
           <div className="glass rounded-[40px] border-brand-platinum/10 p-8 flex flex-col relative overflow-hidden">
              <div className="flex flex-col items-center mb-8">
                 <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center text-2xl border-2 border-orange-500/40 mb-4">🧑‍💻</div>
-                <h2 className="text-xl font-black text-brand-platinum uppercase text-center tracking-tighter">Sequential Manual Production</h2>
-                <div className="mt-2 flex items-center gap-4">
+                <h2 className="text-xl font-black text-brand-platinum uppercase text-center tracking-tighter">Traditional Software Engineering</h2>
+                <p className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest mt-1">Mostly sequential, predominantly manual</p>
+                <div className="mt-4 flex items-center gap-4">
                    <div className="text-center px-4 border-r border-brand-platinum/10">
                       <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Effort</div>
                       <div className="text-lg font-mono text-brand-platinum">{formatTime(elapsedTrad)}</div>
@@ -464,8 +465,9 @@ GOAL: High-fidelity system delivery with parallel execution.`;
           <div className="glass rounded-[40px] border-brand-green/20 p-8 flex flex-col relative overflow-hidden bg-brand-green/[0.01]">
              <div className="flex flex-col items-center mb-8">
                 <div className="w-16 h-16 bg-brand-green/20 rounded-full flex items-center justify-center text-2xl border-2 border-brand-green/40 shadow-glow mb-4">⚡</div>
-                <h2 className="text-xl font-black text-brand-platinum uppercase text-center tracking-tighter">Parallel Agentic Orchestration</h2>
-                <div className="mt-2 flex items-center gap-4">
+                <h2 className="text-xl font-black text-brand-platinum uppercase text-center tracking-tighter">Agentic Software Engineering</h2>
+                <p className="text-[10px] font-bold text-brand-green/60 uppercase tracking-widest mt-1">Predominantly automated</p>
+                <div className="mt-4 flex items-center gap-4">
                    <div className="text-center px-4 border-r border-brand-platinum/10">
                       <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Time passed</div>
                       <div className="text-lg font-mono text-brand-green">{formatTime(elapsedModern)}</div>
