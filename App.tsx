@@ -342,7 +342,7 @@ const App: React.FC = () => {
               onClick={() => startDrill(drill)}
               className="w-full bg-brand-platinum/5 group-hover:bg-brand-green group-hover:text-brand-black transition-all py-4 rounded-xl font-bold uppercase tracking-widest text-[10px]"
             >
-              Initialize Fleet
+              Start Simulation
             </button>
           </div>
         ))}
@@ -480,7 +480,7 @@ GOAL: High-fidelity system delivery with parallel execution.`;
              </div>
 
              <div className="flex flex-col items-center mb-8">
-                <div className="w-16 h-16 bg-brand-green/20 rounded-full flex items-center justify-center text-2xl border-2 border-brand-green/40 shadow-glow mb-4">⚡</div>
+                <div className="w-16 h-16 bg-brand-green/20 rounded-full flex items-center justify-center text-2xl border-2 border-orange-500 shadow-glow mb-4 text-orange-500 font-bold">⚡</div>
                 <h2 className="text-xl font-black text-brand-platinum uppercase text-center tracking-tighter">Agentic Software Engineering</h2>
                 <p className="text-[10px] font-bold text-brand-green/60 uppercase tracking-widest mt-1">Predominantly automated</p>
                 <div className="mt-4 flex items-center gap-4">
