@@ -407,10 +407,20 @@ GOAL: High-fidelity system delivery with parallel execution.`;
         </div>
 
         {/* Comparison Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 relative">
           
           {/* TRADITIONAL SIDE */}
-          <div className="glass rounded-[40px] border-brand-platinum/10 p-8 flex flex-col relative overflow-hidden">
+          <div className="glass rounded-[40px] border-brand-platinum/10 p-8 flex flex-col relative overflow-visible">
+             {/* Handwritten Annotation - Left Pointing Arrow */}
+             <div className="absolute top-1/2 -left-4 -translate-x-full -translate-y-1/2 hidden 2xl:flex flex-col items-center pointer-events-none z-20">
+               <span className="font-handwritten text-brand-platinum/60 text-2xl mb-2 whitespace-nowrap">Manual code as an input</span>
+               <svg className="w-32 h-12 text-brand-platinum/30 overflow-visible" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 100 40">
+                  {/* Arrow pointing left */}
+                  <path d="M100 20 L 10 20" strokeLinecap="round" />
+                  <path d="M10 20 L 25 10 M 10 20 L 25 30" strokeLinejoin="round" />
+               </svg>
+             </div>
+
              <div className="flex flex-col items-center mb-8">
                 <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center text-2xl border-2 border-orange-500/40 mb-4">🧑‍💻</div>
                 <h2 className="text-xl font-black text-brand-platinum uppercase text-center tracking-tighter">Traditional Software Engineering</h2>
@@ -427,9 +437,9 @@ GOAL: High-fidelity system delivery with parallel execution.`;
                 </div>
              </div>
 
-             <div className="flex-1">
+             <div className="flex-1 relative">
                {(!simActive && completedTrad.size === 0) ? (
-                 <div className="glass rounded-xl overflow-hidden border border-brand-platinum/10 shadow-2xl h-full flex flex-col">
+                 <div className="glass rounded-xl overflow-hidden border border-brand-platinum/10 shadow-2xl h-full flex flex-col relative">
                     <div className="bg-brand-navy/60 px-4 py-2 flex items-center justify-between border-b border-brand-platinum/5">
                       <div className="flex gap-1.5"><div className="w-2 h-2 rounded-full bg-red-500/50"></div><div className="w-2 h-2 rounded-full bg-yellow-500/50"></div><div className="w-2 h-2 rounded-full bg-brand-green/50"></div></div>
                       <div className="text-[8px] font-mono text-brand-platinum/40 uppercase tracking-widest">auth-engine.ts</div>
@@ -462,7 +472,17 @@ GOAL: High-fidelity system delivery with parallel execution.`;
           </div>
 
           {/* MODERN SIDE */}
-          <div className="glass rounded-[40px] border-brand-green/20 p-8 flex flex-col relative overflow-hidden bg-brand-green/[0.01]">
+          <div className="glass rounded-[40px] border-brand-green/20 p-8 flex flex-col relative overflow-visible bg-brand-green/[0.01]">
+             {/* Handwritten Annotation - Right Pointing Arrow */}
+             <div className="absolute top-1/2 -right-4 translate-x-full -translate-y-1/2 hidden 2xl:flex flex-col items-center pointer-events-none z-20">
+               <span className="font-handwritten text-brand-green/60 text-2xl mb-2 whitespace-nowrap">Prompt as an input</span>
+               <svg className="w-32 h-12 text-brand-green/30 overflow-visible" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 100 40">
+                  {/* Arrow pointing right */}
+                  <path d="M0 20 L 90 20" strokeLinecap="round" />
+                  <path d="M90 20 L 75 10 M 90 20 L 75 30" strokeLinejoin="round" />
+               </svg>
+             </div>
+
              <div className="flex flex-col items-center mb-8">
                 <div className="w-16 h-16 bg-brand-green/20 rounded-full flex items-center justify-center text-2xl border-2 border-brand-green/40 shadow-glow mb-4">⚡</div>
                 <h2 className="text-xl font-black text-brand-platinum uppercase text-center tracking-tighter">Agentic Software Engineering</h2>
@@ -479,7 +499,7 @@ GOAL: High-fidelity system delivery with parallel execution.`;
                 </div>
              </div>
 
-             <div className="flex-1">
+             <div className="flex-1 relative">
                {(!simActive && completedModern.size === 0) ? (
                  <div className="glass rounded-xl overflow-hidden border border-brand-green/30 shadow-2xl h-full flex flex-col">
                     <div className="bg-brand-green/10 px-4 py-2 flex items-center justify-between border-b border-brand-green/20">
