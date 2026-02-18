@@ -101,15 +101,20 @@ const App: React.FC = () => {
     if (!simActive || view !== AppView.EVOLUTION) return;
     
     const interval = setInterval(() => {
-      const workPerTick = 0.2; 
-      const speedupFactor = 20.0;
+      // Significantly reduced work per tick to slow down simulation (from 0.04 to 0.01)
+      const workPerTick = 0.01; 
+      const speedupFactor = 10.0; // Agentic is 10x faster than 1 sequential human
 
+      // Tick Traditional (Sequential)
       setCompletedTrad(prevCompleted => {
         if (prevCompleted.size === SIM_TASKS.length) return prevCompleted;
+
         const nextTaskIndex = SIM_TASKS.findIndex(t => !prevCompleted.has(t.id));
         if (nextTaskIndex !== -1) {
           const task = SIM_TASKS[nextTaskIndex];
+          
           setElapsedTrad(prev => prev + workPerTick);
+          
           let isTaskJustFinished = false;
           setProgressTrad(prevProgress => {
             const next = [...prevProgress];
@@ -120,6 +125,7 @@ const App: React.FC = () => {
             }
             return next;
           });
+
           if (isTaskJustFinished) {
             const newSet = new Set(prevCompleted);
             newSet.add(task.id);
@@ -129,16 +135,20 @@ const App: React.FC = () => {
         return prevCompleted;
       });
 
+      // Tick Modern (Parallel + Agentic Speedup)
       setCompletedModern(prevCompleted => {
         if (prevCompleted.size === SIM_TASKS.length) return prevCompleted;
+
         setElapsedModern(prev => prev + workPerTick);
         const newSet = new Set(prevCompleted);
+        
         setProgressModern(prevProgress => {
           const next = [...prevProgress];
           SIM_TASKS.forEach((task, idx) => {
             if (next[idx] < 100) {
               const increment = (workPerTick / (task.duration / speedupFactor)) * 100;
               next[idx] += increment;
+              
               if (next[idx] >= 99.99) {
                 next[idx] = 100;
                 newSet.add(task.id);
@@ -147,9 +157,11 @@ const App: React.FC = () => {
           });
           return next;
         });
+
         return newSet;
       });
 
+      // Simulation stops if BOTH are completely finished
       if (completedTrad.size === SIM_TASKS.length && completedModern.size === SIM_TASKS.length) {
         setSimActive(false);
       }
