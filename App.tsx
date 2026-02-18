@@ -7,7 +7,7 @@ import Visualizer from './components/Visualizer';
 const DRILLS: DrillScenario[] = [
   {
     id: 'swarm-1',
-    title: 'The Agent Fleet Commander',
+    title: 'How Agentic Development Works',
     difficulty: 'Extreme',
     description: 'Stop being the coder and start being the Commander. Manage 8 concurrent AI agents simultaneously to refactor, test, and ship at 10x speed. Inspired by Boris Cherny’s multi-agent workflow.',
     agents: ['Terminal-1 (Auth)', 'Terminal-2 (Engine)', 'Terminal-3 (UI)', 'Terminal-4 (Testing)', 'Web-A (Research)', 'Web-B (Docs)', 'Web-C (Simplification)', 'Mobile-Review']
@@ -101,9 +101,9 @@ const App: React.FC = () => {
     if (!simActive || view !== AppView.EVOLUTION) return;
     
     const interval = setInterval(() => {
-      // Significantly reduced work per tick to slow down simulation (from 0.04 to 0.01)
+      // Reduced work per tick to slow down simulation so progress is observable
       const workPerTick = 0.01; 
-      const speedupFactor = 10.0; // Agentic is 10x faster than 1 sequential human
+      const speedupFactor = 10.0; // Agentic is significantly faster but visible
 
       // Tick Traditional (Sequential)
       setCompletedTrad(prevCompleted => {
@@ -342,7 +342,7 @@ const App: React.FC = () => {
               onClick={() => startDrill(drill)}
               className="w-full bg-brand-platinum/5 group-hover:bg-brand-green group-hover:text-brand-black transition-all py-4 rounded-xl font-bold uppercase tracking-widest text-[10px]"
             >
-              Initialize {drill.id === 'swarm-1' ? 'Fleet' : 'Drill'}
+              Initialize Fleet
             </button>
           </div>
         ))}
@@ -397,7 +397,7 @@ GOAL: High-fidelity system delivery with parallel execution.`;
 
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-brand-platinum uppercase">
-            The Evolution of <span className="gradient-text">Engineering</span>
+            How <span className="gradient-text">Agentic Development</span> Works
           </h1>
           <p className="text-brand-platinum/60 text-lg max-w-2xl mx-auto">
             Witness the paradigm shift from manual sequential production to automated agentic parallelism.
