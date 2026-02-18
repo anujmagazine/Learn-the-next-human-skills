@@ -17,14 +17,16 @@ const DRILLS: DrillScenario[] = [
     title: 'The Global Launch Pivot',
     difficulty: 'Hard',
     description: 'A major competitor just released a similar product 2 hours before your launch. Manage 4 agents to pivot the entire strategy in real-time.',
-    agents: ['Marketing Strategist', 'Technical Lead', 'Legal Counsel', 'PR Spokesperson']
+    agents: ['Marketing Strategist', 'Technical Lead', 'Legal Counsel', 'PR Spokesperson'],
+    disabled: true
   },
   {
     id: 'crisis-2',
     title: 'Cyber-Security Breach',
     difficulty: 'Extreme',
     description: 'Active data exfiltration in progress. Coordinate Defense, PR, Customer Support, and Forensic teams simultaneously.',
-    agents: ['Infra Security', 'PR Manager', 'Support Lead', 'Legal']
+    agents: ['Infra Security', 'PR Manager', 'Support Lead', 'Legal'],
+    disabled: true
   }
 ];
 
@@ -66,6 +68,7 @@ const App: React.FC = () => {
   const [completedModern, setCompletedModern] = useState<Set<number>>(new Set());
 
   const startDrill = (drill: DrillScenario) => {
+    if (drill.disabled) return;
     const initialAgents: AgentStream[] = drill.agents.map((role, i) => ({
       id: `agent-${i}`,
       role,
@@ -178,7 +181,13 @@ const App: React.FC = () => {
       const agent = agents[randomIndex];
       const otherContext = agents.filter(a => a.id !== agent.id).map(a => `${a.role}: ${a.logs[a.logs.length-1]}`).join(' | ');
       try {
-        const update = await orchestrationService.generateAgentUpdate(agent.role, activeDrill.description, agent.logs.slice(-3), otherContext);
+        const update = await orchestrationService.generateAgentUpdate(
+          agent.role, 
+          activeDrill.description, 
+          agent.logs.slice(-3), 
+          otherContext,
+          randomIndex // Pass the index so Gemini knows if it's a Heavy Lifter or Swarm
+        );
         setAgents(prev => prev.map(a => {
           if (a.id === agent.id) {
             const newLogs = [...a.logs, update.text];
@@ -325,25 +334,40 @@ const App: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {DRILLS.map(drill => (
-          <div key={drill.id} className="glass p-8 rounded-[32px] border-brand-platinum/5 flex flex-col group hover:border-brand-green/20 transition-all">
+          <div 
+            key={drill.id} 
+            className={`glass p-8 rounded-[32px] border-brand-platinum/5 flex flex-col group transition-all ${
+              drill.disabled ? 'opacity-60 grayscale cursor-not-allowed' : 'hover:border-brand-green/20'
+            }`}
+          >
             <div className="flex justify-between items-start mb-6">
               <div className={`px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border ${
                 drill.difficulty === 'Extreme' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-brand-green/10 text-brand-green border-brand-green/20'
               }`}>
                 {drill.difficulty}
               </div>
-              <div className="text-xs font-mono text-brand-platinum/20">{drill.agents.length} AGENTS</div>
+              {!drill.disabled && <div className="text-xs font-mono text-brand-platinum/20">{drill.agents.length} AGENTS</div>}
             </div>
-            <h3 className="text-xl font-bold text-brand-platinum mb-4 group-hover:text-brand-green transition-colors">{drill.title}</h3>
+            <h3 className={`text-xl font-bold text-brand-platinum mb-4 ${!drill.disabled && 'group-hover:text-brand-green'} transition-colors`}>
+              {drill.title}
+            </h3>
             <p className="text-xs text-brand-platinum/60 mb-8 leading-relaxed flex-1">
               {drill.description}
             </p>
-            <button 
-              onClick={() => startDrill(drill)}
-              className="w-full bg-brand-platinum/5 group-hover:bg-brand-green group-hover:text-brand-black transition-all py-4 rounded-xl font-bold uppercase tracking-widest text-[10px]"
-            >
-              Start Simulation
-            </button>
+            {drill.disabled ? (
+              <div className="w-full text-center">
+                <div className="inline-block px-4 py-2 rounded-full bg-brand-navy text-brand-platinum/40 text-[10px] font-bold uppercase tracking-widest border border-brand-platinum/5">
+                  Coming Soon
+                </div>
+              </div>
+            ) : (
+              <button 
+                onClick={() => startDrill(drill)}
+                className="w-full bg-brand-platinum/5 group-hover:bg-brand-green group-hover:text-brand-black transition-all py-4 rounded-xl font-bold uppercase tracking-widest text-[10px]"
+              >
+                Start Simulation
+              </button>
+            )}
           </div>
         ))}
       </div>

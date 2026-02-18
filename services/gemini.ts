@@ -1,11 +1,31 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
+
+const CHERNY_SWARM_PROMPT = `
+ROLE: You are an autonomous AI Agent in a "Boris Cherny" style high-velocity coding swarm.
+YOUR TYPE: {{AGENT_TYPE}}
+CURRENT TASK: {{TASK_NAME}}
+
+CONTEXT:
+This simulation has two types of workers:
+1. "HEAVY LIFTERS" (Terminal): You work in the CLI. You handle deep logic, heavy refactoring, and core architecture. You are the builder.
+2. "THE SWARM" (Web/Mobile): You work in the Browser. You handle documentation, visual checks, simple fixes, and mobile responsiveness. You are the polisher.
+
+INSTRUCTIONS:
+Generate a single, short log line (under 10 words) describing your current action.
+
+BEHAVIOR RULES:
+- If you are a "HEAVY LIFTER" and nearing completion: Use the phrase "Teleporting context" or "Beaming session" to indicate you are passing work to the Swarm.
+- If you are "THE SWARM" just starting: Use phrase "Receiving beam" or "Loading context" to show you caught the task.
+- Use technical jargon appropriate to your environment (Terminal = grep, git, test suites; Swarm = rendering, css, docs, preview).
+
+OUTPUT:
+Return ONLY the log text. Do not use markdown or JSON.
+`;
 
 export class OrchestrationService {
   private ai: GoogleGenAI;
 
   constructor() {
-    // Correctly initialize GoogleGenAI using process.env.API_KEY directly.
     this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   }
 
@@ -13,17 +33,29 @@ export class OrchestrationService {
     role: string, 
     scenario: string, 
     history: string[], 
-    otherAgentsContext: string
+    otherAgentsContext: string,
+    agentIndex: number
   ): Promise<{ text: string; needsInput: boolean; prompt?: string }> {
+    
+    // 1. Determine the "Plain English" Agent Type based on index
+    // Agents 0-3 are "Heavy Lifters" (Terminal), 4+ are "The Swarm" (Web)
+    const agentType = agentIndex < 4 ? "HEAVY LIFTER (Terminal)" : "THE SWARM (Web/Mobile)";
+    
+    // 2. Inject variables into the prompt
+    const specificPrompt = CHERNY_SWARM_PROMPT
+      .replace('{{AGENT_TYPE}}', agentType)
+      .replace('{{TASK_NAME}}', scenario);
+
     const response = await this.ai.models.generateContent({
       model: 'gemini-3-flash-preview',
-      contents: `You are an AI Agent with the role: ${role}. 
-      Current Scenario: ${scenario}
-      Your previous work: ${history.join('\n')}
-      What other agents are doing: ${otherAgentsContext}
-      
-      Generate a short "log update" (2-3 sentences) of what you are doing. 
-      Occasionally (20% chance), you must stop and ask the "Human Orchestrator" for a critical decision that requires them to know what the other agents are doing.`,
+      contents: `
+        ${specificPrompt}
+        
+        Your previous logs: ${history.join('\n')}
+        What the rest of the factory is doing: ${otherAgentsContext}
+        
+        Occasionally (10% chance) stop and ask for "Approval" if you are a HEAVY LIFTER trying to "Teleport" code.
+      `,
       config: {
         responseMimeType: "application/json",
         responseSchema: {
@@ -38,8 +70,11 @@ export class OrchestrationService {
       }
     });
 
-    // response.text is a property that returns the generated text.
-    return JSON.parse(response.text || "{}");
+    try {
+      return JSON.parse(response.text || "{}");
+    } catch (e) {
+      return { text: "Error syncing swarm state...", needsInput: false };
+    }
   }
 
   async evaluateOrchestration(history: any[]): Promise<string> {
@@ -52,7 +87,6 @@ export class OrchestrationService {
       3. Ability to prevent agent "drift".
       Provide a brutal but constructive critique of their 'Parallelism' skill.`,
     });
-    // response.text is a property that returns the generated text.
     return response.text;
   }
 }

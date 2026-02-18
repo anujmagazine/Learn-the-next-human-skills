@@ -1,4 +1,3 @@
-
 export enum AppView {
   HUB = 'hub',
   TRAINER = 'trainer',
@@ -23,4 +22,5 @@ export interface DrillScenario {
   difficulty: 'Easy' | 'Hard' | 'Extreme';
   description: string;
   agents: string[];
+  disabled?: boolean;
 }
