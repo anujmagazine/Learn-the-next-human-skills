@@ -101,24 +101,32 @@ const App: React.FC = () => {
     if (!simActive || view !== AppView.EVOLUTION) return;
     
     const interval = setInterval(() => {
+      // Simulation constants: 1 tick = 0.2 simulated hours
+      const workPerTick = 0.2; 
+      const speedupFactor = 20.0;
+
       // Tick Traditional (Sequential)
       setCompletedTrad(prevCompleted => {
+        if (prevCompleted.size === SIM_TASKS.length) return prevCompleted;
+
         const nextTaskIndex = SIM_TASKS.findIndex(t => !prevCompleted.has(t.id));
         if (nextTaskIndex !== -1) {
           const task = SIM_TASKS[nextTaskIndex];
-          const workPerTick = 2.0; 
+          
           setElapsedTrad(prev => prev + workPerTick);
-          setProgressTrad(prev => {
-            const next = [...prev];
+          
+          let isTaskJustFinished = false;
+          setProgressTrad(prevProgress => {
+            const next = [...prevProgress];
             next[nextTaskIndex] += (workPerTick / task.duration) * 100;
-            if (next[nextTaskIndex] >= 100) {
+            if (next[nextTaskIndex] >= 99.99) {
               next[nextTaskIndex] = 100;
-              return next;
+              isTaskJustFinished = true;
             }
             return next;
           });
-          
-          if (progressTrad[nextTaskIndex] + (workPerTick / task.duration) * 100 >= 100) {
+
+          if (isTaskJustFinished) {
             const newSet = new Set(prevCompleted);
             newSet.add(task.id);
             return newSet;
@@ -127,20 +135,23 @@ const App: React.FC = () => {
         return prevCompleted;
       });
 
-      // Tick Modern (Parallel)
+      // Tick Modern (Parallel + Agentic Speedup)
       setCompletedModern(prevCompleted => {
-        const workPerTick = 0.4;
+        if (prevCompleted.size === SIM_TASKS.length) return prevCompleted;
+
         setElapsedModern(prev => prev + workPerTick);
         const newSet = new Set(prevCompleted);
-        let allDone = true;
-
-        setProgressModern(prev => {
-          const next = [...prev];
+        
+        setProgressModern(prevProgress => {
+          const next = [...prevProgress];
           SIM_TASKS.forEach((task, idx) => {
             if (next[idx] < 100) {
-              next[idx] += (workPerTick / (task.duration / 20)) * 100;
-              allDone = false;
-              if (next[idx] >= 100) {
+              // The effective duration is task.duration / speedupFactor
+              // So the progress increment is (workPerTick / (task.duration / speedupFactor)) * 100
+              const increment = (workPerTick / (task.duration / speedupFactor)) * 100;
+              next[idx] += increment;
+              
+              if (next[idx] >= 99.99) {
                 next[idx] = 100;
                 newSet.add(task.id);
               }
@@ -149,21 +160,17 @@ const App: React.FC = () => {
           return next;
         });
 
-        if (allDone) {
-          // If everything finished, don't necessarily stop simulation until both are done
-          // But effectively ticks will do nothing for this branch
-        }
         return newSet;
       });
 
-      // Stop if both done
+      // Simulation stops if BOTH are completely finished
       if (completedTrad.size === SIM_TASKS.length && completedModern.size === SIM_TASKS.length) {
         setSimActive(false);
       }
     }, 100);
 
     return () => clearInterval(interval);
-  }, [simActive, view, progressTrad, progressModern, completedTrad.size, completedModern.size]);
+  }, [simActive, view, completedTrad.size, completedModern.size]);
 
   useEffect(() => {
     if (!isDrillRunning || !activeDrill || intervention) return;
@@ -437,7 +444,7 @@ GOAL: High-fidelity system delivery with parallel execution.`;
                ) : (
                  <div className="grid grid-cols-2 gap-3">
                    {SIM_TASKS.map((task, idx) => (
-                     <div key={task.id} className={`p-3 rounded-xl border transition-all duration-500 ${completedTrad.has(task.id) ? 'bg-orange-500/10 border-orange-500/30' : progressTrad[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
+                     <div key={task.id} className={`p-3 rounded-xl border transition-all duration-500 ${completedTrad.has(task.id) ? 'bg-orange-500/10 border-orange-500/30 shadow-glow' : progressTrad[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
                        <div className="flex justify-between items-center mb-1">
                          <span className={`text-[8px] font-bold uppercase tracking-widest ${completedTrad.has(task.id) ? 'text-orange-400' : 'text-brand-platinum/40'}`}>Phase {idx + 1}</span>
                          <span className="text-[8px] font-mono text-brand-platinum/30">{task.duration}h</span>
@@ -486,7 +493,7 @@ GOAL: High-fidelity system delivery with parallel execution.`;
                ) : (
                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                    {SIM_TASKS.map((task, idx) => (
-                     <div key={task.id} className={`p-3 rounded-xl border transition-all duration-500 ${completedModern.has(task.id) ? 'bg-brand-green/10 border-brand-green/30' : progressModern[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
+                     <div key={task.id} className={`p-3 rounded-xl border transition-all duration-500 ${completedModern.has(task.id) ? 'bg-brand-green/10 border-brand-green/30 shadow-glow' : progressModern[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
                        <div className="flex justify-between items-center mb-1">
                          <span className={`text-[8px] font-bold uppercase tracking-widest ${completedModern.has(task.id) ? 'text-brand-green' : 'text-brand-platinum/40'}`}>Agent {idx + 1}</span>
                          <span className="text-[8px] font-mono text-brand-platinum/30">{task.duration}h</span>
