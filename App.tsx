@@ -101,20 +101,15 @@ const App: React.FC = () => {
     if (!simActive || view !== AppView.EVOLUTION) return;
     
     const interval = setInterval(() => {
-      // Simulation constants: 1 tick = 0.2 simulated hours
       const workPerTick = 0.2; 
       const speedupFactor = 20.0;
 
-      // Tick Traditional (Sequential)
       setCompletedTrad(prevCompleted => {
         if (prevCompleted.size === SIM_TASKS.length) return prevCompleted;
-
         const nextTaskIndex = SIM_TASKS.findIndex(t => !prevCompleted.has(t.id));
         if (nextTaskIndex !== -1) {
           const task = SIM_TASKS[nextTaskIndex];
-          
           setElapsedTrad(prev => prev + workPerTick);
-          
           let isTaskJustFinished = false;
           setProgressTrad(prevProgress => {
             const next = [...prevProgress];
@@ -125,7 +120,6 @@ const App: React.FC = () => {
             }
             return next;
           });
-
           if (isTaskJustFinished) {
             const newSet = new Set(prevCompleted);
             newSet.add(task.id);
@@ -135,22 +129,16 @@ const App: React.FC = () => {
         return prevCompleted;
       });
 
-      // Tick Modern (Parallel + Agentic Speedup)
       setCompletedModern(prevCompleted => {
         if (prevCompleted.size === SIM_TASKS.length) return prevCompleted;
-
         setElapsedModern(prev => prev + workPerTick);
         const newSet = new Set(prevCompleted);
-        
         setProgressModern(prevProgress => {
           const next = [...prevProgress];
           SIM_TASKS.forEach((task, idx) => {
             if (next[idx] < 100) {
-              // The effective duration is task.duration / speedupFactor
-              // So the progress increment is (workPerTick / (task.duration / speedupFactor)) * 100
               const increment = (workPerTick / (task.duration / speedupFactor)) * 100;
               next[idx] += increment;
-              
               if (next[idx] >= 99.99) {
                 next[idx] = 100;
                 newSet.add(task.id);
@@ -159,11 +147,9 @@ const App: React.FC = () => {
           });
           return next;
         });
-
         return newSet;
       });
 
-      // Simulation stops if BOTH are completely finished
       if (completedTrad.size === SIM_TASKS.length && completedModern.size === SIM_TASKS.length) {
         setSimActive(false);
       }
@@ -386,7 +372,7 @@ GOAL: High-fidelity system delivery with parallel execution.`;
     const isDone = completedTrad.size === SIM_TASKS.length && completedModern.size === SIM_TASKS.length;
 
     return (
-      <div className="max-w-7xl mx-auto py-12 animate-in fade-in duration-700">
+      <div className="max-w-7xl mx-auto py-12 animate-in fade-in duration-700 overflow-visible">
         <div className="flex items-center gap-4 mb-8">
           <button 
             onClick={() => setView(AppView.LANDING)} 
@@ -407,17 +393,17 @@ GOAL: High-fidelity system delivery with parallel execution.`;
         </div>
 
         {/* Comparison Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 relative">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-12 relative px-4 overflow-visible">
           
           {/* TRADITIONAL SIDE */}
-          <div className="glass rounded-[40px] border-brand-platinum/10 p-8 flex flex-col relative overflow-visible">
-             {/* Handwritten Annotation - Left Pointing Arrow */}
-             <div className="absolute top-1/2 -left-4 -translate-x-full -translate-y-1/2 hidden 2xl:flex flex-col items-center pointer-events-none z-20">
-               <span className="font-handwritten text-brand-platinum/60 text-2xl mb-2 whitespace-nowrap">Manual code as an input</span>
-               <svg className="w-32 h-12 text-brand-platinum/30 overflow-visible" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 100 40">
-                  {/* Arrow pointing left */}
-                  <path d="M100 20 L 10 20" strokeLinecap="round" />
-                  <path d="M10 20 L 25 10 M 10 20 L 25 30" strokeLinejoin="round" />
+          <div className="glass rounded-[40px] border-brand-platinum/10 p-8 flex flex-col relative overflow-visible shadow-2xl">
+             {/* HANDWRITTEN ANNOTATION - LEFT SIDE (Manual code as an input) */}
+             <div className="absolute top-1/2 -left-8 -translate-x-full -translate-y-1/2 hidden lg:flex flex-col items-center pointer-events-none z-50">
+               <span className="font-handwritten text-brand-platinum/90 text-4xl mb-2 whitespace-nowrap rotate-[-5deg]">Manual code as an input</span>
+               <svg className="w-56 h-24 text-brand-platinum/50 overflow-visible" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 100 40">
+                  {/* Arrow pointing from the box towards the text on the left */}
+                  <path d="M100 10 C 70 30, 40 30, 10 15" strokeLinecap="round" strokeDasharray="3,2" />
+                  <path d="M10 15 L 28 8 M 10 15 L 22 30" strokeLinejoin="round" />
                </svg>
              </div>
 
@@ -472,14 +458,14 @@ GOAL: High-fidelity system delivery with parallel execution.`;
           </div>
 
           {/* MODERN SIDE */}
-          <div className="glass rounded-[40px] border-brand-green/20 p-8 flex flex-col relative overflow-visible bg-brand-green/[0.01]">
-             {/* Handwritten Annotation - Right Pointing Arrow */}
-             <div className="absolute top-1/2 -right-4 translate-x-full -translate-y-1/2 hidden 2xl:flex flex-col items-center pointer-events-none z-20">
-               <span className="font-handwritten text-brand-green/60 text-2xl mb-2 whitespace-nowrap">Prompt as an input</span>
-               <svg className="w-32 h-12 text-brand-green/30 overflow-visible" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 100 40">
-                  {/* Arrow pointing right */}
-                  <path d="M0 20 L 90 20" strokeLinecap="round" />
-                  <path d="M90 20 L 75 10 M 90 20 L 75 30" strokeLinejoin="round" />
+          <div className="glass rounded-[40px] border-brand-green/20 p-8 flex flex-col relative overflow-visible bg-brand-green/[0.01] shadow-2xl">
+             {/* HANDWRITTEN ANNOTATION - RIGHT SIDE (Prompt as an input) */}
+             <div className="absolute top-1/2 -right-8 translate-x-full -translate-y-1/2 hidden lg:flex flex-col items-center pointer-events-none z-50">
+               <span className="font-handwritten text-brand-green/90 text-4xl mb-2 whitespace-nowrap rotate-[5deg]">Prompt as an input</span>
+               <svg className="w-56 h-24 text-brand-green/50 overflow-visible" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 100 40">
+                  {/* Arrow pointing from the box towards the text on the right */}
+                  <path d="M0 10 C 30 30, 60 30, 90 15" strokeLinecap="round" strokeDasharray="3,2" />
+                  <path d="M90 15 L 72 8 M 90 15 L 80 30" strokeLinejoin="round" />
                </svg>
              </div>
 
