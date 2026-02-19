@@ -31,18 +31,18 @@ const DRILLS: DrillScenario[] = [
 ];
 
 const SIM_TASKS = [
-  { id: 1, name: 'User Authentication', duration: 24 },
-  { id: 2, name: 'Database Schema', duration: 12 },
-  { id: 3, name: 'API Endpoints', duration: 32 },
-  { id: 4, name: 'Frontend UI', duration: 40 },
-  { id: 5, name: 'Payment Integration', duration: 20 },
-  { id: 6, name: 'Email Service', duration: 8 },
-  { id: 7, name: 'Analytics Dashboard', duration: 28 },
-  { id: 8, name: 'Testing Suite', duration: 24 },
-  { id: 9, name: 'Documentation', duration: 8 },
-  { id: 10, name: 'Deployment Pipeline', duration: 12 },
-  { id: 11, name: 'Error Handling', duration: 16 },
-  { id: 12, name: 'Performance Optimization', duration: 24 },
+  { id: 1, name: 'User Authentication', duration: 24, deps: [] },
+  { id: 2, name: 'Database Schema', duration: 12, deps: [] },
+  { id: 3, name: 'API Endpoints', duration: 32, deps: [2] },
+  { id: 4, name: 'Frontend UI', duration: 40, deps: [1] },
+  { id: 5, name: 'Payment Integration', duration: 20, deps: [3] },
+  { id: 6, name: 'Email Service', duration: 8, deps: [3] },
+  { id: 7, name: 'Analytics Dashboard', duration: 28, deps: [3, 4] },
+  { id: 8, name: 'Testing Suite', duration: 24, deps: [3, 4] },
+  { id: 9, name: 'Documentation', duration: 8, deps: [8] },
+  { id: 10, name: 'Deployment Pipeline', duration: 12, deps: [8] },
+  { id: 11, name: 'Error Handling', duration: 16, deps: [3] },
+  { id: 12, name: 'Performance Optimization', duration: 24, deps: [10] },
 ];
 
 const App: React.FC = () => {
@@ -104,41 +104,48 @@ const App: React.FC = () => {
     if (!simActive || view !== AppView.EVOLUTION) return;
     
     const interval = setInterval(() => {
-      // Reduced work per tick to slow down simulation so progress is observable
-      const workPerTick = 0.01; 
-      const speedupFactor = 10.0; // Agentic is significantly faster but visible
+      // Increased work per tick for faster demo
+      const workPerTick = 0.1; 
+      const speedupFactor = 12.0; // Agentic is significantly faster
+      const MAX_CONCURRENT_TRAD = 2; // Traditional team size (e.g., 1 BE, 1 FE)
 
-      // Tick Traditional (Sequential)
+      // Tick Traditional (Partial Parallelism based on deps)
       setCompletedTrad(prevCompleted => {
         if (prevCompleted.size === SIM_TASKS.length) return prevCompleted;
 
-        const nextTaskIndex = SIM_TASKS.findIndex(t => !prevCompleted.has(t.id));
-        if (nextTaskIndex !== -1) {
-          const task = SIM_TASKS[nextTaskIndex];
-          
+        // Find tasks that are ready (deps satisfied) and not finished
+        const readyTasks = SIM_TASKS.filter(t => 
+          !prevCompleted.has(t.id) && 
+          (t.deps as number[]).every(depId => prevCompleted.has(depId))
+        ).slice(0, MAX_CONCURRENT_TRAD);
+
+        if (readyTasks.length > 0) {
           setElapsedTrad(prev => prev + workPerTick);
           
-          let isTaskJustFinished = false;
+          const newlyFinished: number[] = [];
           setProgressTrad(prevProgress => {
             const next = [...prevProgress];
-            next[nextTaskIndex] += (workPerTick / task.duration) * 100;
-            if (next[nextTaskIndex] >= 99.99) {
-              next[nextTaskIndex] = 100;
-              isTaskJustFinished = true;
-            }
+            readyTasks.forEach(task => {
+              const idx = SIM_TASKS.findIndex(t => t.id === task.id);
+              next[idx] += (workPerTick / task.duration) * 100;
+              if (next[idx] >= 99.99) {
+                next[idx] = 100;
+                newlyFinished.push(task.id);
+              }
+            });
             return next;
           });
 
-          if (isTaskJustFinished) {
+          if (newlyFinished.length > 0) {
             const newSet = new Set(prevCompleted);
-            newSet.add(task.id);
+            newlyFinished.forEach(id => newSet.add(id));
             return newSet;
           }
         }
         return prevCompleted;
       });
 
-      // Tick Modern (Parallel + Agentic Speedup)
+      // Tick Modern (Full Parallel + Agentic Speedup)
       setCompletedModern(prevCompleted => {
         if (prevCompleted.size === SIM_TASKS.length) return prevCompleted;
 
@@ -168,7 +175,7 @@ const App: React.FC = () => {
       if (completedTrad.size === SIM_TASKS.length && completedModern.size === SIM_TASKS.length) {
         setSimActive(false);
       }
-    }, 100);
+    }, 50); // Faster interval for smoother demo
 
     return () => clearInterval(interval);
   }, [simActive, view, completedTrad.size, completedModern.size]);
