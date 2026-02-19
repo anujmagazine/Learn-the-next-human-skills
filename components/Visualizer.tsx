@@ -7,8 +7,8 @@ interface VisualizerProps {
 }
 
 const Visualizer: React.FC<VisualizerProps> = ({ taskCount }) => {
-  const serialTime = taskCount * 120; // Assume 2 hours per task in a serial world
-  const parallelTime = 120 + 20; // Same 2 hours but concurrent + coordination
+  const serialTime = taskCount * 120; // 2 hours per task traditionally
+  const parallelTime = (serialTime / 25) + 15; // 25x speedup + 15m coordination
 
   const data = [
     { name: 'Doing it yourself', time: serialTime, color: '#475569', label: 'Sequential (Linear)' },

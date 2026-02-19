@@ -7,10 +7,10 @@ import Visualizer from './components/Visualizer';
 const DRILLS: DrillScenario[] = [
   {
     id: 'swarm-1',
-    title: 'How Agentic Development Works',
+    title: 'The "Claude Engineer" Challenge',
     difficulty: 'Extreme',
-    description: 'Stop being the coder and start being the Commander. Manage 8 concurrent AI agents simultaneously to refactor, test, and ship at 10x speed. Inspired by Boris Cherny’s multi-agent workflow.',
-    agents: ['Terminal-1 (Auth)', 'Terminal-2 (Engine)', 'Terminal-3 (UI)', 'Terminal-4 (Testing)', 'Web-A (Research)', 'Web-B (Docs)', 'Web-C (Simplification)', 'Mobile-Review']
+    description: 'Build a fully autonomous coding agent in a single afternoon. Manage 10 concurrent AI agents to architect, integrate, and ship a complex CLI tool at 25x speed. Inspired by the legendary 12-hour build of Claude Engineer.',
+    agents: ['Terminal-1 (Core)', 'Terminal-2 (FS)', 'Terminal-3 (API)', 'Terminal-4 (Context)', 'Web-A (UI)', 'Web-B (Docs)', 'Web-C (Tests)', 'Mobile-Review']
   },
   {
     id: 'crisis-1',
@@ -31,18 +31,16 @@ const DRILLS: DrillScenario[] = [
 ];
 
 const SIM_TASKS = [
-  { id: 1, name: 'User Authentication', duration: 24, deps: [] },
-  { id: 2, name: 'Database Schema', duration: 12, deps: [] },
-  { id: 3, name: 'API Endpoints', duration: 32, deps: [2] },
-  { id: 4, name: 'Frontend UI', duration: 40, deps: [1] },
-  { id: 5, name: 'Payment Integration', duration: 20, deps: [3] },
-  { id: 6, name: 'Email Service', duration: 8, deps: [3] },
-  { id: 7, name: 'Analytics Dashboard', duration: 28, deps: [3, 4] },
-  { id: 8, name: 'Testing Suite', duration: 24, deps: [3, 4] },
-  { id: 9, name: 'Documentation', duration: 8, deps: [8] },
-  { id: 10, name: 'Deployment Pipeline', duration: 12, deps: [8] },
-  { id: 11, name: 'Error Handling', duration: 16, deps: [3] },
-  { id: 12, name: 'Performance Optimization', duration: 24, deps: [10] },
+  { id: 1, name: 'System Architecture & CLI Core', duration: 40, deps: [] },
+  { id: 2, name: 'File System & Shell Integration', duration: 24, deps: [1] },
+  { id: 3, name: 'Claude API Orchestration Layer', duration: 32, deps: [1] },
+  { id: 4, name: 'Context Window Management', duration: 24, deps: [3] },
+  { id: 5, name: 'Multi-file Refactoring Engine', duration: 40, deps: [2, 3] },
+  { id: 6, name: 'Autonomous Debugging Loop', duration: 32, deps: [5] },
+  { id: 7, name: 'Interactive UI (Artifacts Style)', duration: 48, deps: [1] },
+  { id: 8, name: 'Tool Use (Search & Execute)', duration: 24, deps: [2] },
+  { id: 9, name: 'Safety & Guardrail Implementation', duration: 16, deps: [3] },
+  { id: 10, name: 'Documentation & Test Suite', duration: 20, deps: [6, 7] },
 ];
 
 const App: React.FC = () => {
@@ -104,16 +102,15 @@ const App: React.FC = () => {
     if (!simActive || view !== AppView.EVOLUTION) return;
     
     const interval = setInterval(() => {
-      // Increased work per tick for faster demo
-      const workPerTick = 0.1; 
-      const speedupFactor = 12.0; // Agentic is significantly faster
-      const MAX_CONCURRENT_TRAD = 2; // Traditional team size (e.g., 1 BE, 1 FE)
+      // Significantly increased work per tick for a faster, more dramatic demo
+      const workPerTick = 0.5; 
+      const speedupFactor = 25.0; // Agentic is 25x faster in this scenario
+      const MAX_CONCURRENT_TRAD = 2; // Traditional team size
 
       // Tick Traditional (Partial Parallelism based on deps)
       setCompletedTrad(prevCompleted => {
         if (prevCompleted.size === SIM_TASKS.length) return prevCompleted;
 
-        // Find tasks that are ready (deps satisfied) and not finished
         const readyTasks = SIM_TASKS.filter(t => 
           !prevCompleted.has(t.id) && 
           (t.deps as number[]).every(depId => prevCompleted.has(depId))
@@ -156,6 +153,7 @@ const App: React.FC = () => {
           const next = [...prevProgress];
           SIM_TASKS.forEach((task, idx) => {
             if (next[idx] < 100) {
+              // Agentic speedup applied to duration
               const increment = (workPerTick / (task.duration / speedupFactor)) * 100;
               next[idx] += increment;
               
@@ -171,11 +169,10 @@ const App: React.FC = () => {
         return newSet;
       });
 
-      // Simulation stops if BOTH are completely finished
       if (completedTrad.size === SIM_TASKS.length && completedModern.size === SIM_TASKS.length) {
         setSimActive(false);
       }
-    }, 50); // Faster interval for smoother demo
+    }, 40); // Even faster interval for a "live" feel
 
     return () => clearInterval(interval);
   }, [simActive, view, completedTrad.size, completedModern.size]);
@@ -401,13 +398,13 @@ async function createDatabaseSchema() {
 }`;
 
     const modernPrompt = `ACT as an Agentic Fleet Commander. 
-DEPLOY 12 specialized autonomous agents to build a high-scale e-commerce engine.
-COORDINATE tasks from authentication to deployment concurrently.
-ENSURE context sharing between Terminal-1 (Auth) and Terminal-2 (Engine).
-GOAL: High-fidelity system delivery with parallel execution.`;
+DEPLOY 10 specialized autonomous agents to build "Claude Engineer"—a high-velocity coding agent.
+COORDINATE tasks from CLI core to autonomous debugging concurrently.
+ENSURE context sharing between Terminal-1 (Core) and Terminal-3 (API).
+GOAL: Ship a production-ready agentic tool in < 12 hours.`;
 
     const formatTime = (hours: number) => {
-      if (hours < 8) return `${hours.toFixed(1)} Work Hours`;
+      if (hours < 16) return `${hours.toFixed(1)} Work Hours`;
       const days = (hours / 8).toFixed(1);
       return `${days} Work Days`;
     };
@@ -460,7 +457,7 @@ GOAL: High-fidelity system delivery with parallel execution.`;
                    </div>
                    <div className="text-center px-4">
                       <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Tasks</div>
-                      <div className="text-lg font-mono text-brand-platinum">{completedTrad.size}/12</div>
+                      <div className="text-lg font-mono text-brand-platinum">{completedTrad.size}/{SIM_TASKS.length}</div>
                    </div>
                 </div>
              </div>
@@ -521,7 +518,7 @@ GOAL: High-fidelity system delivery with parallel execution.`;
                    </div>
                    <div className="text-center px-4">
                       <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Integration</div>
-                      <div className="text-lg font-mono text-brand-green">{completedModern.size}/12</div>
+                      <div className="text-lg font-mono text-brand-green">{completedModern.size}/{SIM_TASKS.length}</div>
                    </div>
                 </div>
              </div>
@@ -584,6 +581,11 @@ GOAL: High-fidelity system delivery with parallel execution.`;
                 <div className="glass p-16 rounded-[60px] border-brand-green/30 text-center relative max-w-4xl mx-auto shadow-2xl shadow-brand-green/10">
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-brand-green rounded-full flex items-center justify-center text-4xl shadow-glow">🎉</div>
                   <h3 className="text-5xl font-black text-brand-platinum uppercase tracking-tighter mb-8 leading-none">The Verdict: Parallel Wins</h3>
+                  
+                  <div className="mb-12">
+                    <Visualizer taskCount={SIM_TASKS.length} />
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left mb-12 border-b border-brand-platinum/10 pb-12">
                      <div className="space-y-3">
                         <div className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest">Legacy Sequential</div>
