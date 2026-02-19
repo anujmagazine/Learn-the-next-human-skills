@@ -55,15 +55,17 @@ const App: React.FC = () => {
   // Unified Simulation States
   const [simActive, setSimActive] = useState(false);
   
-  // Traditional states
-  const [elapsedTrad, setElapsedTrad] = useState(0);
-  const [progressTrad, setProgressTrad] = useState<number[]>(new Array(SIM_TASKS.length).fill(0));
-  const [completedTrad, setCompletedTrad] = useState<Set<number>>(new Set());
-
-  // Modern states
-  const [elapsedModern, setElapsedModern] = useState(0);
-  const [progressModern, setProgressModern] = useState<number[]>(new Array(SIM_TASKS.length).fill(0));
-  const [completedModern, setCompletedModern] = useState<Set<number>>(new Set());
+  // Simulation states
+  const [tradSim, setTradSim] = useState({
+    elapsed: 0,
+    progress: new Array(SIM_TASKS.length).fill(0),
+    completed: new Set<number>()
+  });
+  const [modernSim, setModernSim] = useState({
+    elapsed: 0,
+    progress: new Array(SIM_TASKS.length).fill(0),
+    completed: new Set<number>()
+  });
 
   const startDrill = (drill: DrillScenario) => {
     if (drill.disabled) return;
@@ -90,92 +92,105 @@ const App: React.FC = () => {
 
   const resetSimulations = () => {
     setSimActive(false);
-    setElapsedTrad(0);
-    setProgressTrad(new Array(SIM_TASKS.length).fill(0));
-    setCompletedTrad(new Set());
-    setElapsedModern(0);
-    setProgressModern(new Array(SIM_TASKS.length).fill(0));
-    setCompletedModern(new Set());
+    setTradSim({
+      elapsed: 0,
+      progress: new Array(SIM_TASKS.length).fill(0),
+      completed: new Set<number>()
+    });
+    setModernSim({
+      elapsed: 0,
+      progress: new Array(SIM_TASKS.length).fill(0),
+      completed: new Set<number>()
+    });
   };
 
   useEffect(() => {
     if (!simActive || view !== AppView.EVOLUTION) return;
     
     const interval = setInterval(() => {
-      // Significantly increased work per tick for a faster, more dramatic demo
       const workPerTick = 0.5; 
-      const speedupFactor = 25.0; // Agentic is 25x faster in this scenario
-      const MAX_CONCURRENT_TRAD = 2; // Traditional team size
+      const speedupFactor = 25.0; 
+      const MAX_CONCURRENT_TRAD = 2;
 
-      // Tick Traditional (Partial Parallelism based on deps)
-      setCompletedTrad(prevCompleted => {
-        if (prevCompleted.size === SIM_TASKS.length) return prevCompleted;
+      let tradDone = false;
+      let modernDone = false;
+
+      // Tick Traditional
+      setTradSim(prev => {
+        if (prev.completed.size === SIM_TASKS.length) {
+          tradDone = true;
+          return prev;
+        }
 
         const readyTasks = SIM_TASKS.filter(t => 
-          !prevCompleted.has(t.id) && 
-          (t.deps as number[]).every(depId => prevCompleted.has(depId))
+          !prev.completed.has(t.id) && 
+          (t.deps as number[]).every(depId => prev.completed.has(depId))
         ).slice(0, MAX_CONCURRENT_TRAD);
 
-        if (readyTasks.length > 0) {
-          setElapsedTrad(prev => prev + workPerTick);
-          
-          const newlyFinished: number[] = [];
-          setProgressTrad(prevProgress => {
-            const next = [...prevProgress];
-            readyTasks.forEach(task => {
-              const idx = SIM_TASKS.findIndex(t => t.id === task.id);
-              next[idx] += (workPerTick / task.duration) * 100;
-              if (next[idx] >= 99.99) {
-                next[idx] = 100;
-                newlyFinished.push(task.id);
-              }
-            });
-            return next;
-          });
+        if (readyTasks.length === 0) return prev;
 
-          if (newlyFinished.length > 0) {
-            const newSet = new Set(prevCompleted);
-            newlyFinished.forEach(id => newSet.add(id));
-            return newSet;
-          }
-        }
-        return prevCompleted;
-      });
-
-      // Tick Modern (Full Parallel + Agentic Speedup)
-      setCompletedModern(prevCompleted => {
-        if (prevCompleted.size === SIM_TASKS.length) return prevCompleted;
-
-        setElapsedModern(prev => prev + workPerTick);
-        const newSet = new Set(prevCompleted);
+        const nextProgress = [...prev.progress];
+        const nextCompleted = new Set(prev.completed);
         
-        setProgressModern(prevProgress => {
-          const next = [...prevProgress];
-          SIM_TASKS.forEach((task, idx) => {
-            if (next[idx] < 100) {
-              // Agentic speedup applied to duration
-              const increment = (workPerTick / (task.duration / speedupFactor)) * 100;
-              next[idx] += increment;
-              
-              if (next[idx] >= 99.99) {
-                next[idx] = 100;
-                newSet.add(task.id);
-              }
-            }
-          });
-          return next;
+        readyTasks.forEach(task => {
+          const idx = SIM_TASKS.findIndex(t => t.id === task.id);
+          nextProgress[idx] += (workPerTick / task.duration) * 100;
+          if (nextProgress[idx] >= 99.9) {
+            nextProgress[idx] = 100;
+            nextCompleted.add(task.id);
+          }
         });
 
-        return newSet;
+        if (nextCompleted.size === SIM_TASKS.length) tradDone = true;
+
+        return {
+          elapsed: prev.elapsed + workPerTick,
+          progress: nextProgress,
+          completed: nextCompleted
+        };
       });
 
-      if (completedTrad.size === SIM_TASKS.length && completedModern.size === SIM_TASKS.length) {
-        setSimActive(false);
-      }
-    }, 40); // Even faster interval for a "live" feel
+      // Tick Modern
+      setModernSim(prev => {
+        if (prev.completed.size === SIM_TASKS.length) {
+          modernDone = true;
+          return prev;
+        }
+
+        const nextProgress = [...prev.progress];
+        const nextCompleted = new Set(prev.completed);
+        
+        SIM_TASKS.forEach((task, idx) => {
+          if (nextProgress[idx] < 100) {
+            const increment = (workPerTick / (task.duration / speedupFactor)) * 100;
+            nextProgress[idx] += increment;
+            
+            if (nextProgress[idx] >= 99.9) {
+              nextProgress[idx] = 100;
+              nextCompleted.add(task.id);
+            }
+          }
+        });
+
+        if (nextCompleted.size === SIM_TASKS.length) modernDone = true;
+
+        return {
+          elapsed: prev.elapsed + workPerTick,
+          progress: nextProgress,
+          completed: nextCompleted
+        };
+      });
+    }, 40);
 
     return () => clearInterval(interval);
-  }, [simActive, view, completedTrad.size, completedModern.size]);
+  }, [simActive, view]);
+
+  // Separate effect to stop simulation when both are done
+  useEffect(() => {
+    if (simActive && tradSim.completed.size === SIM_TASKS.length && modernSim.completed.size === SIM_TASKS.length) {
+      setSimActive(false);
+    }
+  }, [simActive, tradSim.completed.size, modernSim.completed.size]);
 
   useEffect(() => {
     if (!isDrillRunning || !activeDrill || intervention) return;
@@ -409,7 +424,7 @@ GOAL: Ship a production-ready agentic tool in < 12 hours.`;
       return `${days} Work Days`;
     };
 
-    const isDone = completedTrad.size === SIM_TASKS.length && completedModern.size === SIM_TASKS.length;
+    const isDone = tradSim.completed.size === SIM_TASKS.length && modernSim.completed.size === SIM_TASKS.length;
 
     return (
       <div className="max-w-7xl mx-auto py-12 px-20 animate-in fade-in duration-700 overflow-visible">
@@ -453,17 +468,17 @@ GOAL: Ship a production-ready agentic tool in < 12 hours.`;
                 <div className="mt-4 flex items-center gap-4">
                    <div className="text-center px-4 border-r border-brand-platinum/10">
                       <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Effort</div>
-                      <div className="text-lg font-mono text-brand-platinum">{formatTime(elapsedTrad)}</div>
+                      <div className="text-lg font-mono text-brand-platinum">{tradSim.elapsed.toFixed(1)}h</div>
                    </div>
                    <div className="text-center px-4">
                       <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Tasks</div>
-                      <div className="text-lg font-mono text-brand-platinum">{completedTrad.size}/{SIM_TASKS.length}</div>
+                      <div className="text-lg font-mono text-brand-platinum">{tradSim.completed.size}/{SIM_TASKS.length}</div>
                    </div>
                 </div>
              </div>
 
              <div className="flex-1 relative">
-               {(!simActive && completedTrad.size === 0) ? (
+               {(!simActive && tradSim.completed.size === 0) ? (
                  <div className="glass rounded-xl overflow-hidden border border-brand-platinum/10 shadow-2xl h-full flex flex-col relative">
                     <div className="bg-brand-navy/60 px-4 py-2 flex items-center justify-between border-b border-brand-platinum/5">
                       <div className="flex gap-1.5"><div className="w-2 h-2 rounded-full bg-red-500/50"></div><div className="w-2 h-2 rounded-full bg-yellow-500/50"></div><div className="w-2 h-2 rounded-full bg-brand-green/50"></div></div>
@@ -480,14 +495,14 @@ GOAL: Ship a production-ready agentic tool in < 12 hours.`;
                ) : (
                  <div className="grid grid-cols-2 gap-3">
                    {SIM_TASKS.map((task, idx) => (
-                     <div key={task.id} className={`p-3 rounded-xl border transition-all duration-500 ${completedTrad.has(task.id) ? 'bg-orange-500/10 border-orange-500/30 shadow-glow' : progressTrad[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
+                     <div key={task.id} className={`p-3 rounded-xl border transition-all duration-500 ${tradSim.completed.has(task.id) ? 'bg-orange-500/10 border-orange-500/30 shadow-glow' : tradSim.progress[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
                        <div className="flex justify-between items-center mb-1">
-                         <span className={`text-[8px] font-bold uppercase tracking-widest ${completedTrad.has(task.id) ? 'text-orange-400' : 'text-brand-platinum/40'}`}>Phase {idx + 1}</span>
+                         <span className={`text-[8px] font-bold uppercase tracking-widest ${tradSim.completed.has(task.id) ? 'text-orange-400' : 'text-brand-platinum/40'}`}>Phase {idx + 1}</span>
                          <span className="text-[8px] font-mono text-brand-platinum/30">{task.duration}h</span>
                        </div>
                        <div className="text-[10px] font-bold text-brand-platinum mb-2 truncate">{task.name}</div>
                        <div className="w-full h-1 bg-brand-platinum/5 rounded-full overflow-hidden">
-                         <div className="h-full bg-orange-500 transition-all duration-100" style={{ width: `${progressTrad[idx]}%` }}></div>
+                         <div className="h-full bg-orange-500 transition-all duration-100" style={{ width: `${tradSim.progress[idx]}%` }}></div>
                        </div>
                      </div>
                    ))}
@@ -514,17 +529,17 @@ GOAL: Ship a production-ready agentic tool in < 12 hours.`;
                 <div className="mt-4 flex items-center gap-4">
                    <div className="text-center px-4 border-r border-brand-platinum/10">
                       <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Time passed</div>
-                      <div className="text-lg font-mono text-brand-green">{formatTime(elapsedModern)}</div>
+                      <div className="text-lg font-mono text-brand-green">{modernSim.elapsed.toFixed(1)}h</div>
                    </div>
                    <div className="text-center px-4">
                       <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Integration</div>
-                      <div className="text-lg font-mono text-brand-green">{completedModern.size}/{SIM_TASKS.length}</div>
+                      <div className="text-lg font-mono text-brand-green">{modernSim.completed.size}/{SIM_TASKS.length}</div>
                    </div>
                 </div>
              </div>
 
              <div className="flex-1 relative">
-               {(!simActive && completedModern.size === 0) ? (
+               {(!simActive && modernSim.completed.size === 0) ? (
                  <div className="glass rounded-xl overflow-hidden border border-brand-green/30 shadow-2xl h-full flex flex-col">
                     <div className="bg-brand-green/10 px-4 py-2 flex items-center justify-between border-b border-brand-green/20">
                       <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-green shadow-glow"></div><span className="text-[9px] font-black text-brand-green uppercase tracking-widest">Fleet Orchestrator</span></div>
@@ -539,14 +554,14 @@ GOAL: Ship a production-ready agentic tool in < 12 hours.`;
                ) : (
                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                    {SIM_TASKS.map((task, idx) => (
-                     <div key={task.id} className={`p-3 rounded-xl border transition-all duration-500 ${completedModern.has(task.id) ? 'bg-brand-green/10 border-brand-green/30 shadow-glow' : progressModern[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
+                     <div key={task.id} className={`p-3 rounded-xl border transition-all duration-500 ${modernSim.completed.has(task.id) ? 'bg-brand-green/10 border-brand-green/30 shadow-glow' : modernSim.progress[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
                        <div className="flex justify-between items-center mb-1">
-                         <span className={`text-[8px] font-bold uppercase tracking-widest ${completedModern.has(task.id) ? 'text-brand-green' : 'text-brand-platinum/40'}`}>Agent {idx + 1}</span>
+                         <span className={`text-[8px] font-bold uppercase tracking-widest ${modernSim.completed.has(task.id) ? 'text-brand-green' : 'text-brand-platinum/40'}`}>Agent {idx + 1}</span>
                          <span className="text-[8px] font-mono text-brand-platinum/30">{task.duration}h</span>
                        </div>
                        <div className="text-[10px] font-bold text-brand-platinum mb-2 truncate">{task.name}</div>
                        <div className="w-full h-1 bg-brand-platinum/5 rounded-full overflow-hidden">
-                         <div className="h-full bg-brand-green shadow-glow transition-all duration-100" style={{ width: `${progressModern[idx]}%` }}></div>
+                         <div className="h-full bg-brand-green shadow-glow transition-all duration-100" style={{ width: `${modernSim.progress[idx]}%` }}></div>
                        </div>
                      </div>
                    ))}
@@ -558,7 +573,7 @@ GOAL: Ship a production-ready agentic tool in < 12 hours.`;
 
         {/* Central Controls */}
         <div className="flex flex-col items-center justify-center gap-6 mt-12 pb-24">
-           {!simActive && completedTrad.size === 0 && (
+           {!simActive && tradSim.completed.size === 0 && (
               <button 
                 onClick={() => setSimActive(true)} 
                 className="bg-brand-green hover:brightness-110 px-24 py-8 rounded-[32px] font-black text-brand-black uppercase tracking-[0.2em] shadow-glow transition-all hover:scale-105 text-2xl group"
@@ -572,7 +587,7 @@ GOAL: Ship a production-ready agentic tool in < 12 hours.`;
              <button onClick={() => setSimActive(false)} className="bg-white/10 hover:bg-white/20 px-12 py-5 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Pause Cycle</button>
            )}
            
-           {!simActive && completedTrad.size > 0 && (
+           {!simActive && tradSim.completed.size > 0 && (
              <button onClick={resetSimulations} className="bg-white/10 hover:bg-white/20 px-12 py-5 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Reset Comparison</button>
            )}
 
@@ -589,12 +604,12 @@ GOAL: Ship a production-ready agentic tool in < 12 hours.`;
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left mb-12 border-b border-brand-platinum/10 pb-12">
                      <div className="space-y-3">
                         <div className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest">Legacy Sequential</div>
-                        <div className="text-4xl font-mono text-brand-platinum">{formatTime(elapsedTrad)}</div>
+                        <div className="text-4xl font-mono text-brand-platinum">{tradSim.elapsed.toFixed(1)}h</div>
                         <p className="text-xs text-brand-platinum/40">100% human labor-bound</p>
                      </div>
                      <div className="space-y-3">
                         <div className="text-[10px] font-bold text-brand-green uppercase tracking-widest">Nexus Parallel</div>
-                        <div className="text-4xl font-mono text-brand-green">{formatTime(elapsedModern)}</div>
+                        <div className="text-4xl font-mono text-brand-green">{modernSim.elapsed.toFixed(1)}h</div>
                         <p className="text-xs text-brand-green/60">Powered by agentic fleet management</p>
                      </div>
                   </div>
