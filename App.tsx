@@ -149,12 +149,12 @@ const App: React.FC = () => {
         if (prev.isDone) return prev;
 
         let nextActiveIndex = prev.activeStepIndex;
-        let nextElapsed = prev.elapsed + 0.1;
+        let nextElapsed = prev.elapsed + 0.01; // Slower time scaling
 
         const nextSteps = prev.steps.map((step, idx) => {
           if (idx < nextActiveIndex) return { ...step, status: 'Done', progress: 100 };
           if (idx === nextActiveIndex) {
-            const nextProgress = step.progress + 1.5;
+            const nextProgress = step.progress + 0.4; // Slower progress
             if (nextProgress >= 100) {
               return { ...step, status: 'Done', progress: 100 };
             }
@@ -183,10 +183,10 @@ const App: React.FC = () => {
       setAgenticSim(prev => {
         if (prev.isDone) return prev;
 
-        let nextElapsed = prev.elapsed + 0.05;
+        let nextElapsed = prev.elapsed + 0.005;
         const nextWorkers = prev.workers.map(w => {
           if (w.progress >= 100) return w;
-          const nextProgress = w.progress + (Math.random() * 8);
+          const nextProgress = w.progress + (Math.random() * 1.2); // Slower progress
           return {
             ...w,
             progress: nextProgress >= 100 ? 100 : nextProgress
@@ -627,11 +627,15 @@ const App: React.FC = () => {
                   {agenticSim.workers.map((worker, idx) => {
                     const angles = [0, 72, 144, 216, 288];
                     const baseAngle = angles[idx] * (Math.PI / 180);
-                    // Add some movement based on simClock
-                    const orbitSpeed = 0.02;
-                    const floatSpeed = 0.05;
-                    const angle = baseAngle + (simActive ? simClock * orbitSpeed : 0);
-                    const radius = 160 + (simActive ? Math.sin(simClock * floatSpeed) * 10 : 0);
+                    
+                    // 7 rounds = 14 * Math.PI. Tying to progress ensures it stops at exactly 7 rounds.
+                    // Because we slowed down progress, this now happens at a smooth, visible speed.
+                    const totalRotation = (worker.progress / 100) * (14 * Math.PI);
+                    const angle = baseAngle + totalRotation;
+                    
+                    const isWorking = worker.progress < 100 && simActive;
+                    const radius = 160 + (isWorking ? Math.sin(simClock * 0.05) * 10 : 0);
+                    
                     const x = Math.cos(angle) * radius;
                     const y = Math.sin(angle) * radius;
 
@@ -640,7 +644,7 @@ const App: React.FC = () => {
                         key={worker.id}
                         initial={false}
                         animate={{ x, y }}
-                        transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+                        transition={{ type: 'spring', damping: 30, stiffness: 60 }}
                         className="absolute bg-white p-4 rounded-2xl border border-gray-100 shadow-md w-44 z-0"
                       >
                         <div className="flex items-center justify-between mb-2">
