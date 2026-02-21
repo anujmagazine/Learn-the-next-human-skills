@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
-import { AppView, AgentStream, DrillScenario } from './types';
+import { AppView, AgentStream, DrillScenario, SimNotification, Worktree, TraditionalStep } from './types';
 import { orchestrationService } from './services/gemini';
 import Visualizer from './components/Visualizer';
 
@@ -52,19 +52,37 @@ const App: React.FC = () => {
   const [stats, setStats] = useState({ switches: 0, interventions: 0 });
   const logContainerRef = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Unified Simulation States
+  // New Simulation States
   const [simActive, setSimActive] = useState(false);
+  const [showInfrastructure, setShowInfrastructure] = useState(false);
   
-  // Simulation states
   const [tradSim, setTradSim] = useState({
     elapsed: 0,
-    progress: new Array(SIM_TASKS.length).fill(0),
-    completed: new Set<number>()
+    activeStepIndex: 0,
+    steps: [
+      { id: 'code', label: 'Code', status: 'pending', progress: 0 },
+      { id: 'test', label: 'Test', status: 'pending', progress: 0 },
+      { id: 'fix', label: 'Fix', status: 'pending', progress: 0 },
+      { id: 'integrate', label: 'Integrate', status: 'pending', progress: 0 },
+      { id: 'deploy', label: 'Deploy', status: 'pending', progress: 0 },
+    ] as TraditionalStep[],
+    isSwitchingBranch: false,
+    completedCycles: 0
   });
-  const [modernSim, setModernSim] = useState({
+
+  const [agenticSim, setAgenticSim] = useState({
     elapsed: 0,
-    progress: new Array(SIM_TASKS.length).fill(0),
-    completed: new Set<number>()
+    worktrees: [
+      { id: 'wt-1', name: '/wt-feature-login', branch: 'feature-login', progress: 0, status: 'working', agent: 'Feature Agent' },
+      { id: 'wt-2', name: '/wt-refactor-auth', branch: 'refactor-auth', progress: 0, status: 'working', agent: 'Refactor Agent' },
+      { id: 'wt-3', name: '/wt-docs-update', branch: 'docs-update', progress: 0, status: 'working', agent: 'Docs Agent' },
+      { id: 'wt-4', name: '/wt-verification', branch: 'verification', progress: 0, status: 'working', agent: 'Verification Agent' },
+      { id: 'wt-5', name: '/wt-tests', branch: 'tests', progress: 0, status: 'working', agent: 'Test Agent' },
+    ] as Worktree[],
+    notifications: [] as SimNotification[],
+    teleportAgentId: null as string | null,
+    teleportTarget: 'terminal' as 'terminal' | 'browser' | 'mobile' | 'desktop',
+    humanActions: 0
   });
 
   const startDrill = (drill: DrillScenario) => {
@@ -94,13 +112,30 @@ const App: React.FC = () => {
     setSimActive(false);
     setTradSim({
       elapsed: 0,
-      progress: new Array(SIM_TASKS.length).fill(0),
-      completed: new Set<number>()
+      activeStepIndex: 0,
+      steps: [
+        { id: 'code', label: 'Code', status: 'pending', progress: 0 },
+        { id: 'test', label: 'Test', status: 'pending', progress: 0 },
+        { id: 'fix', label: 'Fix', status: 'pending', progress: 0 },
+        { id: 'integrate', label: 'Integrate', status: 'pending', progress: 0 },
+        { id: 'deploy', label: 'Deploy', status: 'pending', progress: 0 },
+      ] as TraditionalStep[],
+      isSwitchingBranch: false,
+      completedCycles: 0
     });
-    setModernSim({
+    setAgenticSim({
       elapsed: 0,
-      progress: new Array(SIM_TASKS.length).fill(0),
-      completed: new Set<number>()
+      worktrees: [
+        { id: 'wt-1', name: '/wt-feature-login', branch: 'feature-login', progress: 0, status: 'working', agent: 'Feature Agent' },
+        { id: 'wt-2', name: '/wt-refactor-auth', branch: 'refactor-auth', progress: 0, status: 'working', agent: 'Refactor Agent' },
+        { id: 'wt-3', name: '/wt-docs-update', branch: 'docs-update', progress: 0, status: 'working', agent: 'Docs Agent' },
+        { id: 'wt-4', name: '/wt-verification', branch: 'verification', progress: 0, status: 'working', agent: 'Verification Agent' },
+        { id: 'wt-5', name: '/wt-tests', branch: 'tests', progress: 0, status: 'working', agent: 'Test Agent' },
+      ] as Worktree[],
+      notifications: [],
+      teleportAgentId: null,
+      teleportTarget: 'terminal',
+      humanActions: 0
     });
   };
 
@@ -108,89 +143,105 @@ const App: React.FC = () => {
     if (!simActive || view !== AppView.EVOLUTION) return;
     
     const interval = setInterval(() => {
-      const workPerTick = 0.5; 
-      const speedupFactor = 25.0; 
-      const MAX_CONCURRENT_TRAD = 2;
+      const tick = 0.1;
 
-      let tradDone = false;
-      let modernDone = false;
-
-      // Tick Traditional
+      // Traditional Simulation Logic
       setTradSim(prev => {
-        if (prev.completed.size === SIM_TASKS.length) {
-          tradDone = true;
-          return prev;
-        }
+        if (prev.completedCycles >= 1) return prev; // Stop after one full cycle for demo
 
-        const readyTasks = SIM_TASKS.filter(t => 
-          !prev.completed.has(t.id) && 
-          (t.deps as number[]).every(depId => prev.completed.has(depId))
-        ).slice(0, MAX_CONCURRENT_TRAD);
+        const nextSteps = [...prev.steps];
+        let nextActiveIndex = prev.activeStepIndex;
+        let nextIsSwitching = prev.isSwitchingBranch;
+        let nextCycles = prev.completedCycles;
 
-        if (readyTasks.length === 0) return prev;
-
-        const nextProgress = [...prev.progress];
-        const nextCompleted = new Set(prev.completed);
-        
-        readyTasks.forEach(task => {
-          const idx = SIM_TASKS.findIndex(t => t.id === task.id);
-          nextProgress[idx] += (workPerTick / task.duration) * 100;
-          if (nextProgress[idx] >= 99.9) {
-            nextProgress[idx] = 100;
-            nextCompleted.add(task.id);
+        if (nextIsSwitching) {
+          // Branch switching delay simulation
+          if (Math.random() > 0.95) {
+            nextIsSwitching = false;
           }
-        });
+        } else {
+          const currentStep = nextSteps[nextActiveIndex];
+          currentStep.status = 'active';
+          currentStep.progress += 2; // Linear progress
 
-        if (nextCompleted.size === SIM_TASKS.length) tradDone = true;
-
-        return {
-          elapsed: prev.elapsed + workPerTick,
-          progress: nextProgress,
-          completed: nextCompleted
-        };
-      });
-
-      // Tick Modern
-      setModernSim(prev => {
-        if (prev.completed.size === SIM_TASKS.length) {
-          modernDone = true;
-          return prev;
-        }
-
-        const nextProgress = [...prev.progress];
-        const nextCompleted = new Set(prev.completed);
-        
-        SIM_TASKS.forEach((task, idx) => {
-          if (nextProgress[idx] < 100) {
-            const increment = (workPerTick / (task.duration / speedupFactor)) * 100;
-            nextProgress[idx] += increment;
-            
-            if (nextProgress[idx] >= 99.9) {
-              nextProgress[idx] = 100;
-              nextCompleted.add(task.id);
+          if (currentStep.progress >= 100) {
+            currentStep.status = 'completed';
+            currentStep.progress = 100;
+            if (nextActiveIndex < nextSteps.length - 1) {
+              nextActiveIndex++;
+              // Simulate context switch delay between major steps
+              if (nextActiveIndex === 3) nextIsSwitching = true; 
+            } else {
+              nextCycles++;
             }
           }
-        });
-
-        if (nextCompleted.size === SIM_TASKS.length) modernDone = true;
+        }
 
         return {
-          elapsed: prev.elapsed + workPerTick,
-          progress: nextProgress,
-          completed: nextCompleted
+          ...prev,
+          elapsed: prev.elapsed + tick,
+          activeStepIndex: nextActiveIndex,
+          steps: nextSteps,
+          isSwitchingBranch: nextIsSwitching,
+          completedCycles: nextCycles
         };
       });
-    }, 40);
+
+      // Agentic Simulation Logic
+      setAgenticSim(prev => {
+        const allDone = prev.worktrees.every(wt => wt.status === 'completed');
+        if (allDone) return prev;
+
+        const nextWorktrees = prev.worktrees.map(wt => {
+          if (wt.status === 'completed') return wt;
+          const nextProgress = wt.progress + (Math.random() * 5);
+          return {
+            ...wt,
+            progress: nextProgress >= 100 ? 100 : nextProgress,
+            status: nextProgress >= 100 ? 'completed' : 'working'
+          };
+        });
+
+        // Random Notifications
+        let nextNotifications = [...prev.notifications];
+        if (Math.random() > 0.97 && nextNotifications.length < 3) {
+          const agents = ['Feature Agent', 'Refactor Agent', 'Docs Agent', 'Verification Agent', 'Test Agent'];
+          const types: ('approval' | 'regression' | 'ready')[] = ['approval', 'regression', 'ready'];
+          const type = types[Math.floor(Math.random() * types.length)];
+          const agent = agents[Math.floor(Math.random() * agents.length)];
+          
+          const messages = {
+            approval: "needs approval for major refactor",
+            regression: "flagged a potential regression in core",
+            ready: "ready to merge into main"
+          };
+
+          nextNotifications.push({
+            id: Math.random().toString(36).substr(2, 9),
+            agentName: agent,
+            message: messages[type],
+            type
+          });
+        }
+
+        return {
+          ...prev,
+          elapsed: prev.elapsed + tick,
+          worktrees: nextWorktrees,
+          notifications: nextNotifications
+        };
+      });
+
+    }, 100);
 
     return () => clearInterval(interval);
   }, [simActive, view]);
 
-  // Separate effect to stop simulation when both are done
   useEffect(() => {
-    if (simActive && tradSim.completed.size === SIM_TASKS.length && modernSim.completed.size === SIM_TASKS.length) {
+    if (simActive && tradSim.completedCycles >= 1 && agenticSim.worktrees.every(wt => wt.status === 'completed')) {
       setSimActive(false);
     }
-  }, [simActive, tradSim.completed.size, modernSim.completed.size]);
+  }, [simActive, tradSim.completedCycles, agenticSim.worktrees]);
 
   useEffect(() => {
     if (!isDrillRunning || !activeDrill || intervention) return;
@@ -418,17 +469,11 @@ COORDINATE tasks from CLI core to autonomous debugging concurrently.
 ENSURE context sharing between Terminal-1 (Core) and Terminal-3 (API).
 GOAL: Ship a production-ready agentic tool in < 12 hours.`;
 
-    const formatTime = (hours: number) => {
-      if (hours < 16) return `${hours.toFixed(1)} Work Hours`;
-      const days = (hours / 8).toFixed(1);
-      return `${days} Work Days`;
-    };
-
-    const isDone = tradSim.completed.size === SIM_TASKS.length && modernSim.completed.size === SIM_TASKS.length;
+    const isDone = tradSim.completedCycles >= 1 && agenticSim.worktrees.every(wt => wt.status === 'completed');
 
     return (
-      <div className="max-w-7xl mx-auto py-12 px-20 animate-in fade-in duration-700 overflow-visible">
-        <div className="flex items-center gap-4 mb-8">
+      <div className="max-w-7xl mx-auto py-12 px-4 md:px-8 animate-in fade-in duration-700">
+        <div className="flex items-center justify-between mb-12">
           <button 
             onClick={() => setView(AppView.LANDING)} 
             className="text-brand-platinum/50 hover:text-brand-green transition-colors flex items-center gap-2 font-bold uppercase text-xs tracking-widest"
@@ -436,149 +481,275 @@ GOAL: Ship a production-ready agentic tool in < 12 hours.`;
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
             Back to Missions
           </button>
+
+          <div className="flex items-center gap-4">
+            <span className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest">Infrastructure View</span>
+            <button 
+              onClick={() => setShowInfrastructure(!showInfrastructure)}
+              className={`w-12 h-6 rounded-full transition-all relative ${showInfrastructure ? 'bg-brand-green' : 'bg-brand-platinum/10'}`}
+            >
+              <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${showInfrastructure ? 'left-7' : 'left-1'}`}></div>
+            </button>
+          </div>
         </div>
 
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter text-brand-platinum uppercase">
-            How <span className="gradient-text">Agentic Development</span> Works
+            The <span className="gradient-text">Cognitive Shift</span>
           </h1>
           <p className="text-brand-platinum/60 text-lg max-w-2xl mx-auto">
-            Witness the paradigm shift from manual sequential production to automated agentic parallelism.
+            Traditional execution vs. Agentic orchestration.
           </p>
         </div>
 
-        {/* Comparison Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-12 relative overflow-visible">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           
-          {/* TRADITIONAL SIDE */}
-          <div className="glass rounded-[40px] border-brand-platinum/10 p-8 flex flex-col relative overflow-visible shadow-2xl">
-             {/* HANDWRITTEN ANNOTATION - LEFT SIDE */}
-             <div className="absolute top-1/2 left-0 -translate-x-[calc(100%+1rem)] -translate-y-1/2 hidden lg:flex flex-col items-center pointer-events-none z-50 min-w-[200px]">
-               <span className="font-handwritten text-brand-platinum/90 text-3xl mb-2 whitespace-nowrap rotate-[-5deg]">Manual code as an input</span>
-               <svg className="w-48 h-20 text-brand-platinum/50 overflow-visible" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 100 40">
-                  <path d="M100 10 C 70 30, 40 30, 10 15" strokeLinecap="round" strokeDasharray="3,2" />
-                  <path d="M10 15 L 28 8 M 10 15 L 22 30" strokeLinejoin="round" />
-               </svg>
-             </div>
+          {/* LEFT PANEL: TRADITIONAL */}
+          <div className="glass rounded-[32px] border-brand-platinum/10 p-8 flex flex-col min-h-[600px] relative overflow-hidden">
+            <div className="flex justify-between items-start mb-8">
+              <div>
+                <h2 className="text-2xl font-black text-brand-platinum uppercase tracking-tighter">Sequential Execution</h2>
+                <p className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest mt-1">Manual Context Switching | One Cognitive Thread</p>
+              </div>
+              <div className="text-right">
+                <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Efficiency</div>
+                <div className="text-xl font-mono text-brand-platinum">Linear</div>
+              </div>
+            </div>
 
-             <div className="flex flex-col items-center mb-8">
-                <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center text-2xl border-2 border-orange-500/40 mb-4">🧑‍💻</div>
-                <h2 className="text-xl font-black text-brand-platinum uppercase text-center tracking-tighter">Traditional Software Engineering</h2>
-                <p className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest mt-1">Mostly sequential, predominantly manual</p>
-                <div className="mt-4 flex items-center gap-4">
-                   <div className="text-center px-4 border-r border-brand-platinum/10">
-                      <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Effort</div>
-                      <div className="text-lg font-mono text-brand-platinum">{tradSim.elapsed.toFixed(1)}h</div>
-                   </div>
-                   <div className="text-center px-4">
-                      <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Tasks</div>
-                      <div className="text-lg font-mono text-brand-platinum">{tradSim.completed.size}/{SIM_TASKS.length}</div>
-                   </div>
+            <div className="flex-1 flex flex-col items-center justify-center gap-12">
+              {(!simActive && tradSim.elapsed === 0) ? (
+                <div className="glass rounded-xl overflow-hidden border border-brand-platinum/10 shadow-2xl w-full h-full flex flex-col relative">
+                  <div className="bg-brand-navy/60 px-4 py-2 flex items-center justify-between border-b border-brand-platinum/5">
+                    <div className="flex gap-1.5"><div className="w-2 h-2 rounded-full bg-red-500/50"></div><div className="w-2 h-2 rounded-full bg-yellow-500/50"></div><div className="w-2 h-2 rounded-full bg-brand-green/50"></div></div>
+                    <div className="text-[8px] font-mono text-brand-platinum/40 uppercase tracking-widest">auth-engine.ts</div>
+                  </div>
+                  <div className="p-4 font-mono text-[11px] leading-relaxed overflow-hidden flex-1 opacity-50">
+                    <pre className="text-brand-platinum/80 whitespace-pre-wrap">
+                      {codeSnippet.split('\n').map((line, i) => (
+                        <div key={i} className="flex gap-3"><span className="text-brand-platinum/20 w-3 text-right">{i+1}</span><span>{line}</span></div>
+                      ))}
+                    </pre>
+                  </div>
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-brand-navy to-transparent pointer-events-none"></div>
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 font-handwritten text-brand-platinum/90 text-xl rotate-[-2deg] whitespace-nowrap">
+                    Manual code as an input
+                  </div>
                 </div>
-             </div>
+              ) : (
+                <>
+                  {/* Developer Avatar */}
+                  <div className="relative">
+                    <div className={`w-20 h-20 rounded-full bg-brand-platinum/10 flex items-center justify-center text-3xl border-2 border-brand-platinum/20 ${simActive && !tradSim.isSwitchingBranch ? 'animate-pulse ring-4 ring-brand-platinum/10' : ''}`}>
+                      🧑‍💻
+                    </div>
+                    {tradSim.isSwitchingBranch && (
+                      <div className="absolute -top-4 -right-4 bg-brand-navy border border-brand-platinum/20 px-3 py-1 rounded-lg text-[8px] font-bold text-brand-platinum animate-bounce">
+                        Switching branch...
+                      </div>
+                    )}
+                  </div>
 
-             <div className="flex-1 relative">
-               {(!simActive && tradSim.completed.size === 0) ? (
-                 <div className="glass rounded-xl overflow-hidden border border-brand-platinum/10 shadow-2xl h-full flex flex-col relative">
-                    <div className="bg-brand-navy/60 px-4 py-2 flex items-center justify-between border-b border-brand-platinum/5">
-                      <div className="flex gap-1.5"><div className="w-2 h-2 rounded-full bg-red-500/50"></div><div className="w-2 h-2 rounded-full bg-yellow-500/50"></div><div className="w-2 h-2 rounded-full bg-brand-green/50"></div></div>
-                      <div className="text-[8px] font-mono text-brand-platinum/40 uppercase tracking-widest">auth-engine.ts</div>
-                    </div>
-                    <div className="p-4 font-mono text-[11px] leading-relaxed overflow-hidden flex-1 opacity-50">
-                       <pre className="text-brand-platinum/80 whitespace-pre-wrap">
-                        {codeSnippet.split('\n').map((line, i) => (
-                           <div key={i} className="flex gap-3"><span className="text-brand-platinum/20 w-3 text-right">{i+1}</span><span>{line}</span></div>
-                        ))}
-                       </pre>
-                    </div>
-                 </div>
-               ) : (
-                 <div className="grid grid-cols-2 gap-3">
-                   {SIM_TASKS.map((task, idx) => (
-                     <div key={task.id} className={`p-3 rounded-xl border transition-all duration-500 ${tradSim.completed.has(task.id) ? 'bg-orange-500/10 border-orange-500/30 shadow-glow' : tradSim.progress[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
-                       <div className="flex justify-between items-center mb-1">
-                         <span className={`text-[8px] font-bold uppercase tracking-widest ${tradSim.completed.has(task.id) ? 'text-orange-400' : 'text-brand-platinum/40'}`}>Phase {idx + 1}</span>
-                         <span className="text-[8px] font-mono text-brand-platinum/30">{task.duration}h</span>
-                       </div>
-                       <div className="text-[10px] font-bold text-brand-platinum mb-2 truncate">{task.name}</div>
-                       <div className="w-full h-1 bg-brand-platinum/5 rounded-full overflow-hidden">
-                         <div className="h-full bg-orange-500 transition-all duration-100" style={{ width: `${tradSim.progress[idx]}%` }}></div>
-                       </div>
-                     </div>
-                   ))}
-                 </div>
-               )}
-             </div>
+                  {/* Activity Pipeline */}
+                  <div className="w-full max-w-xs space-y-4">
+                    {tradSim.steps.map((step, idx) => (
+                      <div key={step.id} className={`relative p-4 rounded-xl border transition-all duration-500 ${step.status === 'active' ? 'bg-brand-platinum/10 border-brand-platinum/40 shadow-lg' : step.status === 'completed' ? 'bg-brand-green/5 border-brand-green/20 opacity-50' : 'bg-white/5 border-white/5 opacity-30'}`}>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-brand-platinum">{step.label}</span>
+                          {step.status === 'active' && <span className="text-[8px] font-mono text-brand-platinum/40">{Math.round(step.progress)}%</span>}
+                        </div>
+                        <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                          <div className="h-full bg-brand-platinum transition-all duration-100" style={{ width: `${step.progress}%` }}></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {showInfrastructure && (
+                <div className="w-full p-4 bg-brand-navy/40 rounded-2xl border border-brand-platinum/5 animate-in fade-in zoom-in duration-300">
+                  <div className="text-[8px] font-bold text-brand-platinum/30 uppercase mb-2">Infrastructure View</div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-brand-platinum/20 rounded-sm"></div>
+                    <span className="text-[10px] font-mono text-brand-platinum/60">/project-main (branch: feature-login)</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-8 pt-8 border-t border-brand-platinum/5 grid grid-cols-2 gap-4">
+              <div>
+                <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Time Elapsed</div>
+                <div className="text-lg font-mono text-brand-platinum">{(tradSim.elapsed * 10).toFixed(1)}h</div>
+              </div>
+              <div>
+                <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Cognitive Load</div>
+                <div className="text-lg font-mono text-red-400">High</div>
+              </div>
+            </div>
           </div>
 
-          {/* MODERN SIDE */}
-          <div className="glass rounded-[40px] border-brand-green/20 p-8 flex flex-col relative overflow-visible bg-brand-green/[0.01] shadow-2xl">
-             {/* HANDWRITTEN ANNOTATION - RIGHT SIDE */}
-             <div className="absolute top-1/2 right-0 translate-x-[calc(100%+1rem)] -translate-y-1/2 hidden lg:flex flex-col items-center pointer-events-none z-50 min-w-[200px]">
-               <span className="font-handwritten text-brand-green/90 text-3xl mb-2 whitespace-nowrap rotate-[5deg]">Prompt as an input</span>
-               <svg className="w-48 h-20 text-brand-green/50 overflow-visible" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 100 40">
-                  <path d="M0 10 C 30 30, 60 30, 90 15" strokeLinecap="round" strokeDasharray="3,2" />
-                  <path d="M90 15 L 72 8 M 90 15 L 80 30" strokeLinejoin="round" />
-               </svg>
-             </div>
+          {/* RIGHT PANEL: AGENTIC */}
+          <div className="glass rounded-[32px] border-brand-green/20 p-8 flex flex-col min-h-[600px] relative overflow-hidden bg-brand-green/[0.02]">
+            <div className="flex justify-between items-start mb-8">
+              <div>
+                <h2 className="text-2xl font-black text-brand-platinum uppercase tracking-tighter">Orchestrated Parallelism</h2>
+                <p className="text-[10px] font-bold text-brand-green/60 uppercase tracking-widest mt-1">Persistent Agent Swarm | Hybrid Swarm Orchestration</p>
+              </div>
+              <div className="text-right">
+                <div className="text-[10px] font-bold text-brand-green/30 uppercase tracking-widest">Efficiency</div>
+                <div className="text-xl font-mono text-brand-green">Exponential</div>
+              </div>
+            </div>
 
-             <div className="flex flex-col items-center mb-8">
-                <div className="w-16 h-16 bg-brand-green/20 rounded-full flex items-center justify-center text-2xl border-2 border-orange-500 shadow-glow mb-4 text-orange-500 font-bold">⚡</div>
-                <h2 className="text-xl font-black text-brand-platinum uppercase text-center tracking-tighter">Agentic Software Engineering</h2>
-                <p className="text-[10px] font-bold text-brand-green/60 uppercase tracking-widest mt-1">Predominantly automated</p>
-                <div className="mt-4 flex items-center gap-4">
-                   <div className="text-center px-4 border-r border-brand-platinum/10">
-                      <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Time passed</div>
-                      <div className="text-lg font-mono text-brand-green">{modernSim.elapsed.toFixed(1)}h</div>
-                   </div>
-                   <div className="text-center px-4">
-                      <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Integration</div>
-                      <div className="text-lg font-mono text-brand-green">{modernSim.completed.size}/{SIM_TASKS.length}</div>
-                   </div>
+            <div className="flex-1 relative flex flex-col gap-8">
+              {(!simActive && agenticSim.elapsed === 0) ? (
+                <div className="glass rounded-xl overflow-hidden border border-brand-green/30 shadow-2xl w-full h-full flex flex-col relative">
+                  <div className="bg-brand-green/10 px-4 py-2 flex items-center justify-between border-b border-brand-green/20">
+                    <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-green shadow-glow"></div><span className="text-[9px] font-black text-brand-green uppercase tracking-widest">Fleet Orchestrator</span></div>
+                  </div>
+                  <div className="p-6 font-mono text-[13px] leading-relaxed italic text-brand-platinum/60 overflow-hidden flex-1">
+                    {modernPrompt.split('\n').map((line, i) => (
+                      <div key={i} className="mb-1"><span className="text-brand-green mr-2">›</span>{line}</div>
+                    ))}
+                    <div className="mt-4 animate-pulse text-[10px] text-brand-green/40 uppercase tracking-widest">Awaiting Command...</div>
+                  </div>
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-brand-navy to-transparent pointer-events-none"></div>
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 font-handwritten text-brand-green/90 text-xl rotate-[2deg] whitespace-nowrap">
+                    Prompt as an input
+                  </div>
                 </div>
-             </div>
+              ) : (
+                <>
+                  {/* Worktrees & Agents */}
+                  <div className="grid grid-cols-1 gap-3">
+                    {agenticSim.worktrees.map((wt) => (
+                      <div key={wt.id} className={`p-3 rounded-xl border transition-all duration-500 flex items-center gap-4 ${wt.status === 'completed' ? 'bg-brand-green/10 border-brand-green/30' : 'bg-brand-platinum/5 border-brand-platinum/10'}`}>
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg border border-brand-green/20 ${wt.status === 'working' ? 'animate-pulse bg-brand-green/10' : 'bg-brand-green/20'}`}>
+                          🤖
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex justify-between items-center mb-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-bold text-brand-platinum">{wt.agent}</span>
+                              <button 
+                                onClick={() => {
+                                  const targets: ('terminal' | 'browser' | 'mobile' | 'desktop')[] = ['terminal', 'browser', 'mobile', 'desktop'];
+                                  const currentIdx = targets.indexOf(agenticSim.teleportTarget);
+                                  const nextTarget = targets[(currentIdx + 1) % targets.length];
+                                  setAgenticSim(prev => ({ ...prev, teleportAgentId: wt.id, teleportTarget: nextTarget }));
+                                  setTimeout(() => setAgenticSim(prev => ({ ...prev, teleportAgentId: null })), 2000);
+                                }}
+                                className="text-[8px] bg-brand-green/10 hover:bg-brand-green/20 text-brand-green px-1 rounded uppercase tracking-tighter transition-all"
+                              >
+                                Teleport
+                              </button>
+                            </div>
+                            <span className="text-[8px] font-mono text-brand-platinum/40">{wt.branch}</span>
+                          </div>
+                          <div className="h-1 bg-white/5 rounded-full overflow-hidden relative">
+                            <div className="h-full bg-brand-green shadow-glow transition-all duration-100" style={{ width: `${wt.progress}%` }}></div>
+                            {agenticSim.teleportAgentId === wt.id && (
+                              <div className="absolute inset-0 bg-brand-green/40 animate-pulse flex items-center justify-center">
+                                <span className="text-[8px] font-bold text-white uppercase tracking-widest">
+                                  Session Teleport: {agenticSim.teleportTarget}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
 
-             <div className="flex-1 relative">
-               {(!simActive && modernSim.completed.size === 0) ? (
-                 <div className="glass rounded-xl overflow-hidden border border-brand-green/30 shadow-2xl h-full flex flex-col">
-                    <div className="bg-brand-green/10 px-4 py-2 flex items-center justify-between border-b border-brand-green/20">
-                      <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-brand-green shadow-glow"></div><span className="text-[9px] font-black text-brand-green uppercase tracking-widest">Fleet Orchestrator</span></div>
+                  {/* Notifications / Human Actions */}
+                  <div className="absolute bottom-0 right-0 w-64 space-y-2 z-20">
+                    {agenticSim.notifications.map((n) => (
+                      <div key={n.id} className="glass p-3 rounded-xl border-brand-green/30 shadow-2xl animate-in slide-in-from-right-4 duration-300">
+                        <div className="text-[8px] font-bold text-brand-green uppercase mb-1">{n.agentName}</div>
+                        <div className="text-[10px] text-brand-platinum mb-2">{n.message}</div>
+                        <div className="flex gap-2">
+                          <button 
+                            onClick={() => setAgenticSim(prev => ({ ...prev, notifications: prev.notifications.filter(x => x.id !== n.id), humanActions: prev.humanActions + 1 }))}
+                            className="flex-1 bg-brand-green/20 hover:bg-brand-green/40 text-brand-green text-[8px] font-bold py-1 rounded uppercase tracking-widest transition-all"
+                          >
+                            Approve
+                          </button>
+                          <button 
+                            onClick={() => setAgenticSim(prev => ({ ...prev, notifications: prev.notifications.filter(x => x.id !== n.id), humanActions: prev.humanActions + 1 }))}
+                            className="flex-1 bg-brand-platinum/10 hover:bg-brand-platinum/20 text-brand-platinum text-[8px] font-bold py-1 rounded uppercase tracking-widest transition-all"
+                          >
+                            Redirect
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Merge Flow */}
+                  <div className="mt-8 p-4 border border-brand-green/10 rounded-2xl bg-brand-green/[0.02] relative overflow-hidden">
+                    <div className="text-[8px] font-bold text-brand-green/40 uppercase mb-4 tracking-widest">Merge Flow: Parallel Worktrees → MAIN</div>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex flex-col gap-2">
+                        {agenticSim.worktrees.map(wt => (
+                          <div key={wt.id} className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full transition-all duration-500 ${wt.status === 'completed' ? 'bg-brand-green shadow-glow' : 'bg-brand-platinum/10'}`}></div>
+                            <div className={`h-[1px] w-8 transition-all duration-500 ${wt.status === 'completed' ? 'bg-brand-green' : 'bg-brand-platinum/10'}`}></div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex-1 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full border-2 border-brand-green/20 flex items-center justify-center relative">
+                          <div className={`absolute inset-0 rounded-full bg-brand-green/10 transition-all duration-1000 ${agenticSim.worktrees.every(wt => wt.status === 'completed') ? 'scale-110 opacity-100' : 'scale-0 opacity-0'}`}></div>
+                          <span className="text-[10px] font-black text-brand-green">MAIN</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="p-6 font-mono text-[13px] leading-relaxed italic text-brand-platinum/60 overflow-hidden flex-1">
-                       {modernPrompt.split('\n').map((line, i) => (
-                         <div key={i} className="mb-1"><span className="text-brand-green mr-2">›</span>{line}</div>
-                       ))}
-                       <div className="mt-4 animate-pulse text-[10px] text-brand-green/40 uppercase tracking-widest">Awaiting Command...</div>
-                    </div>
-                 </div>
-               ) : (
-                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                   {SIM_TASKS.map((task, idx) => (
-                     <div key={task.id} className={`p-3 rounded-xl border transition-all duration-500 ${modernSim.completed.has(task.id) ? 'bg-brand-green/10 border-brand-green/30 shadow-glow' : modernSim.progress[idx] > 0 ? 'bg-brand-platinum/5 border-brand-platinum/20' : 'bg-white/5 border-white/5'}`}>
-                       <div className="flex justify-between items-center mb-1">
-                         <span className={`text-[8px] font-bold uppercase tracking-widest ${modernSim.completed.has(task.id) ? 'text-brand-green' : 'text-brand-platinum/40'}`}>Agent {idx + 1}</span>
-                         <span className="text-[8px] font-mono text-brand-platinum/30">{task.duration}h</span>
-                       </div>
-                       <div className="text-[10px] font-bold text-brand-platinum mb-2 truncate">{task.name}</div>
-                       <div className="w-full h-1 bg-brand-platinum/5 rounded-full overflow-hidden">
-                         <div className="h-full bg-brand-green shadow-glow transition-all duration-100" style={{ width: `${modernSim.progress[idx]}%` }}></div>
-                       </div>
-                     </div>
-                   ))}
-                 </div>
-               )}
-             </div>
+                  </div>
+                </>
+              )}
+
+              {showInfrastructure && (
+                <div className="mt-auto p-4 bg-brand-navy/40 rounded-2xl border border-brand-green/10 animate-in fade-in zoom-in duration-300">
+                  <div className="text-[8px] font-bold text-brand-green/30 uppercase mb-2">Infrastructure View</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {agenticSim.worktrees.map(wt => (
+                      <div key={wt.id} className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-brand-green/20 rounded-sm"></div>
+                        <span className="text-[8px] font-mono text-brand-platinum/40 truncate">{wt.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-8 pt-8 border-t border-brand-platinum/5 grid grid-cols-3 gap-4">
+              <div>
+                <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Time Elapsed</div>
+                <div className="text-lg font-mono text-brand-green">{(agenticSim.elapsed * 10).toFixed(1)}h</div>
+              </div>
+              <div>
+                <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Sessions</div>
+                <div className="text-lg font-mono text-brand-green">10+</div>
+              </div>
+              <div>
+                <div className="text-[10px] font-bold text-brand-platinum/30 uppercase tracking-widest">Cognitive Load</div>
+                <div className="text-lg font-mono text-brand-green">Moderate</div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Central Controls */}
         <div className="flex flex-col items-center justify-center gap-6 mt-12 pb-24">
-           {!simActive && tradSim.completed.size === 0 && (
+           {!simActive && tradSim.completedCycles === 0 && (
               <button 
                 onClick={() => setSimActive(true)} 
                 className="bg-brand-green hover:brightness-110 px-24 py-8 rounded-[32px] font-black text-brand-black uppercase tracking-[0.2em] shadow-glow transition-all hover:scale-105 text-2xl group"
               >
-                Start Simulation
+                ▶ Run Simulation
                 <span className="block text-[10px] opacity-40 group-hover:opacity-100 transition-opacity mt-1">Initialize Production Comparison</span>
               </button>
            )}
@@ -587,7 +758,7 @@ GOAL: Ship a production-ready agentic tool in < 12 hours.`;
              <button onClick={() => setSimActive(false)} className="bg-white/10 hover:bg-white/20 px-12 py-5 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Pause Cycle</button>
            )}
            
-           {!simActive && tradSim.completed.size > 0 && (
+           {!simActive && tradSim.completedCycles > 0 && (
              <button onClick={resetSimulations} className="bg-white/10 hover:bg-white/20 px-12 py-5 rounded-2xl font-black text-brand-platinum uppercase tracking-widest transition-all">Reset Comparison</button>
            )}
 
@@ -595,22 +766,18 @@ GOAL: Ship a production-ready agentic tool in < 12 hours.`;
               <div className="mt-16 animate-in slide-in-from-bottom-12 duration-1000 w-full">
                 <div className="glass p-16 rounded-[60px] border-brand-green/30 text-center relative max-w-4xl mx-auto shadow-2xl shadow-brand-green/10">
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-brand-green rounded-full flex items-center justify-center text-4xl shadow-glow">🎉</div>
-                  <h3 className="text-5xl font-black text-brand-platinum uppercase tracking-tighter mb-8 leading-none">The Verdict: Parallel Wins</h3>
+                  <h3 className="text-5xl font-black text-brand-platinum uppercase tracking-tighter mb-8 leading-none">The Verdict</h3>
                   
-                  <div className="mb-12">
-                    <Visualizer taskCount={SIM_TASKS.length} />
-                  </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left mb-12 border-b border-brand-platinum/10 pb-12">
                      <div className="space-y-3">
-                        <div className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest">Legacy Sequential</div>
-                        <div className="text-4xl font-mono text-brand-platinum">{tradSim.elapsed.toFixed(1)}h</div>
-                        <p className="text-xs text-brand-platinum/40">100% human labor-bound</p>
+                        <div className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest">Traditional</div>
+                        <div className="text-4xl font-mono text-brand-platinum">One mind executing tasks.</div>
+                        <p className="text-xs text-brand-platinum/40">Sequential, manual context switching.</p>
                      </div>
                      <div className="space-y-3">
-                        <div className="text-[10px] font-bold text-brand-green uppercase tracking-widest">Nexus Parallel</div>
-                        <div className="text-4xl font-mono text-brand-green">{modernSim.elapsed.toFixed(1)}h</div>
-                        <p className="text-xs text-brand-green/60">Powered by agentic fleet management</p>
+                        <div className="text-[10px] font-bold text-brand-green uppercase tracking-widest">Agentic</div>
+                        <div className="text-4xl font-mono text-brand-green">One mind orchestrating parallel cognition.</div>
+                        <p className="text-xs text-brand-green/60">Parallel sessions, persistent agents.</p>
                      </div>
                   </div>
                   <p className="text-brand-platinum/60 italic leading-relaxed text-lg mb-12">"You aren't coding faster. You are thinking wider. The shift to parallelism is the most significant evolution in human productivity since the assembly line."</p>

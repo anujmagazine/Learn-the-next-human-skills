@@ -24,3 +24,26 @@ export interface DrillScenario {
   agents: string[];
   disabled?: boolean;
 }
+
+export interface SimNotification {
+  id: string;
+  agentName: string;
+  message: string;
+  type: 'approval' | 'regression' | 'ready';
+}
+
+export interface Worktree {
+  id: string;
+  name: string;
+  branch: string;
+  progress: number;
+  status: 'working' | 'completed';
+  agent: string;
+}
+
+export interface TraditionalStep {
+  id: string;
+  label: string;
+  status: 'pending' | 'active' | 'completed';
+  progress: number;
+}
