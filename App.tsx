@@ -530,20 +530,32 @@ const App: React.FC = () => {
               <div className="space-y-4">
                 <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Step list</div>
                 <div className="space-y-3">
-                  {tradSim.steps.map((step, idx) => (
-                    <div key={step.id} className={`flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 ${idx === tradSim.activeStepIndex && simActive ? 'bg-blue-50 border-blue-100 shadow-sm' : 'bg-white border-gray-100'}`}>
-                      <div className="flex items-center gap-4">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step.status === 'Done' ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
-                          {step.status === 'Done' ? <CheckCircle2 className="w-5 h-5" /> : <ArrowRight className="w-4 h-4" />}
+                  {tradSim.steps.map((step, idx) => {
+                    const isActive = idx === tradSim.activeStepIndex && simActive;
+                    return (
+                      <motion.div 
+                        key={step.id} 
+                        animate={isActive ? { 
+                          backgroundColor: ['rgba(239, 246, 255, 1)', 'rgba(191, 219, 254, 1)', 'rgba(239, 246, 255, 1)'],
+                          borderColor: ['rgba(191, 219, 254, 1)', 'rgba(96, 165, 250, 1)', 'rgba(191, 219, 254, 1)'],
+                          scale: [1, 1.02, 1]
+                        } : {}}
+                        transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                        className={`flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 ${isActive ? 'bg-blue-50 border-blue-200 shadow-md' : 'bg-white border-gray-100'}`}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step.status === 'Done' ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                            {step.status === 'Done' ? <CheckCircle2 className="w-5 h-5" /> : <ArrowRight className="w-4 h-4" />}
+                          </div>
+                          <span className={`font-bold ${step.status === 'Done' ? 'text-gray-400' : 'text-gray-900'}`}>{step.label}</span>
                         </div>
-                        <span className={`font-bold ${step.status === 'Done' ? 'text-gray-400' : 'text-gray-900'}`}>{step.label}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {idx === tradSim.activeStepIndex && simActive && <span className="text-[10px] text-blue-500 font-bold animate-pulse">working...</span>}
-                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{step.status}</span>
-                      </div>
-                    </div>
-                  ))}
+                        <div className="flex items-center gap-2">
+                          {isActive && <span className="text-[10px] text-blue-600 font-black animate-pulse tracking-widest">WORKING...</span>}
+                          <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{step.status}</span>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
