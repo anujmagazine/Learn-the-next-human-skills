@@ -492,22 +492,22 @@ const App: React.FC = () => {
             </div>
 
             {/* Metrics */}
-            <div className="mb-8 pb-8 border-b border-gray-100 grid grid-cols-4 gap-4">
+            <div className={`mb-8 p-6 rounded-[24px] border transition-all duration-500 grid grid-cols-4 gap-4 ${tradSim.isDone ? 'bg-green-50 border-green-200 shadow-sm' : 'border-transparent border-b border-gray-100 pb-8 px-0'}`}>
               <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Active Tasks</div>
-                <div className={`text-lg font-bold transition-colors duration-500 ${tradSim.isDone ? 'text-green-500' : 'text-gray-900'}`}>{simActive && !tradSim.isDone ? 1 : 0}</div>
+                <div className={`text-[10px] font-bold uppercase mb-1 transition-colors duration-500 ${tradSim.isDone ? 'text-green-700' : 'text-gray-400'}`}>Active Tasks</div>
+                <div className={`text-lg font-bold transition-colors duration-500 ${tradSim.isDone ? 'text-green-600' : 'text-gray-900'}`}>{simActive && !tradSim.isDone ? 1 : 0}</div>
               </div>
               <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Project Folders</div>
-                <div className={`text-lg font-bold transition-colors duration-500 ${tradSim.isDone ? 'text-green-500' : 'text-gray-900'}`}>1</div>
+                <div className={`text-[10px] font-bold uppercase mb-1 transition-colors duration-500 ${tradSim.isDone ? 'text-green-700' : 'text-gray-400'}`}>Project Folders</div>
+                <div className={`text-lg font-bold transition-colors duration-500 ${tradSim.isDone ? 'text-green-600' : 'text-gray-900'}`}>1</div>
               </div>
               <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Human Effort</div>
-                <div className={`text-lg font-bold transition-colors duration-500 ${tradSim.isDone ? 'text-green-500' : 'text-orange-500'}`}>High</div>
+                <div className={`text-[10px] font-bold uppercase mb-1 transition-colors duration-500 ${tradSim.isDone ? 'text-green-700' : 'text-gray-400'}`}>Human Effort</div>
+                <div className={`text-lg font-bold transition-colors duration-500 ${tradSim.isDone ? 'text-green-600' : 'text-orange-500'}`}>High</div>
               </div>
               <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Time</div>
-                <div className={`text-lg font-bold transition-colors duration-500 ${tradSim.isDone ? 'text-green-500' : 'text-gray-900'}`}>{tradSim.elapsed.toFixed(1)} hrs</div>
+                <div className={`text-[10px] font-bold uppercase mb-1 transition-colors duration-500 ${tradSim.isDone ? 'text-green-700' : 'text-gray-400'}`}>Time</div>
+                <div className={`text-lg font-bold transition-colors duration-500 ${tradSim.isDone ? 'text-green-600' : 'text-gray-900'}`}>{tradSim.elapsed.toFixed(1)} hrs</div>
               </div>
             </div>
 
@@ -584,22 +584,22 @@ const App: React.FC = () => {
             </div>
 
             {/* Metrics */}
-            <div className="mb-8 pb-8 border-b border-gray-100 grid grid-cols-4 gap-4">
+            <div className={`mb-8 p-6 rounded-[24px] border transition-all duration-500 grid grid-cols-4 gap-4 ${agenticSim.isDone ? 'bg-green-50 border-green-200 shadow-sm' : 'border-transparent border-b border-gray-100 pb-8 px-0'}`}>
               <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Active Workers</div>
-                <div className={`text-lg font-bold transition-colors duration-500 ${agenticSim.isDone ? 'text-green-500' : 'text-gray-900'}`}>10+</div>
+                <div className={`text-[10px] font-bold uppercase mb-1 transition-colors duration-500 ${agenticSim.isDone ? 'text-green-700' : 'text-gray-400'}`}>Active Workers</div>
+                <div className={`text-lg font-bold transition-colors duration-500 ${agenticSim.isDone ? 'text-green-600' : 'text-gray-900'}`}>10+</div>
               </div>
               <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Workspaces</div>
-                <div className={`text-lg font-bold transition-colors duration-500 ${agenticSim.isDone ? 'text-green-500' : 'text-gray-900'}`}>5</div>
+                <div className={`text-[10px] font-bold uppercase mb-1 transition-colors duration-500 ${agenticSim.isDone ? 'text-green-700' : 'text-gray-400'}`}>Workspaces</div>
+                <div className={`text-lg font-bold transition-colors duration-500 ${agenticSim.isDone ? 'text-green-600' : 'text-gray-900'}`}>5</div>
               </div>
               <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Human Role</div>
-                <div className={`text-lg font-bold transition-colors duration-500 ${agenticSim.isDone ? 'text-green-500' : 'text-blue-500'}`}>Supervisor</div>
+                <div className={`text-[10px] font-bold uppercase mb-1 transition-colors duration-500 ${agenticSim.isDone ? 'text-green-700' : 'text-gray-400'}`}>Human Role</div>
+                <div className={`text-lg font-bold transition-colors duration-500 ${agenticSim.isDone ? 'text-green-600' : 'text-blue-500'}`}>Supervisor</div>
               </div>
               <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Time</div>
-                <div className={`text-lg font-bold transition-colors duration-500 ${agenticSim.isDone ? 'text-green-500' : 'text-gray-900'}`}>{agenticSim.elapsed.toFixed(1)} hrs</div>
+                <div className={`text-[10px] font-bold uppercase mb-1 transition-colors duration-500 ${agenticSim.isDone ? 'text-green-700' : 'text-gray-400'}`}>Time</div>
+                <div className={`text-lg font-bold transition-colors duration-500 ${agenticSim.isDone ? 'text-green-600' : 'text-gray-900'}`}>{agenticSim.elapsed.toFixed(1)} hrs</div>
               </div>
             </div>
 
