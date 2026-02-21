@@ -787,21 +787,21 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-8 text-center text-[10px] text-gray-400 font-medium">
+              <div className="mt-8 text-center text-[10px] text-gray-400 font-medium mb-8">
                 Tip: If you want fewer popups, hit Pause and Resume after one notification.
+              </div>
+
+              <div className="text-center">
+                <button 
+                  onClick={() => setView(AppView.HUB)}
+                  className="bg-blue-500 text-white px-12 py-4 rounded-full font-bold text-lg shadow-lg shadow-blue-200 hover:bg-blue-600 transition-all hover:scale-105"
+                >
+                  Finish & Return to Hub
+                </button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-
-        <div className="mt-12 text-center">
-          <button 
-            onClick={() => { setView(AppView.TRAINER); setIsDrillRunning(true); }}
-            className="bg-blue-500 text-white px-12 py-4 rounded-full font-bold text-lg shadow-lg shadow-blue-200 hover:bg-blue-600 transition-all hover:scale-105"
-          >
-            Enter Command Center
-          </button>
-        </div>
       </div>
     );
   };
