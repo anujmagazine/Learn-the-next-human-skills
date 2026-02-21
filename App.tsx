@@ -491,6 +491,26 @@ const App: React.FC = () => {
               </div>
             </div>
 
+            {/* Metrics */}
+            <div className="mb-8 pb-8 border-b border-gray-100 grid grid-cols-4 gap-4">
+              <div className="text-center">
+                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Active Tasks</div>
+                <div className="text-lg font-bold">{simActive && !tradSim.isDone ? 1 : 0}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Project Folders</div>
+                <div className="text-lg font-bold">1</div>
+              </div>
+              <div className="text-center">
+                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Human Effort</div>
+                <div className="text-lg font-bold text-orange-500">High</div>
+              </div>
+              <div className="text-center">
+                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Time</div>
+                <div className="text-lg font-bold">{tradSim.elapsed.toFixed(1)} hrs</div>
+              </div>
+            </div>
+
             <div className="space-y-8 flex-1">
               {/* Project Folder */}
               <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
@@ -528,27 +548,6 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Metrics */}
-            <div className="mt-12 pt-8 border-t border-gray-100 grid grid-cols-4 gap-4">
-              <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Active Tasks</div>
-                <div className="text-lg font-bold">{simActive && !tradSim.isDone ? 1 : 0}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Project Folders</div>
-                <div className="text-lg font-bold">1</div>
-              </div>
-              <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Human Effort</div>
-                <div className="text-lg font-bold text-orange-500">High</div>
-              </div>
-              <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Time</div>
-                <div className="text-lg font-bold">{tradSim.elapsed.toFixed(1)} hrs</div>
-              </div>
-            </div>
-
-            {/* Result */}
             <div className="mt-8 p-6 bg-gray-50 rounded-2xl border border-gray-100">
               <div className="text-xs font-bold text-gray-400 uppercase mb-2">Result</div>
               <div className="text-lg font-bold">
@@ -569,6 +568,26 @@ const App: React.FC = () => {
               <div className="flex items-center gap-2 text-blue-500 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
                 <Headset className="w-4 h-4" />
                 <span className="text-[10px] font-bold uppercase tracking-wider">Orchestrator</span>
+              </div>
+            </div>
+
+            {/* Metrics */}
+            <div className="mb-8 pb-8 border-b border-gray-100 grid grid-cols-4 gap-4">
+              <div className="text-center">
+                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Active Workers</div>
+                <div className="text-lg font-bold">10+</div>
+              </div>
+              <div className="text-center">
+                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Workspaces</div>
+                <div className="text-lg font-bold">5</div>
+              </div>
+              <div className="text-center">
+                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Human Role</div>
+                <div className="text-lg font-bold text-blue-500">Supervisor</div>
+              </div>
+              <div className="text-center">
+                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Time</div>
+                <div className="text-lg font-bold">{agenticSim.elapsed.toFixed(1)} hrs</div>
               </div>
             </div>
 
@@ -715,26 +734,6 @@ const App: React.FC = () => {
                     )}
                   </AnimatePresence>
                 </div>
-              </div>
-            </div>
-
-            {/* Metrics */}
-            <div className="mt-12 pt-8 border-t border-gray-100 grid grid-cols-4 gap-4">
-              <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Active Workers</div>
-                <div className="text-lg font-bold">10+</div>
-              </div>
-              <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Workspaces</div>
-                <div className="text-lg font-bold">5</div>
-              </div>
-              <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Human Role</div>
-                <div className="text-lg font-bold text-blue-500">Supervisor</div>
-              </div>
-              <div className="text-center">
-                <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">Time</div>
-                <div className="text-lg font-bold">{agenticSim.elapsed.toFixed(1)} hrs</div>
               </div>
             </div>
 
