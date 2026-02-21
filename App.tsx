@@ -442,9 +442,18 @@ const App: React.FC = () => {
       <div className="max-w-[1400px] mx-auto py-8 px-6 animate-in fade-in duration-700 bg-[#F8F9FA] min-h-screen text-[#333]">
         {/* Header */}
         <div className="flex justify-between items-start mb-12">
-          <div>
-            <h1 className="text-4xl font-bold mb-2 tracking-tight">One Brain vs Many Brains</h1>
-            <p className="text-gray-500 text-lg">Goal: Show how software gets built in two different ways.</p>
+          <div className="flex items-start gap-6">
+            <button 
+              onClick={() => setView(AppView.HUB)}
+              className="mt-1 p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-900"
+              title="Back to Hub"
+            >
+              <ArrowRight className="w-6 h-6 rotate-180" />
+            </button>
+            <div>
+              <h1 className="text-4xl font-bold mb-2 tracking-tight">One Brain vs Many Brains</h1>
+              <p className="text-gray-500 text-lg">Goal: Show how software gets built in two different ways.</p>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             <button 
