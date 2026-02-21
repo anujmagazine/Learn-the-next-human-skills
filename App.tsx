@@ -148,21 +148,26 @@ const App: React.FC = () => {
       setTradSim(prev => {
         if (prev.isDone) return prev;
 
-        const nextSteps = [...prev.steps];
         let nextActiveIndex = prev.activeStepIndex;
-        let nextElapsed = prev.elapsed + 0.1; // Scale elapsed time
+        let nextElapsed = prev.elapsed + 0.1;
 
-        const currentStep = nextSteps[nextActiveIndex];
-        currentStep.status = 'working...';
-        currentStep.progress += 1.5; // Linear progress
+        const nextSteps = prev.steps.map((step, idx) => {
+          if (idx < nextActiveIndex) return { ...step, status: 'Done', progress: 100 };
+          if (idx === nextActiveIndex) {
+            const nextProgress = step.progress + 1.5;
+            if (nextProgress >= 100) {
+              return { ...step, status: 'Done', progress: 100 };
+            }
+            return { ...step, status: 'working...', progress: nextProgress };
+          }
+          return { ...step, status: 'Waiting', progress: 0 };
+        });
 
-        if (currentStep.progress >= 100) {
-          currentStep.status = 'Done';
-          currentStep.progress = 100;
+        if (nextSteps[nextActiveIndex].status === 'Done') {
           if (nextActiveIndex < nextSteps.length - 1) {
             nextActiveIndex++;
           } else {
-            return { ...prev, elapsed: 42, isDone: true, steps: nextSteps };
+            return { ...prev, elapsed: 42, isDone: true, steps: nextSteps, activeStepIndex: nextActiveIndex };
           }
         }
 
@@ -593,8 +598,12 @@ const App: React.FC = () => {
                   {/* Workers */}
                   {agenticSim.workers.map((worker, idx) => {
                     const angles = [0, 72, 144, 216, 288];
-                    const angle = angles[idx] * (Math.PI / 180);
-                    const radius = 160;
+                    const baseAngle = angles[idx] * (Math.PI / 180);
+                    // Add some movement based on simClock
+                    const orbitSpeed = 0.02;
+                    const floatSpeed = 0.05;
+                    const angle = baseAngle + (simActive ? simClock * orbitSpeed : 0);
+                    const radius = 160 + (simActive ? Math.sin(simClock * floatSpeed) * 10 : 0);
                     const x = Math.cos(angle) * radius;
                     const y = Math.sin(angle) * radius;
 
@@ -603,6 +612,7 @@ const App: React.FC = () => {
                         key={worker.id}
                         initial={false}
                         animate={{ x, y }}
+                        transition={{ type: 'spring', damping: 20, stiffness: 100 }}
                         className="absolute bg-white p-4 rounded-2xl border border-gray-100 shadow-md w-44 z-0"
                       >
                         <div className="flex items-center justify-between mb-2">
@@ -740,41 +750,49 @@ const App: React.FC = () => {
         </div>
 
         {/* Final Comparison */}
-        <div className="bg-white rounded-[40px] border border-gray-100 p-12 shadow-sm">
-          <div className="flex justify-between items-end mb-10">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Final Comparison</h2>
-              <p className="text-gray-500">A simple way to remember the difference.</p>
-            </div>
-            <div className="flex gap-3">
-              <div className="bg-gray-50 px-4 py-2 rounded-full border border-gray-100 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Traditional: Done</div>
-              <div className="bg-blue-50 px-4 py-2 rounded-full border border-blue-100 text-[10px] font-bold text-blue-500 uppercase tracking-widest">Agentic: Done</div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-gray-50 rounded-3xl p-8 border border-gray-100">
-              <div className="text-lg font-bold text-gray-900 mb-1">Traditional</div>
-              <div className="text-sm text-gray-500 mb-6">One brain doing everything.</div>
-              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">One-Line Lesson for Your App</div>
-              <div className="bg-white p-4 rounded-xl border border-gray-200 font-bold text-gray-900">
-                Traditional = <span className="text-gray-400">Doing the work</span>
+        <AnimatePresence>
+          {tradSim.isDone && agenticSim.isDone && (
+            <motion.div 
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-[40px] border border-gray-100 p-12 shadow-sm"
+            >
+              <div className="flex justify-between items-end mb-10">
+                <div>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-2">Final Comparison</h2>
+                  <p className="text-gray-500">A simple way to remember the difference.</p>
+                </div>
+                <div className="flex gap-3">
+                  <div className="bg-gray-50 px-4 py-2 rounded-full border border-gray-100 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Traditional: Done</div>
+                  <div className="bg-blue-50 px-4 py-2 rounded-full border border-blue-100 text-[10px] font-bold text-blue-500 uppercase tracking-widest">Agentic: Done</div>
+                </div>
               </div>
-            </div>
-            <div className="bg-blue-50/50 rounded-3xl p-8 border border-blue-100">
-              <div className="text-lg font-bold text-gray-900 mb-1">Agentic</div>
-              <div className="text-sm text-gray-500 mb-6">One brain directing many workers.</div>
-              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">One-Line Lesson for Your App</div>
-              <div className="bg-white p-4 rounded-xl border border-gray-200 font-bold text-gray-900">
-                Agentic = <span className="text-blue-500">Directing the work</span>
-              </div>
-            </div>
-          </div>
 
-          <div className="mt-8 text-center text-[10px] text-gray-400 font-medium">
-            Tip: If you want fewer popups, hit Pause and Resume after one notification.
-          </div>
-        </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-gray-50 rounded-3xl p-8 border border-gray-100">
+                  <div className="text-lg font-bold text-gray-900 mb-1">Traditional</div>
+                  <div className="text-sm text-gray-500 mb-6">One brain doing everything.</div>
+                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">One-Line Lesson for Your App</div>
+                  <div className="bg-white p-4 rounded-xl border border-gray-200 font-bold text-gray-900">
+                    Traditional = <span className="text-gray-400">Doing the work</span>
+                  </div>
+                </div>
+                <div className="bg-blue-50/50 rounded-3xl p-8 border border-blue-100">
+                  <div className="text-lg font-bold text-gray-900 mb-1">Agentic</div>
+                  <div className="text-sm text-gray-500 mb-6">One brain directing many workers.</div>
+                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">One-Line Lesson for Your App</div>
+                  <div className="bg-white p-4 rounded-xl border border-gray-200 font-bold text-gray-900">
+                    Agentic = <span className="text-blue-500">Directing the work</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 text-center text-[10px] text-gray-400 font-medium">
+                Tip: If you want fewer popups, hit Pause and Resume after one notification.
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="mt-12 text-center">
           <button 
