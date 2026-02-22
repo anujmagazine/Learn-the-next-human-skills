@@ -376,7 +376,7 @@ const App: React.FC = () => {
             <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
               <span className="text-3xl">🧠</span>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Thinking in prompts</h2>
+            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Thinking in Prompts</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               Thinking in prompts is the habit of framing your thoughts as questions or instructions you could give to an AI.
             </p>
