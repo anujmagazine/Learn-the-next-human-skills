@@ -367,6 +367,26 @@ const App: React.FC = () => {
             </div>
           </div>
         </div>
+
+        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
+          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
+            <svg className="w-24 h-24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+          </div>
+          <div className="relative z-10 flex-1">
+            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
+              <span className="text-3xl">🧠</span>
+            </div>
+            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Thinking in prompts</h2>
+            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+              Thinking in prompts is the habit of framing your thoughts as questions or instructions you could give to an AI.
+            </p>
+          </div>
+          <div className="relative z-10 mt-auto">
+            <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
+              Coming Soon
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
