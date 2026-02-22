@@ -482,7 +482,7 @@ const App: React.FC = () => {
           <div className="bg-white rounded-[32px] border border-gray-100 p-10 shadow-sm flex flex-col relative overflow-hidden">
             <div className="flex justify-between items-start mb-8">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Traditional Way</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Traditional Software Development</h2>
                 <p className="text-gray-500 text-sm">One Brain. One Task at a Time.</p>
               </div>
               <div className="flex items-center gap-2 text-gray-400 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
@@ -574,7 +574,7 @@ const App: React.FC = () => {
           <div className="bg-white rounded-[32px] border border-gray-100 p-10 shadow-sm flex flex-col relative overflow-hidden">
             <div className="flex justify-between items-start mb-8">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Agentic Way</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Agentic Software Development</h2>
                 <p className="text-gray-500 text-sm">One Brain. Many Workers.</p>
               </div>
               <div className="flex items-center gap-2 text-blue-500 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
@@ -794,7 +794,7 @@ const App: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-gray-50 rounded-3xl p-8 border border-gray-100">
-                  <div className="text-lg font-bold text-gray-900 mb-1">Traditional</div>
+                  <div className="text-lg font-bold text-gray-900 mb-1">Traditional Software Development</div>
                   <div className="text-sm text-gray-500 mb-6">One brain doing everything.</div>
                   <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">One-Line Lesson for Your App</div>
                   <div className="bg-white p-4 rounded-xl border border-gray-200 font-bold text-gray-900">
@@ -802,7 +802,7 @@ const App: React.FC = () => {
                   </div>
                 </div>
                 <div className="bg-blue-50/50 rounded-3xl p-8 border border-blue-100">
-                  <div className="text-lg font-bold text-gray-900 mb-1">Agentic</div>
+                  <div className="text-lg font-bold text-gray-900 mb-1">Agentic Software Development</div>
                   <div className="text-sm text-gray-500 mb-6">One brain directing many workers.</div>
                   <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">One-Line Lesson for Your App</div>
                   <div className="bg-white p-4 rounded-xl border border-gray-200 font-bold text-gray-900">
