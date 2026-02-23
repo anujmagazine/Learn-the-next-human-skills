@@ -219,6 +219,23 @@ const App: React.FC = () => {
     });
   };
 
+  const handleNotificationAction = () => {
+    setAgenticSim(prev => ({
+      ...prev,
+      notifications: prev.notifications.slice(1)
+    }));
+  };
+
+  const NOTIFICATION_MESSAGES = [
+    "says: looks good.",
+    "requests review on API integration.",
+    "completed unit tests for auth module.",
+    "found a minor bug in the refactor, fixed it.",
+    "updated documentation for the new feature.",
+    "optimized database queries for better performance.",
+    "ready to merge the latest changes."
+  ];
+
   useEffect(() => {
     if (!simActive || view !== AppView.EVOLUTION) return;
     
@@ -278,13 +295,13 @@ const App: React.FC = () => {
 
         // Random Notifications
         let nextNotifications = [...prev.notifications];
-        if (Math.random() > 0.95 && nextNotifications.length < 1 && !allDone) {
+        if (Math.random() > 0.92 && nextNotifications.length < 3 && !allDone) {
           const worker = nextWorkers[Math.floor(Math.random() * nextWorkers.length)];
           if (worker.progress < 100) {
             nextNotifications.push({
               id: Math.random().toString(36).substr(2, 9),
               agentName: worker.name,
-              message: "says: looks good.",
+              message: NOTIFICATION_MESSAGES[Math.floor(Math.random() * NOTIFICATION_MESSAGES.length)],
               type: 'approval'
             });
           }
@@ -996,8 +1013,18 @@ const App: React.FC = () => {
                           </div>
                         </div>
                         <div className="flex gap-3">
-                          <button className="flex-1 bg-white border border-gray-200 py-2 rounded-lg text-xs font-bold hover:bg-gray-50 transition-all shadow-sm">Approve</button>
-                          <button className="flex-1 bg-white border border-gray-200 py-2 rounded-lg text-xs font-bold hover:bg-gray-50 transition-all shadow-sm">Adjust</button>
+                          <button 
+                            onClick={handleNotificationAction}
+                            className="flex-1 bg-white border border-gray-200 py-2 rounded-lg text-xs font-bold hover:bg-gray-50 active:scale-95 transition-all shadow-sm"
+                          >
+                            Approve
+                          </button>
+                          <button 
+                            onClick={handleNotificationAction}
+                            className="flex-1 bg-white border border-gray-200 py-2 rounded-lg text-xs font-bold hover:bg-gray-50 active:scale-95 transition-all shadow-sm"
+                          >
+                            Adjust
+                          </button>
                         </div>
                         <div className="mt-3 text-left text-[10px] text-gray-400 italic">Human guides.</div>
                       </motion.div>
