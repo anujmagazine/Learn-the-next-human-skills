@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
-import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon } from 'lucide-react';
+import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AppView, AgentStream, DrillScenario } from './types';
 import { orchestrationService } from './services/gemini';
@@ -84,6 +84,31 @@ const App: React.FC = () => {
     isDone: false,
     activeDevice: 'laptop' as 'laptop' | 'browser' | 'phone'
   });
+
+  // Verification Fatigue Simulation State
+  const [verSim, setVerSim] = useState({
+    active: false,
+    mode: 'OLD' as 'OLD' | 'NEW',
+    score: 0,
+    integrity: 100,
+    fatigue: 0,
+    currentSnippetIndex: 0,
+    history: [] as { id: string, result: 'correct' | 'missed' | 'false_alarm' }[],
+    isDone: false
+  });
+
+  const VERIFICATION_SNIPPETS = [
+    { id: 'v1', content: 'const total = items.reduce((acc, item) => acc + item.price, 0);', isHallucination: false, explanation: 'Standard reduce pattern for calculating totals.' },
+    { id: 'v2', content: 'The Great Wall of China is visible from the Moon with the naked eye.', isHallucination: true, explanation: 'Common myth. It is actually difficult to see even from low Earth orbit.' },
+    { id: 'v3', content: 'import { useState } from "react";\nconst [count, setCount] = useState(0);', isHallucination: false, explanation: 'Correct React hook usage.' },
+    { id: 'v4', content: 'To reverse a string in Python: "hello"[::-1]', isHallucination: false, explanation: 'Idiomatic Python string slicing.' },
+    { id: 'v5', content: 'The first person to walk on the moon was Neil Armstrong in 1969.', isHallucination: false, explanation: 'Historical fact.' },
+    { id: 'v6', content: 'function add(a, b) { return a - b; }', isHallucination: true, explanation: 'Logic error: function named "add" performs subtraction.' },
+    { id: 'v7', content: 'React components must always start with a lowercase letter.', isHallucination: true, explanation: 'React components must start with an uppercase letter.' },
+    { id: 'v8', content: 'The speed of light is approximately 299,792,458 meters per second.', isHallucination: false, explanation: 'Scientific constant.' },
+    { id: 'v9', content: 'const user = { name: "Alice" }; console.log(user.age.toString());', isHallucination: true, explanation: 'Runtime error: user.age is undefined.' },
+    { id: 'v10', content: 'SQL injection can be prevented using prepared statements.', isHallucination: false, explanation: 'Security best practice.' },
+  ];
 
   const startDrill = (drill: DrillScenario) => {
     if (drill.disabled) return;
@@ -308,23 +333,24 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
-          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
+        <div 
+          onClick={() => setView(AppView.VERIFICATION)}
+          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
+        >
+          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-platinum">
             <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
           </div>
           <div className="relative z-10 flex-1">
-            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
+            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20 group-hover:scale-110 transition-transform">
               <span className="text-3xl">👁️</span>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Verification Fatigue</h2>
+            <h2 className="text-3xl font-bold mb-4 text-brand-platinum group-hover:text-brand-green transition-colors">Verification Fatigue</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               Master high-speed auditing. Train your ability to spot hallucinations and logic errors without succumbing to cognitive exhaustion.
             </p>
           </div>
-          <div className="relative z-10 mt-auto">
-            <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
-              Coming Soon
-            </div>
+          <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
+            Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
           </div>
         </div>
 
@@ -390,6 +416,193 @@ const App: React.FC = () => {
       </div>
     </div>
   );
+
+  const renderVerification = () => {
+    const currentSnippet = VERIFICATION_SNIPPETS[verSim.currentSnippetIndex];
+    
+    const handleAudit = (flagged: boolean) => {
+      const isCorrect = flagged === currentSnippet.isHallucination;
+      
+      setVerSim(prev => {
+        const nextIndex = (prev.currentSnippetIndex + 1) % VERIFICATION_SNIPPETS.length;
+        const newIntegrity = isCorrect ? prev.integrity : Math.max(0, prev.integrity - 15);
+        const newFatigue = Math.min(100, prev.fatigue + (prev.mode === 'NEW' ? 8 : 2));
+        const isDone = prev.currentSnippetIndex === VERIFICATION_SNIPPETS.length - 1;
+
+        return {
+          ...prev,
+          score: isCorrect ? prev.score + 1 : prev.score,
+          integrity: newIntegrity,
+          fatigue: newFatigue,
+          currentSnippetIndex: nextIndex,
+          history: [...prev.history, { id: currentSnippet.id, result: isCorrect ? 'correct' : (flagged ? 'false_alarm' : 'missed') }],
+          isDone: isDone && prev.mode === 'NEW'
+        };
+      });
+    };
+
+    return (
+      <div className="max-w-6xl mx-auto py-12 px-6 animate-in fade-in duration-700">
+        <div className="flex items-center justify-between mb-12">
+          <button onClick={() => setView(AppView.HUB)} className="text-brand-platinum/50 hover:text-brand-green transition-colors flex items-center gap-2 font-bold uppercase text-xs tracking-widest">
+            <ArrowRight className="w-4 h-4 rotate-180" />
+            Back to Hub
+          </button>
+          <div className="flex bg-brand-navy/50 p-1 rounded-xl border border-brand-platinum/10">
+            <button 
+              onClick={() => setVerSim(p => ({...p, mode: 'OLD', score: 0, integrity: 100, fatigue: 0, currentSnippetIndex: 0, history: [], isDone: false}))}
+              className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${verSim.mode === 'OLD' ? 'bg-brand-platinum text-brand-black shadow-lg' : 'text-brand-platinum/40 hover:text-brand-platinum'}`}
+            >
+              Old World
+            </button>
+            <button 
+              onClick={() => setVerSim(p => ({...p, mode: 'NEW', score: 0, integrity: 100, fatigue: 0, currentSnippetIndex: 0, history: [], isDone: false}))}
+              className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${verSim.mode === 'NEW' ? 'bg-brand-green text-brand-black shadow-lg' : 'text-brand-platinum/40 hover:text-brand-platinum'}`}
+            >
+              Agentic Era
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left: Context & Stats */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="glass p-8 rounded-[32px] border-brand-platinum/5">
+              <h2 className="text-2xl font-bold text-brand-platinum mb-2">
+                {verSim.mode === 'OLD' ? 'Human-First Era' : 'Agentic Era'}
+              </h2>
+              <p className="text-sm text-brand-platinum/60 mb-8">
+                {verSim.mode === 'OLD' 
+                  ? 'In the pre-AI world, work was slow. You trusted your colleagues. Verification was a sanity check, not a survival skill.' 
+                  : 'In the agentic era, AI produces at infinite scale. Hallucinations are subtle. Your job is now 90% auditing.'}
+              </p>
+
+              <div className="space-y-6">
+                <div>
+                  <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-2">
+                    <span className="text-brand-platinum/40">System Integrity</span>
+                    <span className={verSim.integrity > 50 ? 'text-brand-green' : 'text-red-400'}>{verSim.integrity}%</span>
+                  </div>
+                  <div className="h-2 bg-brand-navy rounded-full overflow-hidden">
+                    <motion.div 
+                      animate={{ width: `${verSim.integrity}%` }}
+                      className={`h-full ${verSim.integrity > 50 ? 'bg-brand-green' : 'bg-red-400'}`}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-2">
+                    <span className="text-brand-platinum/40">Cognitive Fatigue</span>
+                    <span className={verSim.fatigue < 70 ? 'text-brand-platinum/60' : 'text-orange-400'}>{verSim.fatigue}%</span>
+                  </div>
+                  <div className="h-2 bg-brand-navy rounded-full overflow-hidden">
+                    <motion.div 
+                      animate={{ width: `${verSim.fatigue}%` }}
+                      className={`h-full ${verSim.fatigue < 70 ? 'bg-brand-platinum/40' : 'bg-orange-400'}`}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="glass p-8 rounded-[32px] border-brand-platinum/5">
+              <div className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest mb-4">Audit History</div>
+              <div className="flex flex-wrap gap-2">
+                {verSim.history.map((h, i) => (
+                  <div key={i} className={`w-8 h-8 rounded-lg flex items-center justify-center border ${
+                    h.result === 'correct' ? 'bg-brand-green/10 border-brand-green/20 text-brand-green' : 'bg-red-500/10 border-red-500/20 text-red-400'
+                  }`}>
+                    {h.result === 'correct' ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                  </div>
+                ))}
+                {verSim.history.length === 0 && <div className="text-xs text-brand-platinum/20 italic">No audits yet...</div>}
+              </div>
+            </div>
+          </div>
+
+          {/* Center: The Audit Station */}
+          <div className="lg:col-span-2">
+            <div className="glass p-10 rounded-[40px] border-brand-platinum/5 h-full flex flex-col">
+              <div className="flex justify-between items-center mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-brand-platinum/5 rounded-xl flex items-center justify-center text-brand-platinum/40 border border-brand-platinum/10">
+                    <Search className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-brand-platinum uppercase tracking-widest">Audit Station</div>
+                    <div className="text-[10px] text-brand-platinum/40">Examine the output for hallucinations</div>
+                  </div>
+                </div>
+                <div className="text-xs font-mono text-brand-platinum/20">SNIPPET #{verSim.currentSnippetIndex + 1}</div>
+              </div>
+
+              <div className="flex-1 flex flex-col">
+                <div className="bg-brand-navy/30 rounded-3xl p-8 border border-brand-platinum/5 mb-8 font-mono text-lg leading-relaxed text-brand-platinum min-h-[200px] flex items-center justify-center text-center">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentSnippet.id}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 1.05 }}
+                      className="whitespace-pre-wrap"
+                    >
+                      {currentSnippet.content}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <button 
+                    onClick={() => handleAudit(false)}
+                    className="group relative bg-brand-platinum/5 hover:bg-brand-green/10 border border-brand-platinum/10 hover:border-brand-green/30 p-8 rounded-3xl transition-all text-center"
+                  >
+                    <div className="w-12 h-12 bg-brand-green/10 rounded-full flex items-center justify-center mx-auto mb-4 text-brand-green group-hover:scale-110 transition-transform">
+                      <ShieldCheck className="w-6 h-6" />
+                    </div>
+                    <div className="text-sm font-bold text-brand-platinum uppercase tracking-widest mb-1">Approve</div>
+                    <div className="text-[10px] text-brand-platinum/40">Snippet is correct</div>
+                  </button>
+
+                  <button 
+                    onClick={() => handleAudit(true)}
+                    className="group relative bg-brand-platinum/5 hover:bg-red-500/10 border border-brand-platinum/10 hover:border-red-500/30 p-8 rounded-3xl transition-all text-center"
+                  >
+                    <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-red-400 group-hover:scale-110 transition-transform">
+                      <ShieldAlert className="w-6 h-6" />
+                    </div>
+                    <div className="text-sm font-bold text-brand-platinum uppercase tracking-widest mb-1">Flag Error</div>
+                    <div className="text-[10px] text-brand-platinum/40">Hallucination detected</div>
+                  </button>
+                </div>
+              </div>
+
+              {verSim.isDone && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-8 p-6 bg-brand-green/10 border border-brand-green/20 rounded-2xl text-center"
+                >
+                  <div className="text-brand-green font-bold uppercase tracking-widest text-xs mb-2">Simulation Complete</div>
+                  <p className="text-sm text-brand-platinum/80">
+                    You audited {VERIFICATION_SNIPPETS.length} snippets. Integrity: {verSim.integrity}%. Fatigue: {verSim.fatigue}%.
+                    <br/>
+                    <span className="font-bold">Lesson:</span> In the agentic era, your value is in your ability to catch what the AI misses.
+                  </p>
+                  <button 
+                    onClick={() => setVerSim(p => ({...p, score: 0, integrity: 100, fatigue: 0, currentSnippetIndex: 0, history: [], isDone: false}))}
+                    className="mt-4 text-[10px] font-bold text-brand-green uppercase tracking-widest hover:underline"
+                  >
+                    Restart Simulation
+                  </button>
+                </motion.div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const renderDrillSelector = () => (
     <div className="max-w-6xl mx-auto py-12 animate-in slide-in-from-bottom-4 duration-500">
@@ -891,6 +1104,7 @@ const App: React.FC = () => {
       case AppView.LANDING: return renderDrillSelector();
       case AppView.TRAINER: return renderTrainer();
       case AppView.EVOLUTION: return renderEvolution();
+      case AppView.VERIFICATION: return renderVerification();
       default: return renderHub();
     }
   };
