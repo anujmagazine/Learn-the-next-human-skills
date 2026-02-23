@@ -92,8 +92,7 @@ const App: React.FC = () => {
     linesReviewed: 0,
     fatigue: 0,
     errors: 0,
-    chartData: [] as { x: number, y: number }[],
-    errorPoints: [] as { x: number, y: number }[],
+    chartData: [] as { x: number, y: number, errorY?: number | null }[],
     isDone: false
   });
 
@@ -126,15 +125,18 @@ const App: React.FC = () => {
           
           // Errors start slipping through as fatigue increases
           let newErrors = prev.errors;
-          const newErrorPoints = [...prev.errorPoints];
-          if (newFatigue > 15 && Math.random() < (newFatigue / 300)) {
+          const isError = newFatigue > 30 && Math.random() < (newFatigue / 400);
+          if (isError) {
             newErrors += 1;
-            newErrorPoints.push({ x: newLines, y: Math.round(newFatigue) });
           }
 
           const newChartData = [...prev.chartData];
-          if (newLines % 125 === 0) {
-            newChartData.push({ x: newLines, y: Math.round(newFatigue) });
+          if (newLines % 125 === 0 || isError) {
+            newChartData.push({ 
+              x: newLines, 
+              y: Math.round(newFatigue),
+              errorY: isError ? Math.round(newFatigue) : null
+            });
           }
 
           const isDone = newLines >= 5000;
@@ -143,7 +145,6 @@ const App: React.FC = () => {
             linesReviewed: newLines,
             fatigue: newFatigue,
             errors: newErrors,
-            errorPoints: newErrorPoints,
             chartData: newChartData,
             isDone,
             isRunning: !isDone
@@ -160,8 +161,7 @@ const App: React.FC = () => {
       linesReviewed: 0,
       fatigue: 0,
       errors: 0,
-      chartData: [{ x: 0, y: 0 }],
-      errorPoints: [],
+      chartData: [{ x: 0, y: 0, errorY: null }],
       isDone: false
     });
   };
@@ -603,10 +603,9 @@ const App: React.FC = () => {
                     />
                     <Scatter 
                       name="Errors"
-                      data={verSim.errorPoints} 
+                      dataKey="errorY" 
                       fill="#ef4444" 
                       isAnimationActive={false}
-                      dataKey="y"
                     />
                   </ComposedChart>
                 </ResponsiveContainer>
