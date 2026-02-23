@@ -601,10 +601,13 @@ const App: React.FC = () => {
                       animationDuration={0}
                       isAnimationActive={false}
                     />
-                    <Scatter 
-                      data={verSim.errorPoints} 
-                      fill="#ef4444" 
+                    <Line
+                      data={verSim.errorPoints}
+                      dataKey="y"
+                      stroke="none"
+                      dot={{ r: 4, fill: '#ef4444', strokeWidth: 0 }}
                       isAnimationActive={false}
+                      name="Errors"
                     />
                   </ComposedChart>
                 </ResponsiveContainer>
