@@ -102,9 +102,9 @@ const App: React.FC = () => {
     "Customer churn reduced to 2.1% following onboarding improvements.",
     "Revenue increased 12% quarter over quarter, driven by enterprise renewals.",
     "Compliance certificate acknowledged by regulator last week.",
-    "Board review confirmed submission dated February 31.", // Error: Feb 31
+    "Board review confirmed strategy is 'risk-neutral' despite 40% projected loss.", // Intelligence Error
     "Forecast assumes stable fuel prices amid volatility spike.",
-    "Expansion into Q5 2026 markets remains on schedule.", // Error: Q5
+    "Report concludes market is 'saturated' but recommends doubling ad spend.", // Intelligence Error
     "User engagement metrics show 400% increase in daily active sessions.",
     "Database latency reduced by 50ms after index optimization.",
     "Security audit passed with zero critical vulnerabilities found.",
@@ -587,7 +587,7 @@ const App: React.FC = () => {
                   <div className="flex items-start gap-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 shrink-0" />
                     <div className="text-[11px] text-gray-500 leading-relaxed">
-                      <span className="font-bold text-gray-700">Logical Errors:</span> Impossible dates like "February 31" or non-existent quarters like "Q5".
+                      <span className="font-bold text-gray-700">Reasoning Flaws:</span> AI claiming a strategy is "risk-neutral" while citing data that indicates extreme volatility.
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
