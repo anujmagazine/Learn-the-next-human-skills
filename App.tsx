@@ -127,7 +127,7 @@ const App: React.FC = () => {
           // Errors start slipping through as fatigue increases
           let newErrors = prev.errors;
           const newErrorPoints = [...prev.errorPoints];
-          if (newFatigue > 25 && Math.random() < (newFatigue / 400)) {
+          if (newFatigue > 15 && Math.random() < (newFatigue / 300)) {
             newErrors += 1;
             newErrorPoints.push({ x: newLines, y: Math.round(newFatigue) });
           }
@@ -602,9 +602,11 @@ const App: React.FC = () => {
                       isAnimationActive={false}
                     />
                     <Scatter 
+                      name="Errors"
                       data={verSim.errorPoints} 
                       fill="#ef4444" 
                       isAnimationActive={false}
+                      dataKey="y"
                     />
                   </ComposedChart>
                 </ResponsiveContainer>
