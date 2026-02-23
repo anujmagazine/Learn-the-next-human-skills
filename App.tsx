@@ -579,7 +579,31 @@ const App: React.FC = () => {
             <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm">
               <div className="text-sm font-medium text-gray-500 mb-4">Errors slipping through</div>
               <div className="text-7xl font-bold text-red-500 tabular-nums mb-2">{verSim.errors}</div>
-              <p className="text-gray-400 text-xs">Missed issues increase as fatigue rises</p>
+              <p className="text-gray-400 text-xs mb-6">Missed issues increase as fatigue rises</p>
+              
+              <div className="pt-6 border-t border-gray-50">
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Simulated Hallucinations</div>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 shrink-0" />
+                    <div className="text-[11px] text-gray-500 leading-relaxed">
+                      <span className="font-bold text-gray-700">Logical Errors:</span> Impossible dates like "February 31" or non-existent quarters like "Q5".
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 shrink-0" />
+                    <div className="text-[11px] text-gray-500 leading-relaxed">
+                      <span className="font-bold text-gray-700">Statistical Drift:</span> Subtle mismatches between percentage growth and raw numbers.
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 shrink-0" />
+                    <div className="text-[11px] text-gray-500 leading-relaxed">
+                      <span className="font-bold text-gray-700">Cognitive Blindness:</span> As fatigue peaks, the brain begins to "auto-complete" text, missing obvious flaws.
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Chart */}
