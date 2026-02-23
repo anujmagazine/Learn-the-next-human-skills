@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AppView, AgentStream, DrillScenario } from './types';
 import { orchestrationService } from './services/gemini';
@@ -140,7 +141,8 @@ const App: React.FC = () => {
             fatigue: newFatigue,
             errors: newErrors,
             chartData: newChartData,
-            isDone
+            isDone,
+            isRunning: !isDone
           };
         });
       }, 50);
@@ -598,72 +600,10 @@ const App: React.FC = () => {
               
               <div className="flex justify-between mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                 <span>0</span>
-                <span>75</span>
-                <span>150</span>
-                <span>225</span>
-                <span>300</span>
-                <span>375</span>
-                <span>450</span>
-                <span>525</span>
-                <span>600</span>
-                <span>675</span>
-                <span>750</span>
-                <span>825</span>
-                <span>900</span>
-                <span>975</span>
-                <span>1050</span>
-                <span>1125</span>
-                <span>1200</span>
-                <span>1275</span>
-                <span>1350</span>
-                <span>1425</span>
-                <span>1500</span>
-                <span>1575</span>
-                <span>1650</span>
-                <span>1725</span>
-                <span>1800</span>
-                <span>1875</span>
-                <span>1950</span>
-                <span>2025</span>
-                <span>2100</span>
-                <span>2175</span>
-                <span>2250</span>
-                <span>2325</span>
-                <span>2400</span>
-                <span>2475</span>
-                <span>2550</span>
-                <span>2625</span>
-                <span>2700</span>
-                <span>2775</span>
-                <span>2850</span>
-                <span>2925</span>
+                <span>1000</span>
+                <span>2000</span>
                 <span>3000</span>
-                <span>3075</span>
-                <span>3150</span>
-                <span>3225</span>
-                <span>3300</span>
-                <span>3375</span>
-                <span>3450</span>
-                <span>3525</span>
-                <span>3600</span>
-                <span>3675</span>
-                <span>3750</span>
-                <span>3825</span>
-                <span>3900</span>
-                <span>3975</span>
-                <span>4050</span>
-                <span>4125</span>
-                <span>4200</span>
-                <span>4275</span>
-                <span>4350</span>
-                <span>4425</span>
-                <span>4500</span>
-                <span>4575</span>
-                <span>4650</span>
-                <span>4725</span>
-                <span>4800</span>
-                <span>4875</span>
-                <span>4950</span>
+                <span>4000</span>
                 <span>5000</span>
               </div>
               <div className="text-center mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Lines Reviewed</div>
