@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Scatter, ComposedChart } from 'recharts';
 import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AppView, AgentStream, DrillScenario } from './types';
@@ -93,6 +93,7 @@ const App: React.FC = () => {
     fatigue: 0,
     errors: 0,
     chartData: [] as { x: number, y: number }[],
+    errorPoints: [] as { x: number, y: number }[],
     isDone: false
   });
 
@@ -125,8 +126,10 @@ const App: React.FC = () => {
           
           // Errors start slipping through as fatigue increases
           let newErrors = prev.errors;
+          const newErrorPoints = [...prev.errorPoints];
           if (newFatigue > 10 && Math.random() < (newFatigue / 200)) {
             newErrors += 1;
+            newErrorPoints.push({ x: newLines, y: Math.round(newFatigue) });
           }
 
           const newChartData = [...prev.chartData];
@@ -140,6 +143,7 @@ const App: React.FC = () => {
             linesReviewed: newLines,
             fatigue: newFatigue,
             errors: newErrors,
+            errorPoints: newErrorPoints,
             chartData: newChartData,
             isDone,
             isRunning: !isDone
@@ -157,6 +161,7 @@ const App: React.FC = () => {
       fatigue: 0,
       errors: 0,
       chartData: [{ x: 0, y: 0 }],
+      errorPoints: [],
       isDone: false
     });
   };
@@ -567,14 +572,15 @@ const App: React.FC = () => {
               
               <div className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={verSim.chartData}>
+                  <ComposedChart data={verSim.chartData}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                     <XAxis 
                       dataKey="x" 
+                      type="number"
+                      domain={[0, 5000]}
                       axisLine={false} 
                       tickLine={false} 
                       tick={{ fontSize: 10, fill: '#9ca3af' }}
-                      ticks={[0, 75, 150, 225, 300, 375, 450, 525, 600, 675, 750, 825, 900, 975, 1050, 1125, 1200, 1275, 1350, 1425, 1500, 1575, 1650, 1725, 1800, 1875, 1950, 2025, 2100, 2175, 2250, 2325, 2400, 2475, 2550, 2625, 2700, 2775, 2850, 2925, 3000, 3075, 3150, 3225, 3300, 3375, 3450, 3525, 3600, 3675, 3750, 3825, 3900, 3975, 4050, 4125, 4200, 4275, 4350, 4425, 4500, 4575, 4650, 4725, 4800, 4875, 4950, 5000]}
                       hide
                     />
                     <YAxis 
@@ -593,8 +599,14 @@ const App: React.FC = () => {
                       strokeWidth={3} 
                       dot={false} 
                       animationDuration={0}
+                      isAnimationActive={false}
                     />
-                  </LineChart>
+                    <Scatter 
+                      data={verSim.errorPoints} 
+                      fill="#ef4444" 
+                      isAnimationActive={false}
+                    />
+                  </ComposedChart>
                 </ResponsiveContainer>
               </div>
               
