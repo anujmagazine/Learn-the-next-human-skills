@@ -125,7 +125,7 @@ const App: React.FC = () => {
           
           // Errors start slipping through as fatigue increases
           let newErrors = prev.errors;
-          const isError = newFatigue > 30 && Math.random() < (newFatigue / 400);
+          const isError = newFatigue > 20 && Math.random() < (newFatigue / 250);
           if (isError) {
             newErrors += 1;
           }
