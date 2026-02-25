@@ -543,14 +543,14 @@ const App: React.FC = () => {
               </div>
 
               {/* Scrolling List */}
-              <div className="relative h-[500px] border border-gray-100 rounded-2xl overflow-hidden bg-gray-50/30">
+              <div className="relative h-[800px] border border-gray-100 rounded-2xl overflow-hidden bg-gray-50/30">
                 <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white to-transparent z-10" />
                 <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent z-10" />
                 
                 <div className="p-8 space-y-4">
                   <motion.div
-                    animate={verSim.isRunning ? { y: [0, -3000] } : { y: 0 }}
-                    transition={verSim.isRunning ? { duration: 40, repeat: Infinity, ease: "linear" } : {}}
+                    animate={verSim.isRunning ? { y: [0, -5000] } : { y: 0 }}
+                    transition={verSim.isRunning ? { duration: 60, repeat: Infinity, ease: "linear" } : {}}
                     className="space-y-4"
                   >
                     {[...Array(100)].map((_, i) => {
