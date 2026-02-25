@@ -97,21 +97,21 @@ const App: React.FC = () => {
   });
 
   const VERIFICATION_SNIPPETS = [
-    "Net margin improved from 8% to 14% despite cost pressures.",
-    "Active users grew from 18,200 to 19,850 representing 15% growth.",
-    "Customer churn reduced to 2.1% following onboarding improvements.",
-    "Revenue increased 12% quarter over quarter, driven by enterprise renewals.",
-    "Compliance certificate acknowledged by regulator last week.",
-    "Board review confirmed strategy is 'risk-neutral' despite 40% projected loss.", // Intelligence Error
-    "Forecast assumes stable fuel prices amid volatility spike.",
-    "Report concludes market is 'saturated' but recommends doubling ad spend.", // Intelligence Error
-    "User engagement metrics show 400% increase in daily active sessions.",
-    "Database latency reduced by 50ms after index optimization.",
-    "Security audit passed with zero critical vulnerabilities found.",
-    "Marketing spend optimized for 4.2x return on ad spend.",
-    "New hire onboarding time reduced from 14 days to 9 days.",
-    "Inventory turnover ratio improved to 6.5x annually.",
-    "Customer satisfaction score reached all-time high of 4.8/5.0."
+    "Net margin improved from 8.2% to 14.1% despite significant cost pressures in the supply chain and logistics sectors.",
+    "Active users grew from 18,200 to 19,850 representing a 15% growth rate that exceeds the industry average for this quarter.",
+    "Customer churn reduced to 2.1% following comprehensive onboarding improvements and a new customer success initiative.",
+    "Revenue increased 12% quarter over quarter, driven by enterprise renewals and a strong performance in the APAC region.",
+    "Compliance certificate acknowledged by the primary regulator last week, ensuring continued operations in all major territories.",
+    "Board review confirmed strategy is 'risk-neutral' despite a 40% projected loss in the high-volatility emerging markets segment.", // Intelligence Error
+    "Forecast assumes stable fuel prices amid a volatility spike that has seen prices fluctuate by more than 25% in three days.",
+    "Report concludes market is 'saturated' but recommends doubling ad spend to capture a larger share of the existing audience.", // Intelligence Error
+    "User engagement metrics show a 400% increase in daily active sessions following the deployment of the new mobile interface.",
+    "Database latency reduced by 50ms after index optimization and the implementation of a more efficient caching layer.",
+    "Security audit passed with zero critical vulnerabilities found, though some minor patches were recommended for the legacy systems.",
+    "Marketing spend optimized for a 4.2x return on ad spend, significantly outperforming the previous campaign's 2.8x benchmark.",
+    "New hire onboarding time reduced from 14 days to 9 days, allowing teams to scale more rapidly during the peak season.",
+    "Inventory turnover ratio improved to 6.5x annually, reflecting better demand forecasting and streamlined warehouse operations.",
+    "Customer satisfaction score reached an all-time high of 4.8/5.0, based on a survey of over 10,000 verified users."
   ];
 
   useEffect(() => {
@@ -549,11 +549,11 @@ const App: React.FC = () => {
                 
                 <div className="p-8 space-y-4">
                   <motion.div
-                    animate={verSim.isRunning ? { y: [0, -1000] } : { y: 0 }}
-                    transition={verSim.isRunning ? { duration: 20, repeat: Infinity, ease: "linear" } : {}}
+                    animate={verSim.isRunning ? { y: [0, -3000] } : { y: 0 }}
+                    transition={verSim.isRunning ? { duration: 40, repeat: Infinity, ease: "linear" } : {}}
                     className="space-y-4"
                   >
-                    {[...Array(30)].map((_, i) => {
+                    {[...Array(100)].map((_, i) => {
                       const snippet = VERIFICATION_SNIPPETS[i % VERIFICATION_SNIPPETS.length];
                       // Calculate individual blur based on fatigue
                       const blurAmount = Math.max(0, (verSim.fatigue - 20) / 15);
