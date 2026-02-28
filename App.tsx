@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Scatter, ComposedChart } from 'recharts';
-import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck } from 'lucide-react';
+import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AppView, AgentStream, DrillScenario } from './types';
 import { orchestrationService } from './services/gemini';
@@ -385,25 +385,26 @@ const App: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
-        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
-          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
+        <button 
+          onClick={() => setView(AppView.LEARN)}
+          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full text-left w-full appearance-none"
+        >
+          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
             <svg className="w-24 h-24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A2 2 0 013 15.487V6.513a2 2 0 011.553-1.943L9 2l5.447 2.724A2 2 0 0116 6.669v8.818a2 2 0 01-1.553 1.943L9 20z" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 20V2m0 18L3.553 17.276A2 2 0 013 15.487V6.513a2 2 0 011.553-1.943L9 2m0 18l5.447-2.724A2 2 0 0116 15.487V6.513a2 2 0 01-1.553-1.943L9 2" /></svg>
           </div>
           <div className="relative z-10 flex-1">
-            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
+            <div className="w-16 h-16 bg-brand-green/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-green/20 group-hover:scale-110 transition-transform">
               <span className="text-3xl">🧭</span>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Literacy, not training</h2>
+            <h2 className="text-3xl font-bold mb-4 text-brand-platinum group-hover:text-brand-green transition-colors">Literacy, not training</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               Shift from tool proficiency to strategic judgment. Master the "what" and "why" of AI application, focusing on direction and workflow redesign over simple automation.
             </p>
           </div>
-          <div className="relative z-10 mt-auto">
-            <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
-              Coming Soon
-            </div>
+          <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
+            Launch Skill Guide <span className="group-hover:translate-x-2 transition-transform">→</span>
           </div>
-        </div>
+        </button>
 
         <div 
           onClick={() => setView(AppView.LANDING)}
@@ -1232,6 +1233,214 @@ const App: React.FC = () => {
     </div>
   );
 
+  const renderLearn = () => (
+    <div className="max-w-5xl mx-auto py-20 px-6 animate-in fade-in duration-700">
+      <button 
+        onClick={() => setView(AppView.HUB)}
+        className="group flex items-center gap-2 text-brand-platinum/40 hover:text-brand-platinum transition-colors mb-12 font-bold uppercase text-[10px] tracking-widest"
+      >
+        <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
+        Back to Skill Hub
+      </button>
+
+      {/* Intro */}
+      <div className="text-center mb-32">
+        <div className="inline-block px-3 py-1 rounded-full bg-brand-green/10 text-brand-green text-[10px] font-bold uppercase tracking-widest mb-6 border border-brand-green/20">
+          AI & BEYOND
+        </div>
+        <h1 className="text-7xl font-black text-brand-platinum mb-8 leading-[0.85] tracking-tighter">
+          Training is the <span className="text-brand-platinum/20 italic">starting line.</span><br />
+          Literacy is the <span className="text-brand-green">whole race.</span>
+        </h1>
+        <p className="text-xl text-brand-platinum/60 max-w-2xl mx-auto leading-relaxed">
+          AI Literacy is tool proficiency plus the judgment to know what's worth building.
+        </p>
+      </div>
+
+      {/* Act One */}
+      <div className="mb-40">
+        <div className="flex flex-col items-center text-center mb-16">
+          <div className="text-[10px] font-black text-brand-platinum/20 uppercase tracking-[0.3em] mb-4">ACT ONE</div>
+          <h2 className="text-4xl font-bold text-brand-platinum mb-4">Training is the <span className="text-brand-green">GPS.</span></h2>
+          <p className="text-brand-platinum/40 max-w-lg">Essential. You need it. But it's just the engine, not the journey.</p>
+        </div>
+
+        <div className="glass max-w-2xl mx-auto rounded-[40px] p-12 border-brand-platinum/5 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
+            <Navigation className="w-32 h-32" />
+          </div>
+          <div className="space-y-6 relative z-10">
+            {[
+              { step: '01', text: 'Open ChatGPT', icon: '🌐' },
+              { step: '02', text: 'Paste this prompt', icon: '📋' },
+              { step: '03', text: 'Click "Generate"', icon: '⚡' },
+              { step: '04', text: 'Copy output. Done.', icon: '✅' },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-6 p-4 rounded-2xl bg-brand-platinum/5 border border-brand-platinum/5">
+                <span className="font-mono text-xs text-brand-platinum/20">{item.step}</span>
+                <span className="text-xl">{item.icon}</span>
+                <span className="text-brand-platinum font-medium">{item.text}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-12 pt-8 border-t border-brand-platinum/5 text-center">
+            <p className="text-brand-platinum/40 text-sm italic mb-4">"Fast. Efficient. Necessary. But not sufficient."</p>
+            <div className="text-brand-green font-bold uppercase tracking-widest text-xs">You can drive. But who decides where to go?</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Act Two */}
+      <div className="mb-40">
+        <div className="flex flex-col items-center text-center mb-16">
+          <div className="text-[10px] font-black text-brand-platinum/20 uppercase tracking-[0.3em] mb-4">ACT TWO</div>
+          <h2 className="text-4xl font-bold text-brand-platinum mb-4">Literacy is <span className="text-brand-green">GPS + Compass.</span></h2>
+          <p className="text-brand-platinum/40 max-w-lg">You know the tools and you know where North is.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div className="glass aspect-square rounded-[40px] border-brand-green/20 flex items-center justify-center relative overflow-hidden bg-brand-green/5">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-64 h-64 rounded-full border border-brand-green/20 border-dashed animate-spin-slow"></div>
+            </div>
+            <div className="relative z-10 text-center">
+              <Compass className="w-32 h-32 text-brand-green mb-6 mx-auto" />
+              <div className="grid grid-cols-2 gap-4 text-[10px] font-black text-brand-green/40 uppercase tracking-widest">
+                <span>WHY</span>
+                <span>WHAT IF</span>
+                <span>RISK</span>
+                <span>VALUE</span>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-6">
+            {[
+              "Is this the right problem to solve?",
+              "What happens if we're wrong?",
+              "Should AI even be used here?"
+            ].map((q, i) => (
+              <div key={i} className="glass p-6 rounded-2xl border-brand-platinum/10 flex items-center gap-4">
+                <HelpCircle className="w-5 h-5 text-brand-green" />
+                <span className="text-brand-platinum text-lg font-medium italic">"{q}"</span>
+              </div>
+            ))}
+            <div className="mt-8 p-6 bg-brand-platinum/5 rounded-2xl border border-brand-platinum/10">
+              <p className="text-brand-platinum/60 text-sm leading-relaxed">
+                Same tools. But now you also choose the destination.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Act Three */}
+      <div className="mb-40">
+        <div className="flex flex-col items-center text-center mb-16">
+          <div className="text-[10px] font-black text-brand-platinum/20 uppercase tracking-[0.3em] mb-4">ACT THREE</div>
+          <h2 className="text-4xl font-bold text-brand-platinum mb-4">Same Monday morning.</h2>
+          <p className="text-brand-platinum/40 max-w-lg">Same tools. Two different mindsets.</p>
+          <div className="mt-6 px-4 py-2 bg-brand-platinum/5 rounded-full border border-brand-platinum/10 text-xs text-brand-platinum/60 italic">
+            "The CEO wants a competitive analysis by Thursday."
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Only Trained */}
+          <div className="glass rounded-[40px] border-brand-platinum/5 overflow-hidden">
+            <div className="bg-brand-platinum/5 p-6 border-b border-brand-platinum/5">
+              <div className="text-[10px] font-black text-brand-platinum/30 uppercase tracking-widest mb-1">MINDSET A</div>
+              <h3 className="text-xl font-bold text-brand-platinum/60">Only Trained</h3>
+            </div>
+            <div className="p-8 space-y-6">
+              {[
+                { step: '01', text: 'Opens ChatGPT. Pastes the email.' },
+                { step: '02', text: 'Prompts: "Generate a competitive analysis."' },
+                { step: '03', text: 'Gets 1200 words. Formats. Sends Tuesday.' },
+                { step: '04', text: 'CEO: "This is generic. Anyone could\'ve Googled this."' },
+              ].map((item, i) => (
+                <div key={i} className="flex gap-4">
+                  <span className="font-mono text-[10px] text-brand-platinum/20 mt-1">{item.step}</span>
+                  <p className="text-brand-platinum/40 text-sm">{item.text}</p>
+                </div>
+              ))}
+              <div className="mt-8 pt-6 border-t border-brand-platinum/5">
+                <div className="text-[10px] font-bold text-brand-platinum/20 uppercase mb-2">RESULT</div>
+                <p className="text-brand-platinum/60 font-medium">Fast delivery. Zero strategic value. Replaced next quarter.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* AI Literate */}
+          <div className="glass rounded-[40px] border-brand-green/20 overflow-hidden bg-brand-green/5">
+            <div className="bg-brand-green/10 p-6 border-b border-brand-green/10">
+              <div className="text-[10px] font-black text-brand-green uppercase tracking-widest mb-1">MINDSET B</div>
+              <h3 className="text-xl font-bold text-brand-platinum">AI Literate</h3>
+            </div>
+            <div className="p-8 space-y-6">
+              {[
+                { step: '01', text: 'Pauses. "What decision does this need to inform?"' },
+                { step: '02', text: 'Calls CEO\'s office. Learns it\'s about an acquisition.' },
+                { step: '03', text: 'Uses the same AI tools - to pull filings, map risk, model scenarios.' },
+                { step: '04', text: 'Delivers a decision-ready brief. Cuts pulled into the deal room.' },
+              ].map((item, i) => (
+                <div key={i} className="flex gap-4">
+                  <span className="font-mono text-[10px] text-brand-green/40 mt-1">{item.step}</span>
+                  <p className="text-brand-platinum text-sm font-medium">{item.text}</p>
+                </div>
+              ))}
+              <div className="mt-8 pt-6 border-t border-brand-green/10">
+                <div className="text-[10px] font-bold text-brand-green uppercase mb-2">RESULT</div>
+                <p className="text-brand-platinum font-bold">Same tools. Better question. Seat at the table.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="mt-12 text-center text-brand-platinum/40 font-bold uppercase tracking-widest text-xs">
+          Both used the same tools. <span className="text-brand-green">Only one changed the outcome.</span>
+        </div>
+      </div>
+
+      {/* The Bottom Line */}
+      <div className="mb-40">
+        <div className="flex flex-col items-center text-center mb-16">
+          <div className="text-[10px] font-black text-brand-platinum/20 uppercase tracking-[0.3em] mb-4">THE BOTTOM LINE</div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="glass p-10 rounded-[40px] border-brand-platinum/5">
+            <h3 className="text-2xl font-bold text-brand-platinum/40 mb-6">Training alone</h3>
+            <ul className="space-y-4 text-brand-platinum/40 text-sm">
+              <li>• Builds operators who execute faster.</li>
+              <li>• Tool-specific. Task-oriented.</li>
+              <li>• Necessary foundation.</li>
+              <li className="pt-4 text-brand-platinum/20 font-bold uppercase tracking-widest text-[10px]">Answers: "How do I do this?"</li>
+            </ul>
+          </div>
+          <div className="glass p-10 rounded-[40px] border-brand-green/30 bg-brand-green/5">
+            <h3 className="text-2xl font-bold text-brand-platinum mb-6">Literacy</h3>
+            <ul className="space-y-4 text-brand-platinum text-sm">
+              <li>• Builds owners with tool skills plus judgment.</li>
+              <li>• Strategic. Durable. Tool-agnostic thinking.</li>
+              <li>• The competitive advantage.</li>
+              <li className="pt-4 text-brand-green font-bold uppercase tracking-widest text-[10px]">Also answers: "What should we be doing - and why?"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Final Quote */}
+      <div className="text-center py-20 border-t border-brand-platinum/5">
+        <h2 className="text-4xl font-black text-brand-platinum mb-8 leading-tight max-w-3xl mx-auto">
+          "Training teaches you to <span className="text-brand-platinum/20">play the instrument.</span><br />
+          Literacy teaches you to <span className="text-brand-green">play it and write the music.</span>"
+        </h2>
+        <div className="text-[10px] font-black text-brand-platinum/20 uppercase tracking-[0.5em]">
+          AI & BEYOND — BUILDING AI LITERATE LEADERS
+        </div>
+      </div>
+    </div>
+  );
+
   const renderContent = () => {
     switch (view) {
       case AppView.HUB: return renderHub();
@@ -1239,6 +1448,7 @@ const App: React.FC = () => {
       case AppView.TRAINER: return renderTrainer();
       case AppView.EVOLUTION: return renderEvolution();
       case AppView.VERIFICATION: return renderVerification();
+      case AppView.LEARN: return renderLearn();
       default: return renderHub();
     }
   };
