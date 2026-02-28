@@ -385,6 +385,26 @@ const App: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
+          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
+            <svg className="w-24 h-24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A2 2 0 013 15.487V6.513a2 2 0 011.553-1.943L9 2l5.447 2.724A2 2 0 0116 6.669v8.818a2 2 0 01-1.553 1.943L9 20z" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 20V2m0 18L3.553 17.276A2 2 0 013 15.487V6.513a2 2 0 011.553-1.943L9 2m0 18l5.447-2.724A2 2 0 0116 15.487V6.513a2 2 0 01-1.553-1.943L9 2" /></svg>
+          </div>
+          <div className="relative z-10 flex-1">
+            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
+              <span className="text-3xl">🧭</span>
+            </div>
+            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Literacy, not training</h2>
+            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+              Shift from tool proficiency to strategic judgment. Master the "what" and "why" of AI application, focusing on direction and workflow redesign over simple automation.
+            </p>
+          </div>
+          <div className="relative z-10 mt-auto">
+            <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
+              Coming Soon
+            </div>
+          </div>
+        </div>
+
         <div 
           onClick={() => setView(AppView.LANDING)}
           className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
