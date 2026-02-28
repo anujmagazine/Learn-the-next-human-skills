@@ -506,6 +506,26 @@ const App: React.FC = () => {
             </div>
           </div>
         </div>
+
+        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
+          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
+            <svg className="w-24 h-24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
+          <div className="relative z-10 flex-1">
+            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
+              <span className="text-3xl">🎯</span>
+            </div>
+            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Define the What</h2>
+            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+              In an AI-driven world where execution is instant, advantage shifts to clearly defining the right problem before asking for solutions.
+            </p>
+          </div>
+          <div className="relative z-10 mt-auto">
+            <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
+              Coming Soon
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
