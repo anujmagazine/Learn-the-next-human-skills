@@ -49,6 +49,7 @@ const SIM_TASKS = [
 const App: React.FC = () => {
   const [view, setView] = useState<AppView>(AppView.HUB);
   const [learnStep, setLearnStep] = useState(0);
+  const [isLearnSimRunning, setIsLearnSimRunning] = useState(false);
   const [activeDrill, setActiveDrill] = useState<DrillScenario | null>(null);
   const [agents, setAgents] = useState<AgentStream[]>([]);
   const [isDrillRunning, setIsDrillRunning] = useState(false);
@@ -327,6 +328,24 @@ const App: React.FC = () => {
       setSimActive(false);
     }
   }, [simActive, tradSim.isDone, agenticSim.isDone]);
+
+  // Learn Simulation Progression
+  useEffect(() => {
+    let timeout: any;
+    if (isLearnSimRunning && view === AppView.LEARN) {
+      const timings = [5000, 8000, 10000, 15000, 0]; // ms for each step
+      const currentTiming = timings[learnStep];
+      
+      if (currentTiming > 0 && learnStep < timings.length - 1) {
+        timeout = setTimeout(() => {
+          setLearnStep(prev => prev + 1);
+        }, currentTiming);
+      } else if (learnStep === timings.length - 1) {
+        setIsLearnSimRunning(false);
+      }
+    }
+    return () => clearTimeout(timeout);
+  }, [isLearnSimRunning, learnStep, view]);
 
   useEffect(() => {
     if (!isDrillRunning || !activeDrill || intervention) return;
@@ -1268,10 +1287,13 @@ const App: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              onClick={() => setLearnStep(1)}
+              onClick={() => {
+                setLearnStep(1);
+                setIsLearnSimRunning(true);
+              }}
               className="px-8 py-4 bg-brand-green text-brand-black font-black uppercase tracking-widest text-sm rounded-full hover:scale-105 transition-transform shadow-lg shadow-brand-green/20"
             >
-              AI Training vs AI Literacy
+              Start Simulation
             </motion.button>
           </div>
         )
@@ -1340,13 +1362,8 @@ const App: React.FC = () => {
               </motion.div>
             </div>
             
-            <div className="mt-12 flex justify-center">
-              <button 
-                onClick={() => setLearnStep(2)}
-                className="group flex items-center gap-3 text-brand-platinum/60 hover:text-brand-green transition-colors font-bold uppercase text-xs tracking-widest"
-              >
-                Next: The Compass <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+            <div className="mt-12 flex justify-center h-8">
+              {/* Manual navigation removed for simulation feel */}
             </div>
           </div>
         )
@@ -1432,13 +1449,8 @@ const App: React.FC = () => {
               </div>
             </div>
             
-            <div className="mt-16 flex justify-center">
-              <button 
-                onClick={() => setLearnStep(3)}
-                className="group flex items-center gap-3 text-brand-platinum/60 hover:text-brand-green transition-colors font-bold uppercase text-xs tracking-widest"
-              >
-                Next: The Outcome <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+            <div className="mt-16 flex justify-center h-8">
+              {/* Manual navigation removed for simulation feel */}
             </div>
           </div>
         )
@@ -1572,13 +1584,8 @@ const App: React.FC = () => {
               Both used the same tools. <span className="text-brand-green">Only one changed the outcome.</span>
             </motion.div>
             
-            <div className="mt-16 flex justify-center">
-              <button 
-                onClick={() => setLearnStep(4)}
-                className="group flex items-center gap-3 text-brand-platinum/60 hover:text-brand-green transition-colors font-bold uppercase text-xs tracking-widest"
-              >
-                Next: The Bottom Line <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+            <div className="mt-16 flex justify-center h-8">
+              {/* Manual navigation removed for simulation feel */}
             </div>
           </div>
         )
@@ -1684,17 +1691,43 @@ const App: React.FC = () => {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center relative overflow-hidden">
         {/* Navigation Controls */}
-        <div className="fixed top-24 left-8 z-50">
+        <div className="fixed top-24 left-8 z-50 flex flex-col gap-4">
           <button 
             onClick={() => {
-              if (learnStep === 0) setView(AppView.HUB);
-              else setLearnStep(learnStep - 1);
+              setView(AppView.HUB);
+              setLearnStep(0);
+              setIsLearnSimRunning(false);
             }}
             className="group flex items-center gap-2 text-brand-platinum/40 hover:text-brand-platinum transition-colors font-bold uppercase text-[10px] tracking-widest"
           >
             <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
-            {learnStep === 0 ? 'Exit' : 'Previous'}
+            Exit Simulation
           </button>
+          
+          {isLearnSimRunning ? (
+            <button 
+              onClick={() => setIsLearnSimRunning(false)}
+              className="group flex items-center gap-2 text-brand-green hover:text-brand-green/80 transition-colors font-bold uppercase text-[10px] tracking-widest"
+            >
+              <RotateCcw className="w-3 h-3" />
+              Pause Simulation
+            </button>
+          ) : learnStep > 0 && learnStep < steps.length - 1 && (
+            <button 
+              onClick={() => setIsLearnSimRunning(true)}
+              className="group flex items-center gap-2 text-brand-green hover:text-brand-green/80 transition-colors font-bold uppercase text-[10px] tracking-widest"
+            >
+              <Play className="w-3 h-3 fill-current" />
+              Resume Simulation
+            </button>
+          )}
+          
+          {isLearnSimRunning && (
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-brand-green/10 border border-brand-green/20">
+              <div className="w-1.5 h-1.5 rounded-full bg-brand-green animate-pulse" />
+              <span className="text-[8px] font-bold text-brand-green uppercase tracking-widest">Auto-Playing</span>
+            </div>
+          )}
         </div>
 
         {/* Progress Bar */}
