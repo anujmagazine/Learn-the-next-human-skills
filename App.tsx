@@ -48,6 +48,7 @@ const SIM_TASKS = [
 
 const App: React.FC = () => {
   const [view, setView] = useState<AppView>(AppView.HUB);
+  const [learnStep, setLearnStep] = useState(0);
   const [activeDrill, setActiveDrill] = useState<DrillScenario | null>(null);
   const [agents, setAgents] = useState<AgentStream[]>([]);
   const [isDrillRunning, setIsDrillRunning] = useState(false);
@@ -1233,213 +1234,496 @@ const App: React.FC = () => {
     </div>
   );
 
-  const renderLearn = () => (
-    <div className="max-w-5xl mx-auto py-20 px-6 animate-in fade-in duration-700">
-      <button 
-        onClick={() => setView(AppView.HUB)}
-        className="group flex items-center gap-2 text-brand-platinum/40 hover:text-brand-platinum transition-colors mb-12 font-bold uppercase text-[10px] tracking-widest"
-      >
-        <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
-        Back to Skill Hub
-      </button>
-
-      {/* Intro */}
-      <div className="text-center mb-32">
-        <div className="inline-block px-3 py-1 rounded-full bg-brand-green/10 text-brand-green text-[10px] font-bold uppercase tracking-widest mb-6 border border-brand-green/20">
-          AI & BEYOND
-        </div>
-        <h1 className="text-7xl font-black text-brand-platinum mb-8 leading-[0.85] tracking-tighter">
-          Training is the <span className="text-brand-platinum/20 italic">starting line.</span><br />
-          Literacy is the <span className="text-brand-green">whole race.</span>
-        </h1>
-        <p className="text-xl text-brand-platinum/60 max-w-2xl mx-auto leading-relaxed">
-          AI Literacy is tool proficiency plus the judgment to know what's worth building.
-        </p>
-      </div>
-
-      {/* Act One */}
-      <div className="mb-40">
-        <div className="flex flex-col items-center text-center mb-16">
-          <div className="text-[10px] font-black text-brand-platinum/20 uppercase tracking-[0.3em] mb-4">ACT ONE</div>
-          <h2 className="text-4xl font-bold text-brand-platinum mb-4">Training is the <span className="text-brand-green">GPS.</span></h2>
-          <p className="text-brand-platinum/40 max-w-lg">Essential. You need it. But it's just the engine, not the journey.</p>
-        </div>
-
-        <div className="glass max-w-2xl mx-auto rounded-[40px] p-12 border-brand-platinum/5 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
-            <Navigation className="w-32 h-32" />
+  const renderLearn = () => {
+    const steps = [
+      {
+        id: 'intro',
+        content: (
+          <div className="text-center">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-block px-3 py-1 rounded-full bg-brand-green/10 text-brand-green text-[10px] font-bold uppercase tracking-widest mb-6 border border-brand-green/20"
+            >
+              AI & BEYOND
+            </motion.div>
+            <motion.h1 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-7xl font-black text-brand-platinum mb-8 leading-[0.85] tracking-tighter"
+            >
+              Training is the <span className="text-brand-platinum/20 italic">starting line.</span><br />
+              Literacy is the <span className="text-brand-green">whole race.</span>
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-xl text-brand-platinum/60 max-w-2xl mx-auto leading-relaxed mb-12"
+            >
+              AI Literacy is tool proficiency plus the judgment to know what's worth building.
+            </motion.p>
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              onClick={() => setLearnStep(1)}
+              className="px-8 py-4 bg-brand-green text-brand-black font-black uppercase tracking-widest text-sm rounded-full hover:scale-105 transition-transform shadow-lg shadow-brand-green/20"
+            >
+              AI Training vs AI Literacy
+            </motion.button>
           </div>
-          <div className="space-y-6 relative z-10">
-            {[
-              { step: '01', text: 'Open ChatGPT', icon: '🌐' },
-              { step: '02', text: 'Paste this prompt', icon: '📋' },
-              { step: '03', text: 'Click "Generate"', icon: '⚡' },
-              { step: '04', text: 'Copy output. Done.', icon: '✅' },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-6 p-4 rounded-2xl bg-brand-platinum/5 border border-brand-platinum/5">
-                <span className="font-mono text-xs text-brand-platinum/20">{item.step}</span>
-                <span className="text-xl">{item.icon}</span>
-                <span className="text-brand-platinum font-medium">{item.text}</span>
+        )
+      },
+      {
+        id: 'act-one',
+        content: (
+          <div className="w-full max-w-4xl">
+            <div className="flex flex-col items-center text-center mb-16">
+              <motion.div 
+                initial={{ opacity: 0, letterSpacing: '0.1em' }}
+                animate={{ opacity: 1, letterSpacing: '0.3em' }}
+                className="text-[10px] font-black text-brand-platinum/20 uppercase mb-4"
+              >
+                ACT ONE
+              </motion.div>
+              <motion.h2 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-5xl font-bold text-brand-platinum mb-4"
+              >
+                Training is the <span className="text-brand-green">GPS.</span>
+              </motion.h2>
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-brand-platinum/40 max-w-lg"
+              >
+                Essential. You need it. But it's just the engine, not the journey.
+              </motion.p>
+            </div>
+
+            <div className="glass rounded-[40px] p-12 border-brand-platinum/5 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
+                <Navigation className="w-32 h-32" />
               </div>
-            ))}
-          </div>
-          <div className="mt-12 pt-8 border-t border-brand-platinum/5 text-center">
-            <p className="text-brand-platinum/40 text-sm italic mb-4">"Fast. Efficient. Necessary. But not sufficient."</p>
-            <div className="text-brand-green font-bold uppercase tracking-widest text-xs">You can drive. But who decides where to go?</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Act Two */}
-      <div className="mb-40">
-        <div className="flex flex-col items-center text-center mb-16">
-          <div className="text-[10px] font-black text-brand-platinum/20 uppercase tracking-[0.3em] mb-4">ACT TWO</div>
-          <h2 className="text-4xl font-bold text-brand-platinum mb-4">Literacy is <span className="text-brand-green">GPS + Compass.</span></h2>
-          <p className="text-brand-platinum/40 max-w-lg">You know the tools and you know where North is.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div className="glass aspect-square rounded-[40px] border-brand-green/20 flex items-center justify-center relative overflow-hidden bg-brand-green/5">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-64 h-64 rounded-full border border-brand-green/20 border-dashed animate-spin-slow"></div>
-            </div>
-            <div className="relative z-10 text-center">
-              <Compass className="w-32 h-32 text-brand-green mb-6 mx-auto" />
-              <div className="grid grid-cols-2 gap-4 text-[10px] font-black text-brand-green/40 uppercase tracking-widest">
-                <span>WHY</span>
-                <span>WHAT IF</span>
-                <span>RISK</span>
-                <span>VALUE</span>
+              <div className="space-y-4 relative z-10">
+                {[
+                  { step: '01', text: 'Open ChatGPT', icon: '🌐' },
+                  { step: '02', text: 'Paste this prompt', icon: '📋' },
+                  { step: '03', text: 'Click "Generate"', icon: '⚡' },
+                  { step: '04', text: 'Copy output. Done.', icon: '✅' },
+                ].map((item, i) => (
+                  <motion.div 
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 + (i * 0.1) }}
+                    className="flex items-center gap-6 p-5 rounded-2xl bg-brand-platinum/5 border border-brand-platinum/5"
+                  >
+                    <span className="font-mono text-[10px] text-brand-platinum/20">{item.step}</span>
+                    <span className="text-2xl">{item.icon}</span>
+                    <span className="text-brand-platinum font-bold text-lg">{item.text}</span>
+                  </motion.div>
+                ))}
               </div>
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+                className="mt-12 pt-8 border-t border-brand-platinum/5 text-center"
+              >
+                <p className="text-brand-platinum/40 text-sm italic mb-4">"Fast. Efficient. Necessary. But not sufficient."</p>
+                <div className="text-brand-green font-bold uppercase tracking-widest text-xs">You can drive. But who decides where to go?</div>
+              </motion.div>
+            </div>
+            
+            <div className="mt-12 flex justify-center">
+              <button 
+                onClick={() => setLearnStep(2)}
+                className="group flex items-center gap-3 text-brand-platinum/60 hover:text-brand-green transition-colors font-bold uppercase text-xs tracking-widest"
+              >
+                Next: The Compass <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
             </div>
           </div>
-          <div className="space-y-6">
-            {[
-              "Is this the right problem to solve?",
-              "What happens if we're wrong?",
-              "Should AI even be used here?"
-            ].map((q, i) => (
-              <div key={i} className="glass p-6 rounded-2xl border-brand-platinum/10 flex items-center gap-4">
-                <HelpCircle className="w-5 h-5 text-brand-green" />
-                <span className="text-brand-platinum text-lg font-medium italic">"{q}"</span>
-              </div>
-            ))}
-            <div className="mt-8 p-6 bg-brand-platinum/5 rounded-2xl border border-brand-platinum/10">
-              <p className="text-brand-platinum/60 text-sm leading-relaxed">
-                Same tools. But now you also choose the destination.
-              </p>
+        )
+      },
+      {
+        id: 'act-two',
+        content: (
+          <div className="w-full max-w-5xl">
+            <div className="flex flex-col items-center text-center mb-16">
+              <motion.div 
+                initial={{ opacity: 0, letterSpacing: '0.1em' }}
+                animate={{ opacity: 1, letterSpacing: '0.3em' }}
+                className="text-[10px] font-black text-brand-platinum/20 uppercase mb-4"
+              >
+                ACT TWO
+              </motion.div>
+              <motion.h2 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-5xl font-bold text-brand-platinum mb-4"
+              >
+                Literacy is <span className="text-brand-green">GPS + Compass.</span>
+              </motion.h2>
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-brand-platinum/40 max-w-lg"
+              >
+                You know the tools and you know where North is.
+              </motion.p>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Act Three */}
-      <div className="mb-40">
-        <div className="flex flex-col items-center text-center mb-16">
-          <div className="text-[10px] font-black text-brand-platinum/20 uppercase tracking-[0.3em] mb-4">ACT THREE</div>
-          <h2 className="text-4xl font-bold text-brand-platinum mb-4">Same Monday morning.</h2>
-          <p className="text-brand-platinum/40 max-w-lg">Same tools. Two different mindsets.</p>
-          <div className="mt-6 px-4 py-2 bg-brand-platinum/5 rounded-full border border-brand-platinum/10 text-xs text-brand-platinum/60 italic">
-            "The CEO wants a competitive analysis by Thursday."
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Only Trained */}
-          <div className="glass rounded-[40px] border-brand-platinum/5 overflow-hidden">
-            <div className="bg-brand-platinum/5 p-6 border-b border-brand-platinum/5">
-              <div className="text-[10px] font-black text-brand-platinum/30 uppercase tracking-widest mb-1">MINDSET A</div>
-              <h3 className="text-xl font-bold text-brand-platinum/60">Only Trained</h3>
-            </div>
-            <div className="p-8 space-y-6">
-              {[
-                { step: '01', text: 'Opens ChatGPT. Pastes the email.' },
-                { step: '02', text: 'Prompts: "Generate a competitive analysis."' },
-                { step: '03', text: 'Gets 1200 words. Formats. Sends Tuesday.' },
-                { step: '04', text: 'CEO: "This is generic. Anyone could\'ve Googled this."' },
-              ].map((item, i) => (
-                <div key={i} className="flex gap-4">
-                  <span className="font-mono text-[10px] text-brand-platinum/20 mt-1">{item.step}</span>
-                  <p className="text-brand-platinum/40 text-sm">{item.text}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="glass aspect-square rounded-[60px] border-brand-green/20 flex items-center justify-center relative overflow-hidden bg-brand-green/5"
+              >
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-80 h-80 rounded-full border border-brand-green/10 border-dashed animate-spin-slow"></div>
+                  <div className="absolute w-64 h-64 rounded-full border border-brand-green/20 border-dashed animate-spin-slow-reverse"></div>
                 </div>
-              ))}
-              <div className="mt-8 pt-6 border-t border-brand-platinum/5">
-                <div className="text-[10px] font-bold text-brand-platinum/20 uppercase mb-2">RESULT</div>
-                <p className="text-brand-platinum/60 font-medium">Fast delivery. Zero strategic value. Replaced next quarter.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* AI Literate */}
-          <div className="glass rounded-[40px] border-brand-green/20 overflow-hidden bg-brand-green/5">
-            <div className="bg-brand-green/10 p-6 border-b border-brand-green/10">
-              <div className="text-[10px] font-black text-brand-green uppercase tracking-widest mb-1">MINDSET B</div>
-              <h3 className="text-xl font-bold text-brand-platinum">AI Literate</h3>
-            </div>
-            <div className="p-8 space-y-6">
-              {[
-                { step: '01', text: 'Pauses. "What decision does this need to inform?"' },
-                { step: '02', text: 'Calls CEO\'s office. Learns it\'s about an acquisition.' },
-                { step: '03', text: 'Uses the same AI tools - to pull filings, map risk, model scenarios.' },
-                { step: '04', text: 'Delivers a decision-ready brief. Cuts pulled into the deal room.' },
-              ].map((item, i) => (
-                <div key={i} className="flex gap-4">
-                  <span className="font-mono text-[10px] text-brand-green/40 mt-1">{item.step}</span>
-                  <p className="text-brand-platinum text-sm font-medium">{item.text}</p>
+                <div className="relative z-10 text-center">
+                  <Compass className="w-40 h-40 text-brand-green mb-8 mx-auto animate-pulse" />
+                  <div className="grid grid-cols-2 gap-x-12 gap-y-6 text-[10px] font-black text-brand-green/60 uppercase tracking-[0.2em]">
+                    <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}>WHY</motion.span>
+                    <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2, delay: 0.5 }}>WHAT IF</motion.span>
+                    <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2, delay: 1 }}>RISK</motion.span>
+                    <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2, delay: 1.5 }}>VALUE</motion.span>
+                  </div>
                 </div>
-              ))}
-              <div className="mt-8 pt-6 border-t border-brand-green/10">
-                <div className="text-[10px] font-bold text-brand-green uppercase mb-2">RESULT</div>
-                <p className="text-brand-platinum font-bold">Same tools. Better question. Seat at the table.</p>
+              </motion.div>
+              <div className="space-y-6">
+                {[
+                  "Is this the right problem to solve?",
+                  "What happens if we're wrong?",
+                  "Should AI even be used here?"
+                ].map((q, i) => (
+                  <motion.div 
+                    key={i}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 + (i * 0.2) }}
+                    className="glass p-8 rounded-3xl border-brand-platinum/10 flex items-center gap-6 group hover:border-brand-green/30 transition-colors"
+                  >
+                    <div className="w-12 h-12 rounded-2xl bg-brand-green/10 flex items-center justify-center border border-brand-green/20">
+                      <HelpCircle className="w-6 h-6 text-brand-green" />
+                    </div>
+                    <span className="text-brand-platinum text-xl font-medium italic leading-tight">"{q}"</span>
+                  </motion.div>
+                ))}
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.2 }}
+                  className="mt-8 p-8 bg-brand-platinum/5 rounded-3xl border border-brand-platinum/10"
+                >
+                  <p className="text-brand-platinum/60 text-lg leading-relaxed text-center">
+                    Same tools. But now you also choose the destination.
+                  </p>
+                </motion.div>
               </div>
             </div>
+            
+            <div className="mt-16 flex justify-center">
+              <button 
+                onClick={() => setLearnStep(3)}
+                className="group flex items-center gap-3 text-brand-platinum/60 hover:text-brand-green transition-colors font-bold uppercase text-xs tracking-widest"
+              >
+                Next: The Outcome <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
           </div>
-        </div>
-        <div className="mt-12 text-center text-brand-platinum/40 font-bold uppercase tracking-widest text-xs">
-          Both used the same tools. <span className="text-brand-green">Only one changed the outcome.</span>
-        </div>
-      </div>
+        )
+      },
+      {
+        id: 'act-three',
+        content: (
+          <div className="w-full max-w-6xl">
+            <div className="flex flex-col items-center text-center mb-16">
+              <motion.div 
+                initial={{ opacity: 0, letterSpacing: '0.1em' }}
+                animate={{ opacity: 1, letterSpacing: '0.3em' }}
+                className="text-[10px] font-black text-brand-platinum/20 uppercase mb-4"
+              >
+                ACT THREE
+              </motion.div>
+              <motion.h2 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-5xl font-bold text-brand-platinum mb-4"
+              >
+                Same Monday morning.
+              </motion.h2>
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-brand-platinum/40 max-w-lg"
+              >
+                Same tools. Two different mindsets.
+              </motion.p>
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4 }}
+                className="mt-8 px-6 py-3 bg-brand-platinum/5 rounded-full border border-brand-platinum/10 text-sm text-brand-platinum/60 italic"
+              >
+                "The CEO wants a competitive analysis by Thursday."
+              </motion.div>
+            </div>
 
-      {/* The Bottom Line */}
-      <div className="mb-40">
-        <div className="flex flex-col items-center text-center mb-16">
-          <div className="text-[10px] font-black text-brand-platinum/20 uppercase tracking-[0.3em] mb-4">THE BOTTOM LINE</div>
-        </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Only Trained */}
+              <motion.div 
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+                className="glass rounded-[40px] border-brand-platinum/5 overflow-hidden flex flex-col"
+              >
+                <div className="bg-brand-platinum/5 p-8 border-b border-brand-platinum/5">
+                  <div className="text-[10px] font-black text-brand-platinum/30 uppercase tracking-widest mb-2">MINDSET A</div>
+                  <h3 className="text-2xl font-bold text-brand-platinum/40">Only Trained</h3>
+                </div>
+                <div className="p-10 space-y-8 flex-1">
+                  {[
+                    { step: '01', text: 'Opens ChatGPT. Pastes the email.' },
+                    { step: '02', text: 'Prompts: "Generate a competitive analysis."' },
+                    { step: '03', text: 'Gets 1200 words. Formats. Sends Tuesday.' },
+                    { step: '04', text: 'CEO: "This is generic. Anyone could\'ve Googled this."' },
+                  ].map((item, i) => (
+                    <motion.div 
+                      key={i} 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1 + (i * 0.2) }}
+                      className="flex gap-6"
+                    >
+                      <span className="font-mono text-xs text-brand-platinum/20 mt-1">{item.step}</span>
+                      <p className="text-brand-platinum/40 text-lg leading-snug">{item.text}</p>
+                    </motion.div>
+                  ))}
+                </div>
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 2 }}
+                  className="p-10 bg-brand-platinum/5 border-t border-brand-platinum/5"
+                >
+                  <div className="text-[10px] font-bold text-brand-platinum/20 uppercase mb-3 tracking-widest">RESULT</div>
+                  <p className="text-brand-platinum/60 font-bold text-xl leading-tight">Fast delivery. Zero strategic value. Replaced next quarter.</p>
+                </motion.div>
+              </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="glass p-10 rounded-[40px] border-brand-platinum/5">
-            <h3 className="text-2xl font-bold text-brand-platinum/40 mb-6">Training alone</h3>
-            <ul className="space-y-4 text-brand-platinum/40 text-sm">
-              <li>• Builds operators who execute faster.</li>
-              <li>• Tool-specific. Task-oriented.</li>
-              <li>• Necessary foundation.</li>
-              <li className="pt-4 text-brand-platinum/20 font-bold uppercase tracking-widest text-[10px]">Answers: "How do I do this?"</li>
-            </ul>
+              {/* AI Literate */}
+              <motion.div 
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8 }}
+                className="glass rounded-[40px] border-brand-green/20 overflow-hidden bg-brand-green/5 flex flex-col"
+              >
+                <div className="bg-brand-green/10 p-8 border-b border-brand-green/10">
+                  <div className="text-[10px] font-black text-brand-green uppercase tracking-widest mb-2">MINDSET B</div>
+                  <h3 className="text-2xl font-bold text-brand-platinum">AI Literate</h3>
+                </div>
+                <div className="p-10 space-y-8 flex-1">
+                  {[
+                    { step: '01', text: 'Pauses. "What decision does this need to inform?"' },
+                    { step: '02', text: 'Calls CEO\'s office. Learns it\'s about an acquisition.' },
+                    { step: '03', text: 'Uses the same AI tools - to pull filings, map risk, model scenarios.' },
+                    { step: '04', text: 'Delivers a decision-ready brief. Cuts pulled into the deal room.' },
+                  ].map((item, i) => (
+                    <motion.div 
+                      key={i} 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1.2 + (i * 0.2) }}
+                      className="flex gap-6"
+                    >
+                      <span className="font-mono text-xs text-brand-green/40 mt-1">{item.step}</span>
+                      <p className="text-brand-platinum text-lg font-bold leading-snug">{item.text}</p>
+                    </motion.div>
+                  ))}
+                </div>
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 2.2 }}
+                  className="p-10 bg-brand-green/10 border-t border-brand-green/10"
+                >
+                  <div className="text-[10px] font-bold text-brand-green uppercase mb-3 tracking-widest">RESULT</div>
+                  <p className="text-brand-platinum font-black text-xl leading-tight">Same tools. Better question. Seat at the table.</p>
+                </motion.div>
+              </motion.div>
+            </div>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 3 }}
+              className="mt-16 text-center text-brand-platinum/40 font-bold uppercase tracking-[0.3em] text-sm"
+            >
+              Both used the same tools. <span className="text-brand-green">Only one changed the outcome.</span>
+            </motion.div>
+            
+            <div className="mt-16 flex justify-center">
+              <button 
+                onClick={() => setLearnStep(4)}
+                className="group flex items-center gap-3 text-brand-platinum/60 hover:text-brand-green transition-colors font-bold uppercase text-xs tracking-widest"
+              >
+                Next: The Bottom Line <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
           </div>
-          <div className="glass p-10 rounded-[40px] border-brand-green/30 bg-brand-green/5">
-            <h3 className="text-2xl font-bold text-brand-platinum mb-6">Literacy</h3>
-            <ul className="space-y-4 text-brand-platinum text-sm">
-              <li>• Builds owners with tool skills plus judgment.</li>
-              <li>• Strategic. Durable. Tool-agnostic thinking.</li>
-              <li>• The competitive advantage.</li>
-              <li className="pt-4 text-brand-green font-bold uppercase tracking-widest text-[10px]">Also answers: "What should we be doing - and why?"</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+        )
+      },
+      {
+        id: 'bottom-line',
+        content: (
+          <div className="w-full max-w-5xl">
+            <div className="flex flex-col items-center text-center mb-16">
+              <motion.div 
+                initial={{ opacity: 0, letterSpacing: '0.1em' }}
+                animate={{ opacity: 1, letterSpacing: '0.3em' }}
+                className="text-[10px] font-black text-brand-platinum/20 uppercase mb-4"
+              >
+                THE BOTTOM LINE
+              </motion.div>
+            </div>
 
-      {/* Final Quote */}
-      <div className="text-center py-20 border-t border-brand-platinum/5">
-        <h2 className="text-4xl font-black text-brand-platinum mb-8 leading-tight max-w-3xl mx-auto">
-          "Training teaches you to <span className="text-brand-platinum/20">play the instrument.</span><br />
-          Literacy teaches you to <span className="text-brand-green">play it and write the music.</span>"
-        </h2>
-        <div className="text-[10px] font-black text-brand-platinum/20 uppercase tracking-[0.5em]">
-          AI & BEYOND — BUILDING AI LITERATE LEADERS
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-24">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="glass p-12 rounded-[50px] border-brand-platinum/5"
+              >
+                <h3 className="text-3xl font-bold text-brand-platinum/40 mb-8">Training alone</h3>
+                <ul className="space-y-5 text-brand-platinum/40 text-lg">
+                  <li className="flex items-start gap-3">
+                    <span className="text-brand-platinum/20 mt-1.5">•</span>
+                    <span>Builds operators who execute faster.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-brand-platinum/20 mt-1.5">•</span>
+                    <span>Tool-specific. Task-oriented.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-brand-platinum/20 mt-1.5">•</span>
+                    <span>Necessary foundation.</span>
+                  </li>
+                  <li className="pt-8 text-brand-platinum/20 font-black uppercase tracking-[0.2em] text-xs">
+                    Answers: "How do I do this?"
+                  </li>
+                </ul>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="glass p-12 rounded-[50px] border-brand-green/30 bg-brand-green/5"
+              >
+                <h3 className="text-3xl font-bold text-brand-platinum mb-8">Literacy</h3>
+                <ul className="space-y-5 text-brand-platinum text-lg">
+                  <li className="flex items-start gap-3">
+                    <span className="text-brand-green mt-1.5">•</span>
+                    <span className="font-bold">Builds owners with tool skills plus judgment.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-brand-green mt-1.5">•</span>
+                    <span className="font-bold">Strategic. Durable. Tool-agnostic thinking.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-brand-green mt-1.5">•</span>
+                    <span className="font-bold">The competitive advantage.</span>
+                  </li>
+                  <li className="pt-8 text-brand-green font-black uppercase tracking-[0.2em] text-xs">
+                    Also answers: "What should we be doing - and why?"
+                  </li>
+                </ul>
+              </motion.div>
+            </div>
+
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              className="text-center py-24 border-t border-brand-platinum/5"
+            >
+              <h2 className="text-5xl font-black text-brand-platinum mb-12 leading-[1.1] max-w-4xl mx-auto tracking-tighter">
+                "Training teaches you to <span className="text-brand-platinum/20 italic">play the instrument.</span><br />
+                Literacy teaches you to <span className="text-brand-green">play it and write the music.</span>"
+              </h2>
+              <div className="text-[10px] font-black text-brand-platinum/20 uppercase tracking-[0.8em]">
+                AI & BEYOND — BUILDING AI LITERATE LEADERS
+              </div>
+              
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 2 }}
+                onClick={() => {
+                  setView(AppView.HUB);
+                  setLearnStep(0);
+                }}
+                className="mt-20 px-10 py-4 border border-brand-platinum/20 rounded-full text-brand-platinum/40 hover:text-brand-platinum hover:border-brand-platinum transition-all font-bold uppercase text-[10px] tracking-widest"
+              >
+                Finish Guide
+              </motion.button>
+            </motion.div>
+          </div>
+        )
+      }
+    ];
+
+    return (
+      <div className="min-h-[80vh] flex flex-col items-center justify-center relative overflow-hidden">
+        {/* Navigation Controls */}
+        <div className="fixed top-24 left-8 z-50">
+          <button 
+            onClick={() => {
+              if (learnStep === 0) setView(AppView.HUB);
+              else setLearnStep(learnStep - 1);
+            }}
+            className="group flex items-center gap-2 text-brand-platinum/40 hover:text-brand-platinum transition-colors font-bold uppercase text-[10px] tracking-widest"
+          >
+            <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
+            {learnStep === 0 ? 'Exit' : 'Previous'}
+          </button>
         </div>
+
+        {/* Progress Bar */}
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 flex gap-2 z-50">
+          {steps.map((_, i) => (
+            <div 
+              key={i}
+              className={`h-1 rounded-full transition-all duration-500 ${
+                i === learnStep ? 'w-8 bg-brand-green' : 'w-2 bg-brand-platinum/10'
+              }`}
+            />
+          ))}
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={learnStep}
+            initial={{ opacity: 0, x: 100, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, x: -100, filter: 'blur(10px)' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 120 }}
+            className="w-full flex items-center justify-center py-20 px-6"
+          >
+            {steps[learnStep].content}
+          </motion.div>
+        </AnimatePresence>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderContent = () => {
     switch (view) {
