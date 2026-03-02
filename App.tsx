@@ -1262,7 +1262,7 @@ const App: React.FC = () => {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-widest mb-6 border border-blue-100"
+              className="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-widest mb-6 border border-blue-100"
             >
               AI & BEYOND
             </motion.div>
@@ -1306,7 +1306,7 @@ const App: React.FC = () => {
               <motion.div 
                 initial={{ opacity: 0, letterSpacing: '0.1em' }}
                 animate={{ opacity: 1, letterSpacing: '0.3em' }}
-                className="text-[10px] font-black text-gray-400 uppercase mb-4"
+                className="text-sm font-black text-gray-400 uppercase mb-4"
               >
                 ACT ONE
               </motion.div>
@@ -1345,7 +1345,7 @@ const App: React.FC = () => {
                     transition={{ delay: 0.4 + (i * 0.1) }}
                     className="flex items-center gap-6 p-5 rounded-2xl bg-gray-50 border border-gray-100"
                   >
-                    <span className="font-mono text-[10px] text-gray-400">{item.step}</span>
+                    <span className="font-mono text-xs text-gray-400">{item.step}</span>
                     <span className="text-2xl">{item.icon}</span>
                     <span className="text-gray-900 font-bold text-lg">{item.text}</span>
                   </motion.div>
@@ -1358,7 +1358,7 @@ const App: React.FC = () => {
                 className="mt-12 pt-8 border-t border-gray-100 text-center"
               >
                 <p className="text-gray-500 text-sm italic mb-4">"Fast. Efficient. Necessary. But not sufficient."</p>
-                <div className="text-blue-600 font-bold uppercase tracking-widest text-xs">You can drive. But who decides where to go?</div>
+                <div className="text-blue-600 font-bold uppercase tracking-widest text-sm">You can drive. But who decides where to go?</div>
               </motion.div>
             </div>
             
@@ -1376,7 +1376,7 @@ const App: React.FC = () => {
               <motion.div 
                 initial={{ opacity: 0, letterSpacing: '0.1em' }}
                 animate={{ opacity: 1, letterSpacing: '0.3em' }}
-                className="text-[10px] font-black text-gray-400 uppercase mb-4"
+                className="text-sm font-black text-gray-400 uppercase mb-4"
               >
                 ACT TWO
               </motion.div>
@@ -1409,7 +1409,7 @@ const App: React.FC = () => {
                 </div>
                 <div className="relative z-10 text-center">
                   <Compass className="w-40 h-40 text-blue-600 mb-8 mx-auto animate-pulse" />
-                  <div className="grid grid-cols-2 gap-x-12 gap-y-6 text-[10px] font-black text-blue-600/60 uppercase tracking-[0.2em]">
+                  <div className="grid grid-cols-2 gap-x-12 gap-y-6 text-xs font-black text-blue-600/60 uppercase tracking-[0.2em]">
                     <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}>WHY</motion.span>
                     <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2, delay: 0.5 }}>WHAT IF</motion.span>
                     <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2, delay: 1 }}>RISK</motion.span>
@@ -1463,7 +1463,7 @@ const App: React.FC = () => {
               <motion.div 
                 initial={{ opacity: 0, letterSpacing: '0.1em' }}
                 animate={{ opacity: 1, letterSpacing: '0.3em' }}
-                className="text-[10px] font-black text-gray-400 uppercase mb-4"
+                className="text-sm font-black text-gray-400 uppercase mb-4"
               >
                 ACT THREE
               </motion.div>
@@ -1501,7 +1501,7 @@ const App: React.FC = () => {
                 className="bg-white rounded-[40px] border border-gray-100 shadow-sm overflow-hidden flex flex-col"
               >
                 <div className="bg-gray-50 p-8 border-b border-gray-100">
-                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">MINDSET A</div>
+                  <div className="text-xs font-black text-gray-400 uppercase tracking-widest mb-2">MINDSET A</div>
                   <h3 className="text-2xl font-bold text-gray-400">Only Trained</h3>
                 </div>
                 <div className="p-10 space-y-8 flex-1">
@@ -1529,7 +1529,7 @@ const App: React.FC = () => {
                   transition={{ delay: 2 }}
                   className="p-10 bg-gray-50 border-t border-gray-100"
                 >
-                  <div className="text-[10px] font-bold text-gray-400 uppercase mb-3 tracking-widest">RESULT</div>
+                  <div className="text-xs font-bold text-gray-400 uppercase mb-3 tracking-widest">RESULT</div>
                   <p className="text-gray-600 font-bold text-xl leading-tight">Fast delivery. Zero strategic value. Replaced next quarter.</p>
                 </motion.div>
               </motion.div>
@@ -1542,7 +1542,7 @@ const App: React.FC = () => {
                 className="bg-white rounded-[40px] border border-blue-100 shadow-sm overflow-hidden bg-blue-50/30 flex flex-col"
               >
                 <div className="bg-blue-50 p-8 border-b border-blue-100">
-                  <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">MINDSET B</div>
+                  <div className="text-xs font-black text-blue-600 uppercase tracking-widest mb-2">MINDSET B</div>
                   <h3 className="text-2xl font-bold text-gray-900">AI Literate</h3>
                 </div>
                 <div className="p-10 space-y-8 flex-1">
@@ -1570,7 +1570,7 @@ const App: React.FC = () => {
                   transition={{ delay: 2.2 }}
                   className="p-10 bg-blue-50 border-t border-blue-100"
                 >
-                  <div className="text-[10px] font-bold text-blue-600 uppercase mb-3 tracking-widest">RESULT</div>
+                  <div className="text-xs font-bold text-blue-600 uppercase mb-3 tracking-widest">RESULT</div>
                   <p className="text-gray-900 font-black text-xl leading-tight">Same tools. Better question. Seat at the table.</p>
                 </motion.div>
               </motion.div>
@@ -1579,7 +1579,7 @@ const App: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 3 }}
-              className="mt-16 text-center text-gray-400 font-bold uppercase tracking-[0.3em] text-sm"
+              className="mt-16 text-center text-gray-400 font-bold uppercase tracking-[0.3em] text-base"
             >
               Both used the same tools. <span className="text-blue-600">Only one changed the outcome.</span>
             </motion.div>
@@ -1598,7 +1598,7 @@ const App: React.FC = () => {
               <motion.div 
                 initial={{ opacity: 0, letterSpacing: '0.1em' }}
                 animate={{ opacity: 1, letterSpacing: '0.3em' }}
-                className="text-[10px] font-black text-gray-400 uppercase mb-4"
+                className="text-sm font-black text-gray-400 uppercase mb-4"
               >
                 THE BOTTOM LINE
               </motion.div>
@@ -1624,7 +1624,7 @@ const App: React.FC = () => {
                     <span className="text-gray-300 mt-1.5">•</span>
                     <span>Necessary foundation.</span>
                   </li>
-                  <li className="pt-8 text-gray-300 font-black uppercase tracking-[0.2em] text-xs">
+                  <li className="pt-8 text-gray-300 font-black uppercase tracking-[0.2em] text-sm">
                     Answers: "How do I do this?"
                   </li>
                 </ul>
@@ -1649,7 +1649,7 @@ const App: React.FC = () => {
                     <span className="text-blue-600 mt-1.5">•</span>
                     <span className="font-bold">The competitive advantage.</span>
                   </li>
-                  <li className="pt-8 text-blue-600 font-black uppercase tracking-[0.2em] text-xs">
+                  <li className="pt-8 text-blue-600 font-black uppercase tracking-[0.2em] text-sm">
                     Also answers: "What should we be doing - and why?"
                   </li>
                 </ul>
@@ -1666,7 +1666,7 @@ const App: React.FC = () => {
                 "Training teaches you to <span className="text-gray-300 italic">play the instrument.</span><br />
                 Literacy teaches you to <span className="text-blue-600">play it and write the music.</span>"
               </h2>
-              <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.8em]">
+              <div className="text-xs font-black text-gray-400 uppercase tracking-[0.8em]">
                 AI & BEYOND — BUILDING AI LITERATE LEADERS
               </div>
               
@@ -1699,7 +1699,7 @@ const App: React.FC = () => {
               setLearnStep(0);
               setIsLearnSimRunning(false);
             }}
-            className="group flex items-center gap-2 text-gray-400 hover:text-gray-900 transition-colors font-bold uppercase text-[10px] tracking-widest"
+            className="group flex items-center gap-2 text-gray-400 hover:text-gray-900 transition-colors font-bold uppercase text-xs tracking-widest"
           >
             <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
             Exit Simulation
@@ -1708,7 +1708,7 @@ const App: React.FC = () => {
           {isLearnSimRunning ? (
             <button 
               onClick={() => setIsLearnSimRunning(false)}
-              className="group flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors font-bold uppercase text-[10px] tracking-widest"
+              className="group flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors font-bold uppercase text-xs tracking-widest"
             >
               <RotateCcw className="w-3 h-3" />
               Pause Simulation
@@ -1716,7 +1716,7 @@ const App: React.FC = () => {
           ) : learnStep > 0 && learnStep < steps.length - 1 && (
             <button 
               onClick={() => setIsLearnSimRunning(true)}
-              className="group flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors font-bold uppercase text-[10px] tracking-widest"
+              className="group flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors font-bold uppercase text-xs tracking-widest"
             >
               <Play className="w-3 h-3 fill-current" />
               Resume Simulation
@@ -1726,7 +1726,7 @@ const App: React.FC = () => {
           {isLearnSimRunning && (
             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-              <span className="text-[8px] font-bold text-blue-500 uppercase tracking-widest">Auto-Playing</span>
+              <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Auto-Playing</span>
             </div>
           )}
         </div>
