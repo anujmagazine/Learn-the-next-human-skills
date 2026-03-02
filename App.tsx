@@ -1262,7 +1262,7 @@ const App: React.FC = () => {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-block px-3 py-1 rounded-full bg-brand-green/10 text-brand-green text-[10px] font-bold uppercase tracking-widest mb-6 border border-brand-green/20"
+              className="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-widest mb-6 border border-blue-100"
             >
               AI & BEYOND
             </motion.div>
@@ -1270,16 +1270,16 @@ const App: React.FC = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="text-7xl font-black text-brand-platinum mb-8 leading-[0.85] tracking-tighter"
+              className="text-7xl font-black text-gray-900 mb-8 leading-[0.85] tracking-tighter"
             >
-              Training is the <span className="text-brand-platinum/20 italic">starting line.</span><br />
-              Literacy is the <span className="text-brand-green">whole race.</span>
+              Training is the <span className="text-gray-300 italic">starting line.</span><br />
+              Literacy is the <span className="text-blue-600">whole race.</span>
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="text-xl text-brand-platinum/60 max-w-2xl mx-auto leading-relaxed mb-12"
+              className="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed mb-12"
             >
               AI Literacy is tool proficiency plus the judgment to know what's worth building.
             </motion.p>
@@ -1291,7 +1291,7 @@ const App: React.FC = () => {
                 setLearnStep(1);
                 setIsLearnSimRunning(true);
               }}
-              className="px-8 py-4 bg-brand-green text-brand-black font-black uppercase tracking-widest text-sm rounded-full hover:scale-105 transition-transform shadow-lg shadow-brand-green/20"
+              className="px-8 py-4 bg-blue-600 text-white font-black uppercase tracking-widest text-sm rounded-full hover:scale-105 transition-transform shadow-lg shadow-blue-600/20"
             >
               Start Simulation
             </motion.button>
@@ -1306,29 +1306,29 @@ const App: React.FC = () => {
               <motion.div 
                 initial={{ opacity: 0, letterSpacing: '0.1em' }}
                 animate={{ opacity: 1, letterSpacing: '0.3em' }}
-                className="text-[10px] font-black text-brand-platinum/20 uppercase mb-4"
+                className="text-[10px] font-black text-gray-400 uppercase mb-4"
               >
                 ACT ONE
               </motion.div>
               <motion.h2 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-5xl font-bold text-brand-platinum mb-4"
+                className="text-5xl font-bold text-gray-900 mb-4"
               >
-                Training is the <span className="text-brand-green">GPS.</span>
+                Training is the <span className="text-blue-600">GPS.</span>
               </motion.h2>
               <motion.p 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="text-brand-platinum/40 max-w-lg"
+                className="text-gray-500 max-w-lg"
               >
                 Essential. You need it. But it's just the engine, not the journey.
               </motion.p>
             </div>
 
-            <div className="glass rounded-[40px] p-12 border-brand-platinum/5 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
+            <div className="bg-white rounded-[40px] p-12 border border-gray-100 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-5 text-gray-900">
                 <Navigation className="w-32 h-32" />
               </div>
               <div className="space-y-4 relative z-10">
@@ -1343,11 +1343,11 @@ const App: React.FC = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.4 + (i * 0.1) }}
-                    className="flex items-center gap-6 p-5 rounded-2xl bg-brand-platinum/5 border border-brand-platinum/5"
+                    className="flex items-center gap-6 p-5 rounded-2xl bg-gray-50 border border-gray-100"
                   >
-                    <span className="font-mono text-[10px] text-brand-platinum/20">{item.step}</span>
+                    <span className="font-mono text-[10px] text-gray-400">{item.step}</span>
                     <span className="text-2xl">{item.icon}</span>
-                    <span className="text-brand-platinum font-bold text-lg">{item.text}</span>
+                    <span className="text-gray-900 font-bold text-lg">{item.text}</span>
                   </motion.div>
                 ))}
               </div>
@@ -1355,10 +1355,10 @@ const App: React.FC = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
-                className="mt-12 pt-8 border-t border-brand-platinum/5 text-center"
+                className="mt-12 pt-8 border-t border-gray-100 text-center"
               >
-                <p className="text-brand-platinum/40 text-sm italic mb-4">"Fast. Efficient. Necessary. But not sufficient."</p>
-                <div className="text-brand-green font-bold uppercase tracking-widest text-xs">You can drive. But who decides where to go?</div>
+                <p className="text-gray-500 text-sm italic mb-4">"Fast. Efficient. Necessary. But not sufficient."</p>
+                <div className="text-blue-600 font-bold uppercase tracking-widest text-xs">You can drive. But who decides where to go?</div>
               </motion.div>
             </div>
             
@@ -1376,22 +1376,22 @@ const App: React.FC = () => {
               <motion.div 
                 initial={{ opacity: 0, letterSpacing: '0.1em' }}
                 animate={{ opacity: 1, letterSpacing: '0.3em' }}
-                className="text-[10px] font-black text-brand-platinum/20 uppercase mb-4"
+                className="text-[10px] font-black text-gray-400 uppercase mb-4"
               >
                 ACT TWO
               </motion.div>
               <motion.h2 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-5xl font-bold text-brand-platinum mb-4"
+                className="text-5xl font-bold text-gray-900 mb-4"
               >
-                Literacy is <span className="text-brand-green">GPS + Compass.</span>
+                Literacy is <span className="text-blue-600">GPS + Compass.</span>
               </motion.h2>
               <motion.p 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="text-brand-platinum/40 max-w-lg"
+                className="text-gray-500 max-w-lg"
               >
                 You know the tools and you know where North is.
               </motion.p>
@@ -1401,15 +1401,15 @@ const App: React.FC = () => {
               <motion.div 
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="glass aspect-square rounded-[60px] border-brand-green/20 flex items-center justify-center relative overflow-hidden bg-brand-green/5"
+                className="bg-white aspect-square rounded-[60px] border border-blue-100 shadow-sm flex items-center justify-center relative overflow-hidden bg-blue-50/30"
               >
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-80 h-80 rounded-full border border-brand-green/10 border-dashed animate-spin-slow"></div>
-                  <div className="absolute w-64 h-64 rounded-full border border-brand-green/20 border-dashed animate-spin-slow-reverse"></div>
+                  <div className="w-80 h-80 rounded-full border border-blue-100 border-dashed animate-spin-slow"></div>
+                  <div className="absolute w-64 h-64 rounded-full border border-blue-100 border-dashed animate-spin-slow-reverse"></div>
                 </div>
                 <div className="relative z-10 text-center">
-                  <Compass className="w-40 h-40 text-brand-green mb-8 mx-auto animate-pulse" />
-                  <div className="grid grid-cols-2 gap-x-12 gap-y-6 text-[10px] font-black text-brand-green/60 uppercase tracking-[0.2em]">
+                  <Compass className="w-40 h-40 text-blue-600 mb-8 mx-auto animate-pulse" />
+                  <div className="grid grid-cols-2 gap-x-12 gap-y-6 text-[10px] font-black text-blue-600/60 uppercase tracking-[0.2em]">
                     <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2 }}>WHY</motion.span>
                     <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2, delay: 0.5 }}>WHAT IF</motion.span>
                     <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 2, delay: 1 }}>RISK</motion.span>
@@ -1428,21 +1428,21 @@ const App: React.FC = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.4 + (i * 0.2) }}
-                    className="glass p-8 rounded-3xl border-brand-platinum/10 flex items-center gap-6 group hover:border-brand-green/30 transition-colors"
+                    className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex items-center gap-6 group hover:border-blue-300 transition-colors"
                   >
-                    <div className="w-12 h-12 rounded-2xl bg-brand-green/10 flex items-center justify-center border border-brand-green/20">
-                      <HelpCircle className="w-6 h-6 text-brand-green" />
+                    <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center border border-blue-100">
+                      <HelpCircle className="w-6 h-6 text-blue-600" />
                     </div>
-                    <span className="text-brand-platinum text-xl font-medium italic leading-tight">"{q}"</span>
+                    <span className="text-gray-900 text-xl font-medium italic leading-tight">"{q}"</span>
                   </motion.div>
                 ))}
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.2 }}
-                  className="mt-8 p-8 bg-brand-platinum/5 rounded-3xl border border-brand-platinum/10"
+                  className="mt-8 p-8 bg-gray-50 rounded-3xl border border-gray-100"
                 >
-                  <p className="text-brand-platinum/60 text-lg leading-relaxed text-center">
+                  <p className="text-gray-500 text-lg leading-relaxed text-center">
                     Same tools. But now you also choose the destination.
                   </p>
                 </motion.div>
@@ -1463,14 +1463,14 @@ const App: React.FC = () => {
               <motion.div 
                 initial={{ opacity: 0, letterSpacing: '0.1em' }}
                 animate={{ opacity: 1, letterSpacing: '0.3em' }}
-                className="text-[10px] font-black text-brand-platinum/20 uppercase mb-4"
+                className="text-[10px] font-black text-gray-400 uppercase mb-4"
               >
                 ACT THREE
               </motion.div>
               <motion.h2 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-5xl font-bold text-brand-platinum mb-4"
+                className="text-5xl font-bold text-gray-900 mb-4"
               >
                 Same Monday morning.
               </motion.h2>
@@ -1478,7 +1478,7 @@ const App: React.FC = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="text-brand-platinum/40 max-w-lg"
+                className="text-gray-500 max-w-lg"
               >
                 Same tools. Two different mindsets.
               </motion.p>
@@ -1486,7 +1486,7 @@ const App: React.FC = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4 }}
-                className="mt-8 px-6 py-3 bg-brand-platinum/5 rounded-full border border-brand-platinum/10 text-sm text-brand-platinum/60 italic"
+                className="mt-8 px-6 py-3 bg-gray-50 rounded-full border border-gray-100 text-sm text-gray-500 italic"
               >
                 "The CEO wants a competitive analysis by Thursday."
               </motion.div>
@@ -1498,11 +1498,11 @@ const App: React.FC = () => {
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6 }}
-                className="glass rounded-[40px] border-brand-platinum/5 overflow-hidden flex flex-col"
+                className="bg-white rounded-[40px] border border-gray-100 shadow-sm overflow-hidden flex flex-col"
               >
-                <div className="bg-brand-platinum/5 p-8 border-b border-brand-platinum/5">
-                  <div className="text-[10px] font-black text-brand-platinum/30 uppercase tracking-widest mb-2">MINDSET A</div>
-                  <h3 className="text-2xl font-bold text-brand-platinum/40">Only Trained</h3>
+                <div className="bg-gray-50 p-8 border-b border-gray-100">
+                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">MINDSET A</div>
+                  <h3 className="text-2xl font-bold text-gray-400">Only Trained</h3>
                 </div>
                 <div className="p-10 space-y-8 flex-1">
                   {[
@@ -1518,8 +1518,8 @@ const App: React.FC = () => {
                       transition={{ delay: 1 + (i * 0.2) }}
                       className="flex gap-6"
                     >
-                      <span className="font-mono text-xs text-brand-platinum/20 mt-1">{item.step}</span>
-                      <p className="text-brand-platinum/40 text-lg leading-snug">{item.text}</p>
+                      <span className="font-mono text-xs text-gray-300 mt-1">{item.step}</span>
+                      <p className="text-gray-500 text-lg leading-snug">{item.text}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -1527,10 +1527,10 @@ const App: React.FC = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 2 }}
-                  className="p-10 bg-brand-platinum/5 border-t border-brand-platinum/5"
+                  className="p-10 bg-gray-50 border-t border-gray-100"
                 >
-                  <div className="text-[10px] font-bold text-brand-platinum/20 uppercase mb-3 tracking-widest">RESULT</div>
-                  <p className="text-brand-platinum/60 font-bold text-xl leading-tight">Fast delivery. Zero strategic value. Replaced next quarter.</p>
+                  <div className="text-[10px] font-bold text-gray-400 uppercase mb-3 tracking-widest">RESULT</div>
+                  <p className="text-gray-600 font-bold text-xl leading-tight">Fast delivery. Zero strategic value. Replaced next quarter.</p>
                 </motion.div>
               </motion.div>
 
@@ -1539,11 +1539,11 @@ const App: React.FC = () => {
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8 }}
-                className="glass rounded-[40px] border-brand-green/20 overflow-hidden bg-brand-green/5 flex flex-col"
+                className="bg-white rounded-[40px] border border-blue-100 shadow-sm overflow-hidden bg-blue-50/30 flex flex-col"
               >
-                <div className="bg-brand-green/10 p-8 border-b border-brand-green/10">
-                  <div className="text-[10px] font-black text-brand-green uppercase tracking-widest mb-2">MINDSET B</div>
-                  <h3 className="text-2xl font-bold text-brand-platinum">AI Literate</h3>
+                <div className="bg-blue-50 p-8 border-b border-blue-100">
+                  <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">MINDSET B</div>
+                  <h3 className="text-2xl font-bold text-gray-900">AI Literate</h3>
                 </div>
                 <div className="p-10 space-y-8 flex-1">
                   {[
@@ -1559,8 +1559,8 @@ const App: React.FC = () => {
                       transition={{ delay: 1.2 + (i * 0.2) }}
                       className="flex gap-6"
                     >
-                      <span className="font-mono text-xs text-brand-green/40 mt-1">{item.step}</span>
-                      <p className="text-brand-platinum text-lg font-bold leading-snug">{item.text}</p>
+                      <span className="font-mono text-xs text-blue-400 mt-1">{item.step}</span>
+                      <p className="text-gray-900 text-lg font-bold leading-snug">{item.text}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -1568,10 +1568,10 @@ const App: React.FC = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 2.2 }}
-                  className="p-10 bg-brand-green/10 border-t border-brand-green/10"
+                  className="p-10 bg-blue-50 border-t border-blue-100"
                 >
-                  <div className="text-[10px] font-bold text-brand-green uppercase mb-3 tracking-widest">RESULT</div>
-                  <p className="text-brand-platinum font-black text-xl leading-tight">Same tools. Better question. Seat at the table.</p>
+                  <div className="text-[10px] font-bold text-blue-600 uppercase mb-3 tracking-widest">RESULT</div>
+                  <p className="text-gray-900 font-black text-xl leading-tight">Same tools. Better question. Seat at the table.</p>
                 </motion.div>
               </motion.div>
             </div>
@@ -1579,9 +1579,9 @@ const App: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 3 }}
-              className="mt-16 text-center text-brand-platinum/40 font-bold uppercase tracking-[0.3em] text-sm"
+              className="mt-16 text-center text-gray-400 font-bold uppercase tracking-[0.3em] text-sm"
             >
-              Both used the same tools. <span className="text-brand-green">Only one changed the outcome.</span>
+              Both used the same tools. <span className="text-blue-600">Only one changed the outcome.</span>
             </motion.div>
             
             <div className="mt-16 flex justify-center h-8">
@@ -1598,7 +1598,7 @@ const App: React.FC = () => {
               <motion.div 
                 initial={{ opacity: 0, letterSpacing: '0.1em' }}
                 animate={{ opacity: 1, letterSpacing: '0.3em' }}
-                className="text-[10px] font-black text-brand-platinum/20 uppercase mb-4"
+                className="text-[10px] font-black text-gray-400 uppercase mb-4"
               >
                 THE BOTTOM LINE
               </motion.div>
@@ -1608,23 +1608,23 @@ const App: React.FC = () => {
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="glass p-12 rounded-[50px] border-brand-platinum/5"
+                className="bg-white p-12 rounded-[50px] border border-gray-100 shadow-sm"
               >
-                <h3 className="text-3xl font-bold text-brand-platinum/40 mb-8">Training alone</h3>
-                <ul className="space-y-5 text-brand-platinum/40 text-lg">
+                <h3 className="text-3xl font-bold text-gray-400 mb-8">Training alone</h3>
+                <ul className="space-y-5 text-gray-500 text-lg">
                   <li className="flex items-start gap-3">
-                    <span className="text-brand-platinum/20 mt-1.5">•</span>
+                    <span className="text-gray-300 mt-1.5">•</span>
                     <span>Builds operators who execute faster.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-brand-platinum/20 mt-1.5">•</span>
+                    <span className="text-gray-300 mt-1.5">•</span>
                     <span>Tool-specific. Task-oriented.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-brand-platinum/20 mt-1.5">•</span>
+                    <span className="text-gray-300 mt-1.5">•</span>
                     <span>Necessary foundation.</span>
                   </li>
-                  <li className="pt-8 text-brand-platinum/20 font-black uppercase tracking-[0.2em] text-xs">
+                  <li className="pt-8 text-gray-300 font-black uppercase tracking-[0.2em] text-xs">
                     Answers: "How do I do this?"
                   </li>
                 </ul>
@@ -1633,23 +1633,23 @@ const App: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="glass p-12 rounded-[50px] border-brand-green/30 bg-brand-green/5"
+                className="bg-white p-12 rounded-[50px] border border-blue-100 shadow-sm bg-blue-50/30"
               >
-                <h3 className="text-3xl font-bold text-brand-platinum mb-8">Literacy</h3>
-                <ul className="space-y-5 text-brand-platinum text-lg">
+                <h3 className="text-3xl font-bold text-gray-900 mb-8">Literacy</h3>
+                <ul className="space-y-5 text-gray-900 text-lg">
                   <li className="flex items-start gap-3">
-                    <span className="text-brand-green mt-1.5">•</span>
+                    <span className="text-blue-600 mt-1.5">•</span>
                     <span className="font-bold">Builds owners with tool skills plus judgment.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-brand-green mt-1.5">•</span>
+                    <span className="text-blue-600 mt-1.5">•</span>
                     <span className="font-bold">Strategic. Durable. Tool-agnostic thinking.</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-brand-green mt-1.5">•</span>
+                    <span className="text-blue-600 mt-1.5">•</span>
                     <span className="font-bold">The competitive advantage.</span>
                   </li>
-                  <li className="pt-8 text-brand-green font-black uppercase tracking-[0.2em] text-xs">
+                  <li className="pt-8 text-blue-600 font-black uppercase tracking-[0.2em] text-xs">
                     Also answers: "What should we be doing - and why?"
                   </li>
                 </ul>
@@ -1660,13 +1660,13 @@ const App: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
-              className="text-center py-24 border-t border-brand-platinum/5"
+              className="text-center py-24 border-t border-gray-100"
             >
-              <h2 className="text-5xl font-black text-brand-platinum mb-12 leading-[1.1] max-w-4xl mx-auto tracking-tighter">
-                "Training teaches you to <span className="text-brand-platinum/20 italic">play the instrument.</span><br />
-                Literacy teaches you to <span className="text-brand-green">play it and write the music.</span>"
+              <h2 className="text-5xl font-black text-gray-900 mb-12 leading-[1.1] max-w-4xl mx-auto tracking-tighter">
+                "Training teaches you to <span className="text-gray-300 italic">play the instrument.</span><br />
+                Literacy teaches you to <span className="text-blue-600">play it and write the music.</span>"
               </h2>
-              <div className="text-[10px] font-black text-brand-platinum/20 uppercase tracking-[0.8em]">
+              <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.8em]">
                 AI & BEYOND — BUILDING AI LITERATE LEADERS
               </div>
               
@@ -1677,10 +1677,11 @@ const App: React.FC = () => {
                 onClick={() => {
                   setView(AppView.HUB);
                   setLearnStep(0);
+                  setIsLearnSimRunning(false);
                 }}
-                className="mt-20 px-10 py-4 border border-brand-platinum/20 rounded-full text-brand-platinum/40 hover:text-brand-platinum hover:border-brand-platinum transition-all font-bold uppercase text-[10px] tracking-widest"
+                className="mt-12 px-10 py-4 bg-gray-900 text-white font-black uppercase tracking-widest text-sm rounded-full hover:scale-105 transition-transform shadow-xl"
               >
-                Finish Guide
+                Return to Hub
               </motion.button>
             </motion.div>
           </div>
@@ -1689,7 +1690,7 @@ const App: React.FC = () => {
     ];
 
     return (
-      <div className="min-h-[80vh] flex flex-col items-center justify-center relative overflow-hidden">
+      <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-[#F8F9FA] text-[#333]">
         {/* Navigation Controls */}
         <div className="fixed top-24 left-8 z-50 flex flex-col gap-4">
           <button 
@@ -1698,7 +1699,7 @@ const App: React.FC = () => {
               setLearnStep(0);
               setIsLearnSimRunning(false);
             }}
-            className="group flex items-center gap-2 text-brand-platinum/40 hover:text-brand-platinum transition-colors font-bold uppercase text-[10px] tracking-widest"
+            className="group flex items-center gap-2 text-gray-400 hover:text-gray-900 transition-colors font-bold uppercase text-[10px] tracking-widest"
           >
             <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
             Exit Simulation
@@ -1707,7 +1708,7 @@ const App: React.FC = () => {
           {isLearnSimRunning ? (
             <button 
               onClick={() => setIsLearnSimRunning(false)}
-              className="group flex items-center gap-2 text-brand-green hover:text-brand-green/80 transition-colors font-bold uppercase text-[10px] tracking-widest"
+              className="group flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors font-bold uppercase text-[10px] tracking-widest"
             >
               <RotateCcw className="w-3 h-3" />
               Pause Simulation
@@ -1715,7 +1716,7 @@ const App: React.FC = () => {
           ) : learnStep > 0 && learnStep < steps.length - 1 && (
             <button 
               onClick={() => setIsLearnSimRunning(true)}
-              className="group flex items-center gap-2 text-brand-green hover:text-brand-green/80 transition-colors font-bold uppercase text-[10px] tracking-widest"
+              className="group flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors font-bold uppercase text-[10px] tracking-widest"
             >
               <Play className="w-3 h-3 fill-current" />
               Resume Simulation
@@ -1723,9 +1724,9 @@ const App: React.FC = () => {
           )}
           
           {isLearnSimRunning && (
-            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-brand-green/10 border border-brand-green/20">
-              <div className="w-1.5 h-1.5 rounded-full bg-brand-green animate-pulse" />
-              <span className="text-[8px] font-bold text-brand-green uppercase tracking-widest">Auto-Playing</span>
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+              <span className="text-[8px] font-bold text-blue-500 uppercase tracking-widest">Auto-Playing</span>
             </div>
           )}
         </div>
@@ -1736,7 +1737,7 @@ const App: React.FC = () => {
             <div 
               key={i}
               className={`h-1 rounded-full transition-all duration-500 ${
-                i === learnStep ? 'w-8 bg-brand-green' : 'w-2 bg-brand-platinum/10'
+                i === learnStep ? 'w-8 bg-blue-500' : 'w-2 bg-gray-200'
               }`}
             />
           ))}
