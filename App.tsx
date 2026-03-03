@@ -98,6 +98,10 @@ const App: React.FC = () => {
     isDone: false
   });
 
+  // Taste Simulation State
+  const [tasteTab, setTasteTab] = useState(1);
+  const [tasteContextAdded, setTasteContextAdded] = useState(false);
+
   const VERIFICATION_SNIPPETS = [
     "Net margin improved from 8.2% to 14.1% despite significant cost pressures in the supply chain and logistics sectors.",
     "Active users grew from 18,200 to 19,850 representing a 15% growth rate that exceeds the industry average for this quarter.",
@@ -1781,9 +1785,6 @@ const App: React.FC = () => {
   };
 
   const renderTaste = () => {
-    const [tasteTab, setTasteTab] = useState(1);
-    const [tasteContextAdded, setTasteContextAdded] = useState(false);
-
     const renderTab1 = () => (
       <div className="max-w-5xl mx-auto px-6 py-12">
         <div className="text-center mb-20">
@@ -1887,55 +1888,58 @@ const App: React.FC = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Brand Name</div>
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Brand Name</div>
                 <div className="text-xl font-bold text-gray-900 mb-1">SmartConnect Pro Plus™</div>
-                <div className="text-[10px] text-gray-400 italic">✕ It could be a CRM. Or insurance. Or anything.</div>
+                <div className="text-[10px] text-red-500 font-medium italic">✕ Generic. Corporate. Forgettable.</div>
               </div>
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Tagline</div>
-                <div className="text-sm font-bold text-gray-900 mb-1 uppercase">INNOVATION. EXCELLENCE. RESULTS. YOUR SUCCESS IS OUR MISSION.</div>
-                <div className="text-[10px] text-gray-400 italic">✕ Four buzzwords. Says nothing. Offends no one.</div>
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Tagline</div>
+                <div className="text-sm font-bold text-gray-900 mb-1 uppercase tracking-tight">INNOVATION. EXCELLENCE. RESULTS. YOUR SUCCESS IS OUR MISSION.</div>
+                <div className="text-[10px] text-red-500 font-medium italic">✕ Four buzzwords. Says nothing.</div>
               </div>
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Color Palette</div>
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Color Palette</div>
                 <div className="flex gap-2 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-blue-500" />
-                  <div className="w-10 h-10 rounded-lg bg-green-500" />
-                  <div className="w-10 h-10 rounded-lg bg-orange-500" />
-                  <div className="w-10 h-10 rounded-lg bg-cyan-500" />
+                  <div className="w-10 h-10 rounded bg-blue-500" />
+                  <div className="w-10 h-10 rounded bg-green-500" />
+                  <div className="w-10 h-10 rounded bg-orange-500" />
+                  <div className="w-10 h-10 rounded bg-cyan-500" />
                 </div>
-                <div className="text-[10px] text-gray-400 italic">✕ A PowerPoint from 2009.</div>
+                <div className="text-[10px] text-red-500 font-medium italic">✕ Default primary colors. No mood.</div>
               </div>
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">First Email Subject</div>
-                <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 mb-2">
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">First Email Subject</div>
+                <div className="bg-gray-50 p-3 rounded border border-gray-100 mb-2">
                   <div className="text-xs font-bold text-gray-900">Exciting News! Our AMAZING Launch is HERE — Don't Miss This!</div>
                 </div>
-                <div className="text-[10px] text-gray-400 italic">✕ Screaming. Deleted.</div>
+                <div className="text-[10px] text-red-500 font-medium italic">✕ Screaming. Deleted.</div>
               </div>
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Hero Image Prompt</div>
-                <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 mb-2">
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Hero Image Prompt</div>
+                <div className="bg-gray-50 p-3 rounded border border-gray-100 mb-2">
                   <div className="text-xs text-gray-600">"Smiling diverse team of professionals shaking hands in a bright, modern office with glass walls."</div>
                 </div>
-                <div className="text-[10px] text-gray-400 italic">✕ Every startup. Every year.</div>
+                <div className="text-[10px] text-red-500 font-medium italic">✕ Stock photo cliché.</div>
               </div>
-              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Call to Action</div>
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Call to Action</div>
                 <div className="flex flex-wrap gap-2 mb-3">
                   <div className="px-3 py-1.5 bg-blue-600 text-white text-[10px] font-bold rounded">CLICK HERE TO START!</div>
                   <div className="px-3 py-1.5 border border-blue-600 text-blue-600 text-[10px] font-bold rounded">BEGIN YOUR JOURNEY →</div>
                 </div>
-                <div className="text-[10px] text-gray-400 italic">✕ Three shouts. Exhausting.</div>
+                <div className="text-[10px] text-red-500 font-medium italic">✕ Aggressive. Desperate.</div>
               </div>
             </div>
           </div>
 
           {/* Column 2: Guided by Taste */}
           <div className="space-y-6">
-            <div className="bg-green-50 p-6 rounded-2xl border border-green-100">
-              <div className="text-xs font-black text-green-600 uppercase tracking-widest mb-2">✓ AI Guided by Taste</div>
+            <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
+              <div className="text-[10px] font-black text-green-600 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                AI Guided by Taste
+              </div>
               {!tasteContextAdded ? (
                 <button 
                   onClick={() => setTasteContextAdded(true)}
@@ -1954,46 +1958,77 @@ const App: React.FC = () => {
               )}
             </div>
 
-            <div className={`space-y-4 transition-all duration-700 ${tasteContextAdded ? 'opacity-100 translate-y-0' : 'opacity-20 translate-y-4 pointer-events-none'}`}>
-              <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50/10">
-                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">Brand Name</div>
-                <div className="text-xl font-bold text-gray-900 mb-1">Gather</div>
-                <div className="text-[10px] text-blue-600 font-medium">✓ One word. Warm. About people, not features.</div>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50/10">
-                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">Tagline</div>
-                <div className="text-sm font-bold text-gray-900 mb-1 italic">Quietly powerful.</div>
-                <div className="text-[10px] text-blue-600 font-medium">✓ Two words. Holds tension. Earns curiosity.</div>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50/10">
-                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">Color Palette</div>
-                <div className="flex gap-2 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#F5F5F0] border border-gray-200" title="Linen" />
-                  <div className="w-10 h-10 rounded-lg bg-[#2D3A2D]" title="Forest" />
-                  <div className="w-10 h-10 rounded-lg bg-[#A65E4E]" title="Terracotta" />
+            <div className={`space-y-6 transition-all duration-1000 ${tasteContextAdded ? 'opacity-100 translate-y-0' : 'opacity-20 translate-y-8 pointer-events-none'}`}>
+              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Target className="w-12 h-12 text-[#2D3A2D]" />
                 </div>
-                <div className="text-[10px] text-blue-600 font-medium">✓ Unexpected. Warm. You've never seen it on a bank.</div>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50/10">
-                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">First Email Subject</div>
-                <div className="bg-blue-50/50 p-3 rounded-lg border border-blue-100 mb-2">
-                  <div className="text-xs font-bold text-gray-900">We got the thing wrong.</div>
+                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">Brand Name</div>
+                <div className="text-4xl font-display font-black text-[#2D3A2D] mb-2 tracking-tighter">Gather</div>
+                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+                  <CheckCircle2 className="w-3 h-3 text-green-600" /> One word. Warm. Human.
                 </div>
-                <div className="text-[10px] text-blue-600 font-medium">✓ Impossible not to open.</div>
               </div>
-              <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50/10">
-                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">Hero Image Prompt</div>
-                <div className="bg-blue-50/50 p-3 rounded-lg border border-blue-100 mb-2">
-                  <div className="text-xs text-gray-900 font-medium italic">"Empty chair at a kitchen table. Morning light. Steam rising from one cup."</div>
+
+              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm group">
+                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">Tagline</div>
+                <div className="text-2xl font-serif italic text-[#2D3A2D] mb-3 leading-tight">"Quietly powerful."</div>
+                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+                  <CheckCircle2 className="w-3 h-3 text-green-600" /> Holds tension. Earns curiosity.
                 </div>
-                <div className="text-[10px] text-blue-600 font-medium">✓ A feeling, not a stock photo.</div>
               </div>
-              <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50/10">
-                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">Call to Action</div>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <div className="text-xl font-serif italic text-gray-900">When you're ready.</div>
+
+              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
+                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-6">Color Palette</div>
+                <div className="flex gap-4 mb-6">
+                  <div className="group relative">
+                    <div className="w-16 h-16 rounded-2xl bg-[#F5F5F0] border border-[#E8E4E1] shadow-sm transition-transform group-hover:scale-110" />
+                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Linen</div>
+                  </div>
+                  <div className="group relative">
+                    <div className="w-16 h-16 rounded-2xl bg-[#2D3A2D] shadow-md transition-transform group-hover:scale-110" />
+                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Forest</div>
+                  </div>
+                  <div className="group relative">
+                    <div className="w-16 h-16 rounded-2xl bg-[#A65E4E] shadow-md transition-transform group-hover:scale-110" />
+                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Terracotta</div>
+                  </div>
                 </div>
-                <div className="text-[10px] text-blue-600 font-medium">✓ It waits. That's respect.</div>
+                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest mt-4">
+                  <CheckCircle2 className="w-3 h-3 text-green-600" /> Unexpected. Warm. Sophisticated.
+                </div>
+              </div>
+
+              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
+                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">First Email Subject</div>
+                <div className="bg-white p-5 rounded-2xl border border-[#E8E4E1] mb-3 shadow-inner">
+                  <div className="text-lg font-serif text-[#2D3A2D]">We got the thing wrong.</div>
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+                  <CheckCircle2 className="w-3 h-3 text-green-600" /> Impossible not to open.
+                </div>
+              </div>
+
+              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
+                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">Hero Image Prompt</div>
+                <div className="bg-white p-5 rounded-2xl border border-[#E8E4E1] mb-3 shadow-inner">
+                  <div className="text-sm text-[#2D3A2D] font-serif italic leading-relaxed">
+                    "Empty chair at a kitchen table. Morning light. Steam rising from one cup."
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+                  <CheckCircle2 className="w-3 h-3 text-green-600" /> A feeling, not a stock photo.
+                </div>
+              </div>
+
+              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
+                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-6">Call to Action</div>
+                <div className="mb-4">
+                  <div className="text-4xl font-display italic text-[#2D3A2D] tracking-tight">When you're ready.</div>
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+                  <CheckCircle2 className="w-3 h-3 text-green-600" /> It waits. That's respect.
+                </div>
               </div>
             </div>
           </div>
@@ -2128,23 +2163,24 @@ const App: React.FC = () => {
     );
 
     return (
-      <div className="min-h-screen bg-[#F8F9FA] text-[#333]">
+      <div className="min-h-screen bg-[#F9F8F6] text-[#2D3A2D]">
         {/* Navigation Bar */}
-        <div className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 z-50">
-          <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div className="flex items-center gap-8">
+        <div className="fixed top-0 left-0 w-full bg-white/60 backdrop-blur-xl border-b border-[#E8E4E1] z-50">
+          <div className="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
+            <div className="flex items-center gap-10">
               <button 
                 onClick={() => setView(AppView.HUB)}
-                className="text-gray-900 font-black uppercase tracking-tighter text-sm"
+                className="text-[#2D3A2D] font-black uppercase tracking-tighter text-base group flex items-center gap-3"
               >
-                Master the Next <span className="text-blue-600">Human Skills</span>
+                <div className="w-10 h-10 bg-[#2D3A2D] rounded-xl flex items-center justify-center text-white transition-transform group-hover:scale-110">H</div>
+                Master the Next <span className="text-[#A65E4E]">Human Skills</span>
               </button>
-              <div className="h-4 w-[1px] bg-gray-200" />
-              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+              <div className="h-6 w-[1px] bg-[#E8E4E1]" />
+              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.4em]">
                 Simulation 03 — Taste
               </div>
             </div>
-            <div className="flex gap-8">
+            <div className="flex gap-10">
               {[
                 { id: 1, label: '1. What is Taste?' },
                 { id: 2, label: '2. The Experiment' },
@@ -2153,7 +2189,7 @@ const App: React.FC = () => {
                 <button 
                   key={tab.id}
                   onClick={() => setTasteTab(tab.id)}
-                  className={`text-[10px] font-black uppercase tracking-widest transition-all pb-1 border-b-2 ${tasteTab === tab.id ? 'text-blue-600 border-blue-600' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
+                  className={`text-[10px] font-black uppercase tracking-[0.2em] transition-all pb-2 border-b-2 ${tasteTab === tab.id ? 'text-[#A65E4E] border-[#A65E4E]' : 'text-gray-400 border-transparent hover:text-[#2D3A2D]'}`}
                 >
                   {tab.label}
                 </button>
