@@ -5,7 +5,8 @@ export enum AppView {
   DASHBOARD = 'dashboard',
   LANDING = 'landing',
   EVOLUTION = 'evolution',
-  VERIFICATION = 'verification'
+  VERIFICATION = 'verification',
+  TASTE = 'taste'
 }
 
 export interface AgentStream {

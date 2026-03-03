@@ -448,6 +448,27 @@ const App: React.FC = () => {
         </div>
 
         <div 
+          onClick={() => setView(AppView.TASTE)}
+          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
+        >
+          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
+            <svg className="w-24 h-24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+          </div>
+          <div className="relative z-10 flex-1">
+            <div className="w-16 h-16 bg-brand-green/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-green/20 group-hover:scale-110 transition-transform">
+              <span className="text-3xl">🎨</span>
+            </div>
+            <h2 className="text-3xl font-bold mb-4 text-brand-platinum group-hover:text-brand-green transition-colors">Taste</h2>
+            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+              AI can generate infinite options. Taste is your ability to say “yes to this, no to that and explain why.”
+            </p>
+          </div>
+          <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
+            Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
+          </div>
+        </div>
+
+        <div 
           onClick={() => setView(AppView.VERIFICATION)}
           className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
         >
@@ -1759,6 +1780,30 @@ const App: React.FC = () => {
     );
   };
 
+  const renderTaste = () => (
+    <div className="max-w-4xl mx-auto py-24 text-center animate-in fade-in duration-700">
+      <div className="w-24 h-24 bg-brand-green/10 rounded-3xl flex items-center justify-center mb-12 mx-auto border border-brand-green/20">
+        <span className="text-5xl">🎨</span>
+      </div>
+      <h1 className="text-6xl font-black text-brand-platinum mb-8 tracking-tighter uppercase">Taste</h1>
+      <p className="text-2xl text-brand-platinum/60 leading-relaxed mb-16 max-w-2xl mx-auto">
+        AI can generate infinite options. Taste is your ability to say “yes to this, no to that and explain why.”
+      </p>
+      <div className="glass p-12 rounded-[40px] border-brand-platinum/5 inline-block">
+        <div className="text-brand-green font-bold uppercase tracking-[0.3em] text-sm mb-4">Simulation Coming Soon</div>
+        <p className="text-brand-platinum/40 italic">We are currently building the "Taste" training module. Stay tuned.</p>
+      </div>
+      <div className="mt-16">
+        <button 
+          onClick={() => setView(AppView.HUB)}
+          className="px-10 py-4 bg-brand-platinum/5 hover:bg-brand-platinum/10 text-brand-platinum rounded-full font-bold uppercase tracking-widest text-xs transition-all border border-brand-platinum/10"
+        >
+          Return to Hub
+        </button>
+      </div>
+    </div>
+  );
+
   const renderContent = () => {
     switch (view) {
       case AppView.HUB: return renderHub();
@@ -1767,6 +1812,7 @@ const App: React.FC = () => {
       case AppView.EVOLUTION: return renderEvolution();
       case AppView.VERIFICATION: return renderVerification();
       case AppView.LEARN: return renderLearn();
+      case AppView.TASTE: return renderTaste();
       default: return renderHub();
     }
   };
