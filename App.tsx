@@ -1780,29 +1780,406 @@ const App: React.FC = () => {
     );
   };
 
-  const renderTaste = () => (
-    <div className="max-w-4xl mx-auto py-24 text-center animate-in fade-in duration-700">
-      <div className="w-24 h-24 bg-brand-green/10 rounded-3xl flex items-center justify-center mb-12 mx-auto border border-brand-green/20">
-        <span className="text-5xl">🎨</span>
-      </div>
-      <h1 className="text-6xl font-black text-brand-platinum mb-8 tracking-tighter uppercase">Taste</h1>
-      <p className="text-2xl text-brand-platinum/60 leading-relaxed mb-16 max-w-2xl mx-auto">
-        AI can generate infinite options. Taste is your ability to say “yes to this, no to that and explain why.”
-      </p>
-      <div className="glass p-12 rounded-[40px] border-brand-platinum/5 inline-block">
-        <div className="text-brand-green font-bold uppercase tracking-[0.3em] text-sm mb-4">Simulation Coming Soon</div>
-        <p className="text-brand-platinum/40 italic">We are currently building the "Taste" training module. Stay tuned.</p>
-      </div>
-      <div className="mt-16">
-        <button 
-          onClick={() => setView(AppView.HUB)}
-          className="px-10 py-4 bg-brand-platinum/5 hover:bg-brand-platinum/10 text-brand-platinum rounded-full font-bold uppercase tracking-widest text-xs transition-all border border-brand-platinum/10"
+  const renderTaste = () => {
+    const [tasteTab, setTasteTab] = useState(1);
+    const [tasteContextAdded, setTasteContextAdded] = useState(false);
+
+    const renderTab1 = () => (
+      <div className="max-w-5xl mx-auto px-6 py-12">
+        <div className="text-center mb-20">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-widest mb-6 border border-blue-100"
+          >
+            <Zap className="w-3 h-3" />
+            Interactive Simulation
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-7xl font-black text-gray-900 mb-8 tracking-tighter"
+          >
+            What is taste,<br />really?
+          </motion.h1>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-sm"
+          >
+            <div className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">The Old World</div>
+            <p className="text-2xl text-gray-500 leading-relaxed italic">
+              Skill was the bottleneck. Not everyone could design, code, write, or build. The barrier protected quality.
+            </p>
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-sm"
+          >
+            <div className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">The AI World</div>
+            <p className="text-2xl text-gray-900 font-medium leading-relaxed">
+              Now anyone can make anything. The bottleneck has shifted. The new question isn't <span className="text-blue-600">can you?</span> — it's <span className="text-blue-600">should you, and why?</span>
+            </p>
+          </motion.div>
+        </div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-gray-900 p-12 rounded-[40px] text-center relative overflow-hidden"
         >
-          Return to Hub
-        </button>
+          <div className="absolute top-0 left-0 w-full h-1 bg-blue-500/30" />
+          <p className="text-3xl text-white font-serif italic leading-relaxed max-w-3xl mx-auto">
+            "Taste is the ability to say yes to one thing and no to everything else — and to know exactly why."
+          </p>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="mt-16 text-center"
+        >
+          <button 
+            onClick={() => setTasteTab(2)}
+            className="px-10 py-5 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-full font-black uppercase tracking-widest text-sm transition-all flex items-center gap-3 mx-auto"
+          >
+            See Taste in Action <ArrowRight className="w-4 h-4" />
+          </button>
+        </motion.div>
       </div>
-    </div>
-  );
+    );
+
+    const renderTab2 = () => (
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        <div className="mb-16">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-orange-50 text-orange-600 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest inline-block mb-6 border border-orange-100"
+          >
+            What you're about to see
+          </motion.div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6 max-w-3xl">
+            We give the <span className="text-blue-600">same brief</span> to AI twice. The only difference? The second time, a human with <span className="italic">taste</span> adds context before asking. Watch how every single output changes.
+          </h2>
+          
+          <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex items-center gap-6">
+            <div className="text-xs font-black text-gray-400 uppercase tracking-widest">The Brief</div>
+            <div className="text-xl font-medium text-gray-900 italic">"Build a brand for a new fintech startup that helps people manage money together."</div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          {/* Column 1: Without Taste */}
+          <div className="space-y-6">
+            <div className="bg-red-50 p-6 rounded-2xl border border-red-100">
+              <div className="text-xs font-black text-red-600 uppercase tracking-widest mb-2">✕ AI Without Taste</div>
+              <p className="text-sm text-red-900/60 italic">No context given. AI just runs with the brief.</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Brand Name</div>
+                <div className="text-xl font-bold text-gray-900 mb-1">SmartConnect Pro Plus™</div>
+                <div className="text-[10px] text-gray-400 italic">✕ It could be a CRM. Or insurance. Or anything.</div>
+              </div>
+              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Tagline</div>
+                <div className="text-sm font-bold text-gray-900 mb-1 uppercase">INNOVATION. EXCELLENCE. RESULTS. YOUR SUCCESS IS OUR MISSION.</div>
+                <div className="text-[10px] text-gray-400 italic">✕ Four buzzwords. Says nothing. Offends no one.</div>
+              </div>
+              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Color Palette</div>
+                <div className="flex gap-2 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500" />
+                  <div className="w-10 h-10 rounded-lg bg-green-500" />
+                  <div className="w-10 h-10 rounded-lg bg-orange-500" />
+                  <div className="w-10 h-10 rounded-lg bg-cyan-500" />
+                </div>
+                <div className="text-[10px] text-gray-400 italic">✕ A PowerPoint from 2009.</div>
+              </div>
+              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">First Email Subject</div>
+                <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 mb-2">
+                  <div className="text-xs font-bold text-gray-900">Exciting News! Our AMAZING Launch is HERE — Don't Miss This!</div>
+                </div>
+                <div className="text-[10px] text-gray-400 italic">✕ Screaming. Deleted.</div>
+              </div>
+              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Hero Image Prompt</div>
+                <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 mb-2">
+                  <div className="text-xs text-gray-600">"Smiling diverse team of professionals shaking hands in a bright, modern office with glass walls."</div>
+                </div>
+                <div className="text-[10px] text-gray-400 italic">✕ Every startup. Every year.</div>
+              </div>
+              <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Call to Action</div>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <div className="px-3 py-1.5 bg-blue-600 text-white text-[10px] font-bold rounded">CLICK HERE TO START!</div>
+                  <div className="px-3 py-1.5 border border-blue-600 text-blue-600 text-[10px] font-bold rounded">BEGIN YOUR JOURNEY →</div>
+                </div>
+                <div className="text-[10px] text-gray-400 italic">✕ Three shouts. Exhausting.</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Column 2: Guided by Taste */}
+          <div className="space-y-6">
+            <div className="bg-green-50 p-6 rounded-2xl border border-green-100">
+              <div className="text-xs font-black text-green-600 uppercase tracking-widest mb-2">✓ AI Guided by Taste</div>
+              {!tasteContextAdded ? (
+                <button 
+                  onClick={() => setTasteContextAdded(true)}
+                  className="w-full py-3 bg-green-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-green-700 transition-colors"
+                >
+                  <Play className="w-3 h-3 fill-current" /> Add Taste Context First
+                </button>
+              ) : (
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-sm text-green-900 font-medium italic"
+                >
+                  "A founder who loves brutalist architecture, reads Murakami, wants her product to feel like an open conversation. She hates hype. She respects her users."
+                </motion.p>
+              )}
+            </div>
+
+            <div className={`space-y-4 transition-all duration-700 ${tasteContextAdded ? 'opacity-100 translate-y-0' : 'opacity-20 translate-y-4 pointer-events-none'}`}>
+              <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50/10">
+                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">Brand Name</div>
+                <div className="text-xl font-bold text-gray-900 mb-1">Gather</div>
+                <div className="text-[10px] text-blue-600 font-medium">✓ One word. Warm. About people, not features.</div>
+              </div>
+              <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50/10">
+                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">Tagline</div>
+                <div className="text-sm font-bold text-gray-900 mb-1 italic">Quietly powerful.</div>
+                <div className="text-[10px] text-blue-600 font-medium">✓ Two words. Holds tension. Earns curiosity.</div>
+              </div>
+              <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50/10">
+                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">Color Palette</div>
+                <div className="flex gap-2 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#F5F5F0] border border-gray-200" title="Linen" />
+                  <div className="w-10 h-10 rounded-lg bg-[#2D3A2D]" title="Forest" />
+                  <div className="w-10 h-10 rounded-lg bg-[#A65E4E]" title="Terracotta" />
+                </div>
+                <div className="text-[10px] text-blue-600 font-medium">✓ Unexpected. Warm. You've never seen it on a bank.</div>
+              </div>
+              <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50/10">
+                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">First Email Subject</div>
+                <div className="bg-blue-50/50 p-3 rounded-lg border border-blue-100 mb-2">
+                  <div className="text-xs font-bold text-gray-900">We got the thing wrong.</div>
+                </div>
+                <div className="text-[10px] text-blue-600 font-medium">✓ Impossible not to open.</div>
+              </div>
+              <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50/10">
+                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-2">Hero Image Prompt</div>
+                <div className="bg-blue-50/50 p-3 rounded-lg border border-blue-100 mb-2">
+                  <div className="text-xs text-gray-900 font-medium italic">"Empty chair at a kitchen table. Morning light. Steam rising from one cup."</div>
+                </div>
+                <div className="text-[10px] text-blue-600 font-medium">✓ A feeling, not a stock photo.</div>
+              </div>
+              <div className="bg-white p-6 rounded-2xl border border-blue-100 shadow-sm bg-blue-50/10">
+                <div className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">Call to Action</div>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <div className="text-xl font-serif italic text-gray-900">When you're ready.</div>
+                </div>
+                <div className="text-[10px] text-blue-600 font-medium">✓ It waits. That's respect.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {tasteContextAdded && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-12 border-t border-gray-100"
+          >
+            <div className="bg-red-50/50 p-8 rounded-3xl border border-red-100">
+              <p className="text-red-900/60 font-medium leading-relaxed">
+                <span className="font-bold block mb-2 text-red-900">The result without taste:</span>
+                Technically correct. Could belong to any brand, in any industry, anywhere on earth.
+              </p>
+            </div>
+            <div className="bg-green-50/50 p-8 rounded-3xl border border-green-100">
+              <p className="text-green-900 font-medium leading-relaxed">
+                <span className="font-bold block mb-2">The result with taste:</span>
+                Every element is intentional. This could only be this brand, for this founder.
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        <div className="mt-16 text-center">
+          <button 
+            onClick={() => setTasteTab(3)}
+            className="px-10 py-5 bg-gray-900 text-white rounded-full font-black uppercase tracking-widest text-sm transition-all flex items-center gap-3 mx-auto"
+          >
+            Understand Why Taste Matters <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    );
+
+    const renderTab3 = () => (
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        <div className="text-center mb-20">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-6xl font-black text-gray-900 mb-6 tracking-tighter"
+          >
+            Why taste is your edge<br />in the AI age
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-2xl text-gray-500"
+          >
+            AI can execute anything. It can't want the right thing.
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+          {[
+            {
+              title: "Signal vs. Noise",
+              icon: <Target className="w-6 h-6" />,
+              text: "AI produces 10,000 options in seconds. Without taste you drown. With it, you know which one to keep — and why."
+            },
+            {
+              title: "The Articulation Muscle",
+              icon: <RotateCcw className="w-6 h-6" />,
+              text: "Taste isn't just liking things. It's being able to say WHY — precisely enough that AI executes your vision, not the generic average."
+            },
+            {
+              title: "Identity as Filter",
+              icon: <LayoutIcon className="w-6 h-6" />,
+              text: "In a world where anyone can make anything, what you choose NOT to make defines you as much as what you do."
+            },
+            {
+              title: "Cultural Fluency",
+              icon: <Zap className="w-6 h-6" />,
+              text: "AI trained on averages produces the average. Tastemakers move culture forward — they don't simply reflect it back."
+            }
+          ].map((card, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * i }}
+              className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-sm group hover:border-blue-200 transition-all"
+            >
+              <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-gray-400 group-hover:text-blue-600 group-hover:bg-blue-50 transition-all">
+                {card.icon}
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">{card.title}</h3>
+              <p className="text-gray-500 leading-relaxed text-lg">{card.text}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="bg-gray-50 p-16 rounded-[60px] text-center border border-gray-100"
+        >
+          <p className="text-3xl text-gray-900 font-serif italic leading-relaxed max-w-3xl mx-auto mb-8">
+            "You make things. As you make them, you try to be aware of how you make them. You try to speak your why — why yes to this, and no to that."
+          </p>
+          <div className="text-xs font-black text-gray-400 uppercase tracking-[0.4em]">
+            — JACK CHENG
+          </div>
+        </motion.div>
+
+        <div className="mt-20 flex flex-col items-center gap-6">
+          <button 
+            onClick={() => {
+              setTasteTab(1);
+              setTasteContextAdded(false);
+            }}
+            className="px-10 py-5 bg-gray-900 text-white rounded-full font-black uppercase tracking-widest text-sm transition-all flex items-center gap-3"
+          >
+            <RotateCcw className="w-4 h-4" /> Run Again
+          </button>
+          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+            Taste sharpens with every repetition.
+          </div>
+          <button 
+            onClick={() => setView(AppView.HUB)}
+            className="mt-8 text-gray-400 hover:text-gray-900 font-bold uppercase text-[10px] tracking-widest transition-colors"
+          >
+            Return to Hub
+          </button>
+        </div>
+      </div>
+    );
+
+    return (
+      <div className="min-h-screen bg-[#F8F9FA] text-[#333]">
+        {/* Navigation Bar */}
+        <div className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 z-50">
+          <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div className="flex items-center gap-8">
+              <button 
+                onClick={() => setView(AppView.HUB)}
+                className="text-gray-900 font-black uppercase tracking-tighter text-sm"
+              >
+                Master the Next <span className="text-blue-600">Human Skills</span>
+              </button>
+              <div className="h-4 w-[1px] bg-gray-200" />
+              <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                Simulation 03 — Taste
+              </div>
+            </div>
+            <div className="flex gap-8">
+              {[
+                { id: 1, label: '1. What is Taste?' },
+                { id: 2, label: '2. The Experiment' },
+                { id: 3, label: '3. Why it Matters' }
+              ].map(tab => (
+                <button 
+                  key={tab.id}
+                  onClick={() => setTasteTab(tab.id)}
+                  className={`text-[10px] font-black uppercase tracking-widest transition-all pb-1 border-b-2 ${tasteTab === tab.id ? 'text-blue-600 border-blue-600' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-24">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={tasteTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+            >
+              {tasteTab === 1 && renderTab1()}
+              {tasteTab === 2 && renderTab2()}
+              {tasteTab === 3 && renderTab3()}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+    );
+  };
 
   const renderContent = () => {
     switch (view) {
