@@ -1813,7 +1813,7 @@ const App: React.FC = () => {
             transition={{ delay: 0.2 }}
             className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-sm"
           >
-            <div className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">The Old World</div>
+            <div className="text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-6">The Old World</div>
             <p className="text-2xl text-gray-500 leading-relaxed italic">
               Skill was the bottleneck. Not everyone could design, code, write, or build. The barrier protected quality.
             </p>
@@ -1824,7 +1824,7 @@ const App: React.FC = () => {
             transition={{ delay: 0.3 }}
             className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-sm"
           >
-            <div className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">The AI World</div>
+            <div className="text-sm font-black text-blue-600 uppercase tracking-[0.2em] mb-6">The AI World</div>
             <p className="text-2xl text-gray-900 font-medium leading-relaxed">
               Now anyone can make anything. The bottleneck has shifted. The new question isn't <span className="text-blue-600">can you?</span> — it's <span className="text-blue-600">should you, and why?</span>
             </p>
@@ -1932,6 +1932,45 @@ const App: React.FC = () => {
                 </div>
                 <div className="text-[10px] text-red-500 font-medium italic">✕ Aggressive. Desperate.</div>
               </div>
+
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Mobile App Interface</div>
+                <div className="w-full aspect-[9/16] bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden flex flex-col">
+                  <div className="bg-blue-600 p-4 text-white">
+                    <div className="text-[10px] opacity-70">Welcome back,</div>
+                    <div className="text-sm font-bold">User #48291</div>
+                  </div>
+                  <div className="p-4 space-y-3 flex-1">
+                    <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm flex items-center justify-between">
+                      <div className="text-[10px] font-bold">BALANCE</div>
+                      <div className="text-sm font-bold text-blue-600">$12,402.00</div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
+                        <div className="w-6 h-6 bg-blue-100 rounded-full mx-auto mb-1 flex items-center justify-center">
+                          <ArrowRight className="w-3 h-3 text-blue-600" />
+                        </div>
+                        <div className="text-[8px] font-bold">TRANSFER</div>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
+                        <div className="w-6 h-6 bg-blue-100 rounded-full mx-auto mb-1 flex items-center justify-center">
+                          <Zap className="w-3 h-3 text-blue-600" />
+                        </div>
+                        <div className="text-[8px] font-bold">PAY BILLS</div>
+                      </div>
+                    </div>
+                    <div className="bg-blue-600 p-3 rounded-lg text-white text-center text-[10px] font-bold">
+                      UPGRADE TO PRO NOW!
+                    </div>
+                  </div>
+                  <div className="bg-white border-t border-gray-200 p-2 flex justify-around">
+                    <div className="w-4 h-4 bg-blue-600 rounded-sm" />
+                    <div className="w-4 h-4 bg-gray-300 rounded-sm" />
+                    <div className="w-4 h-4 bg-gray-300 rounded-sm" />
+                  </div>
+                </div>
+                <div className="text-[10px] text-red-500 font-medium italic mt-4">✕ Cluttered. Feature-first. No soul.</div>
+              </div>
             </div>
           </div>
 
@@ -2030,6 +2069,44 @@ const App: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
                   <CheckCircle2 className="w-3 h-3 text-green-600" /> It waits. That's respect.
+                </div>
+              </div>
+
+              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
+                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-6">Mobile App Interface</div>
+                <div className="w-full aspect-[9/16] bg-[#F5F5F0] rounded-[40px] border border-[#E8E4E1] overflow-hidden flex flex-col shadow-xl">
+                  <div className="p-8 pt-12">
+                    <div className="text-3xl font-display font-black text-[#2D3A2D] mb-1">Gather.</div>
+                    <div className="text-[10px] font-bold text-[#A65E4E] uppercase tracking-widest">Everything in its place.</div>
+                  </div>
+                  <div className="px-8 flex-1 space-y-8">
+                    <div className="space-y-2">
+                      <div className="text-[10px] font-bold text-[#2D3A2D]/40 uppercase tracking-widest">Shared with Sarah</div>
+                      <div className="text-4xl font-serif italic text-[#2D3A2D]">$12,402</div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4 group">
+                        <div className="w-12 h-12 rounded-full bg-[#2D3A2D] flex items-center justify-center text-[#F5F5F0]">
+                          <ArrowRight className="w-5 h-5" />
+                        </div>
+                        <div className="text-sm font-bold text-[#2D3A2D] uppercase tracking-widest">Move</div>
+                      </div>
+                      <div className="flex items-center gap-4 group">
+                        <div className="w-12 h-12 rounded-full border border-[#2D3A2D]/20 flex items-center justify-center text-[#2D3A2D]">
+                          <Zap className="w-5 h-5" />
+                        </div>
+                        <div className="text-sm font-bold text-[#2D3A2D] uppercase tracking-widest">Activity</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-8 pb-10">
+                    <div className="w-full py-4 bg-[#A65E4E] rounded-full text-[#F5F5F0] text-center text-[10px] font-black uppercase tracking-[0.2em]">
+                      Open Conversation
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest mt-6">
+                  <CheckCircle2 className="w-3 h-3 text-green-600" /> Quiet. Human-first. Intentional.
                 </div>
               </div>
             </div>
