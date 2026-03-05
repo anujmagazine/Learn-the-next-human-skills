@@ -101,6 +101,8 @@ const App: React.FC = () => {
   // Taste Simulation State
   const [tasteTab, setTasteTab] = useState(1);
   const [tasteContextAdded, setTasteContextAdded] = useState(false);
+  const [defineSimStep, setDefineSimStep] = useState(0);
+  const [isDefineSimRunning, setIsDefineSimRunning] = useState(false);
 
   const VERIFICATION_SNIPPETS = [
     "Net margin improved from 8.2% to 14.1% despite significant cost pressures in the supply chain and logistics sectors.",
@@ -573,12 +575,12 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
-          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
+        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/30 transition-all cursor-pointer overflow-hidden flex flex-col h-full" onClick={() => setView(AppView.DEFINE_THE_WHAT)}>
+          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum group-hover:opacity-20 transition-opacity">
             <svg className="w-24 h-24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           </div>
           <div className="relative z-10 flex-1">
-            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
+            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20 group-hover:border-brand-green/40 transition-colors">
               <span className="text-3xl">🎯</span>
             </div>
             <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Define the What</h2>
@@ -587,9 +589,9 @@ const App: React.FC = () => {
             </p>
           </div>
           <div className="relative z-10 mt-auto">
-            <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
-              Coming Soon
-            </div>
+            <button className="px-6 py-2 bg-brand-green text-brand-black rounded-full font-bold text-xs uppercase tracking-widest hover:bg-white transition-all">
+              Launch Simulation
+            </button>
           </div>
         </div>
       </div>
@@ -1784,6 +1786,452 @@ const App: React.FC = () => {
     );
   };
 
+  const renderDefineTheWhat = () => {
+    const nextStep = () => setDefineSimStep(prev => prev + 1);
+    const resetSim = () => setDefineSimStep(0);
+
+    return (
+      <div className="min-h-screen bg-black text-white font-sans selection:bg-brand-green selection:text-black overflow-hidden relative">
+        {/* Navigation / Header */}
+        <div className="absolute top-0 left-0 w-full p-8 flex justify-between items-center z-50">
+          <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.4em]">
+            Simulation 04 — Define the What
+          </div>
+          <button 
+            onClick={() => setView(AppView.HUB)}
+            className="text-white/40 hover:text-white transition-colors text-[10px] font-black uppercase tracking-widest"
+          >
+            Exit Sim
+          </button>
+        </div>
+
+        <div className="h-screen flex flex-col items-center justify-center p-6 text-center">
+          <AnimatePresence mode="wait">
+            {defineSimStep === 0 && (
+              <motion.div 
+                key="step0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="space-y-8"
+              >
+                <motion.h1 
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-6xl md:text-8xl font-black tracking-tighter"
+                >
+                  When AI can do<br />almost anything
+                </motion.h1>
+                <motion.div 
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ delay: 0.5, duration: 0.8 }}
+                  className="h-1 w-32 bg-white mx-auto"
+                />
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.2 }}
+                  className="space-y-4"
+                >
+                  <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-brand-green">
+                    what is left for you?
+                  </h2>
+                  <p className="text-xl text-white/40 font-medium">
+                    This simulation answers that question.
+                  </p>
+                </motion.div>
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 2.5 }}
+                  onClick={nextStep}
+                  className="mt-12 text-white/20 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.3em]"
+                >
+                  Click to start
+                </motion.button>
+              </motion.div>
+            )}
+
+            {defineSimStep === 1 && (
+              <motion.div 
+                key="step1"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="max-w-3xl w-full text-left"
+              >
+                <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.4em] mb-8">
+                  The World You're In Now
+                </div>
+                <motion.h2 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-4xl font-bold mb-12 leading-tight"
+                >
+                  AI can now do this — faster than any of us:
+                </motion.h2>
+                <div className="space-y-6 mb-16">
+                  {[
+                    "Write reports",
+                    "Analyse data",
+                    "Draft documents",
+                    "Build strategies",
+                    "Answer complex questions"
+                  ].map((item, i) => (
+                    <motion.div 
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.5 + (i * 0.1) }}
+                      className="text-2xl text-white/60 font-medium flex items-center gap-4"
+                    >
+                      <div className="w-1.5 h-1.5 bg-brand-green rounded-full" />
+                      {item}
+                    </motion.div>
+                  ))}
+                </div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 2 }}
+                  className="space-y-4"
+                >
+                  <p className="text-3xl font-bold leading-tight">
+                    Speed of execution is no longer your edge.
+                  </p>
+                  <p className="text-3xl font-bold text-brand-green leading-tight">
+                    Something else is.
+                  </p>
+                </motion.div>
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 3.5 }}
+                  onClick={nextStep}
+                  className="mt-16 text-white/20 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.3em]"
+                >
+                  Next
+                </motion.button>
+              </motion.div>
+            )}
+
+            {defineSimStep === 2 && (
+              <motion.div 
+                key="step2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="max-w-3xl w-full text-left"
+              >
+                <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.4em] mb-8">
+                  Here's what usually happens
+                </div>
+                <motion.p 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-2xl font-medium mb-12 leading-relaxed"
+                >
+                  A company notices its customer numbers are falling. Someone opens AI and types:
+                </motion.p>
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="bg-white/5 border border-white/10 p-8 rounded-2xl mb-8"
+                >
+                  <div className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-4">Prompt</div>
+                  <div className="text-xl font-bold text-brand-green">
+                    "Write a plan to improve customer retention."
+                  </div>
+                </motion.div>
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.5 }}
+                  className="space-y-4"
+                >
+                  <div className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-4">AI Delivers</div>
+                  <div className="flex items-start gap-3 text-lg">
+                    <CheckCircle2 className="w-5 h-5 text-brand-green mt-1 shrink-0" />
+                    <span>A detailed 12-point retention strategy</span>
+                  </div>
+                  <div className="flex items-start gap-3 text-lg">
+                    <CheckCircle2 className="w-5 h-5 text-brand-green mt-1 shrink-0" />
+                    <span>Loyalty rewards. Email campaigns. Better onboarding.</span>
+                  </div>
+                  <p className="text-white/40 italic text-sm mt-4">Looks thorough. Looks professional.</p>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 3.5 }}
+                  className="mt-12 bg-red-500/20 border border-red-500/50 p-8 rounded-2xl"
+                >
+                  <h2 className="text-2xl md:text-3xl font-bold text-red-500 leading-tight">
+                    But the product itself had drifted from what customers needed.
+                  </h2>
+                </motion.div>
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 5 }}
+                  onClick={nextStep}
+                  className="mt-12 text-white/20 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.3em]"
+                >
+                  The failure
+                </motion.button>
+              </motion.div>
+            )}
+
+            {defineSimStep === 3 && (
+              <motion.div 
+                key="step3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="max-w-3xl w-full text-left"
+              >
+                <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.4em] mb-8">
+                  The Real Question
+                </div>
+                <motion.h1 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-5xl md:text-7xl font-black tracking-tighter mb-12"
+                >
+                  Why did that happen?
+                </motion.h1>
+                <div className="space-y-4 mb-16">
+                  {[
+                    "The team didn't lack intelligence.",
+                    "They didn't lack effort.",
+                    "They didn't even lack AI."
+                  ].map((text, i) => (
+                    <motion.p 
+                      key={i}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 + (i * 0.3) }}
+                      className="text-2xl text-white/40 font-medium"
+                    >
+                      {text}
+                    </motion.p>
+                  ))}
+                </div>
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 2 }}
+                  className="space-y-6"
+                >
+                  <p className="text-3xl font-bold leading-tight">
+                    They jumped to solving before they understood <span className="text-brand-green">what they were actually solving.</span>
+                  </p>
+                  <p className="text-white/40 text-lg">
+                    This is the most common — and most costly — mistake in an AI-powered world.
+                  </p>
+                </motion.div>
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 4 }}
+                  onClick={nextStep}
+                  className="mt-16 text-white/20 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.3em]"
+                >
+                  The comparison
+                </motion.button>
+              </motion.div>
+            )}
+
+            {defineSimStep === 4 && (
+              <motion.div 
+                key="step4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="max-w-5xl w-full"
+              >
+                <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.4em] mb-12 text-center">
+                  Two kinds of people. Same AI. Very different outcomes.
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="bg-white/5 border border-white/10 p-10 rounded-[40px] relative overflow-hidden text-left"
+                  >
+                    <div className="text-2xl font-bold mb-8 text-white/40">The Executor</div>
+                    <div className="space-y-6 mb-12">
+                      {["Gets a brief", "Feels urgency to act", "Opens AI immediately", "Gets a polished output", "Moves on"].map((item, i) => (
+                        <div key={i} className="text-lg text-white/60 flex items-center gap-4">
+                          <div className="w-1 h-1 bg-white/20 rounded-full" />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="text-red-500 font-bold text-lg">Worked hard on the wrong thing.</div>
+                  </motion.div>
+
+                  <motion.div 
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 1 }}
+                    className="bg-brand-green/5 border border-brand-green/20 p-10 rounded-[40px] relative overflow-hidden text-left"
+                  >
+                    <div className="text-2xl font-bold mb-8 text-brand-green">The Definer</div>
+                    <div className="space-y-6 mb-12">
+                      {["Gets a brief", "Pauses", "Questions the framing", "Asks: what's actually broken?", "Then acts"].map((item, i) => (
+                        <div key={i} className="text-lg text-white flex items-center gap-4">
+                          <div className="w-1.5 h-1.5 bg-brand-green rounded-full" />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="text-brand-green font-bold text-lg">Changed the actual outcome.</div>
+                  </motion.div>
+                </div>
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 2.5 }}
+                  className="mt-16 text-center space-y-4"
+                >
+                  <p className="text-2xl font-medium">The difference is not technical skill.</p>
+                  <p className="text-3xl font-bold text-brand-green">It's the habit of questioning the problem before solving it.</p>
+                  <p className="text-white/40 text-sm max-w-2xl mx-auto">
+                    Anyone can learn to use AI. Very few learn to direct it well. The definer is who every organisation will compete to find.
+                  </p>
+                </motion.div>
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 5 }}
+                  onClick={nextStep}
+                  className="mt-16 text-white/20 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.3em] mx-auto block"
+                >
+                  The Habits
+                </motion.button>
+              </motion.div>
+            )}
+
+            {defineSimStep === 5 && (
+              <motion.div 
+                key="step5"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="max-w-3xl w-full text-left"
+              >
+                <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.4em] mb-8">
+                  Three habits of mind
+                </div>
+                <motion.h2 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-4xl font-bold mb-12 leading-tight"
+                >
+                  This skill is not about prompting better. It operates above AI entirely.
+                </motion.h2>
+                <div className="space-y-6 mb-16">
+                  {[
+                    { title: "Curiosity", desc: "Ask what's actually broken — not just what's being reported." },
+                    { title: "Skepticism", desc: "Treat the first framing of a problem as a starting point, not the truth." },
+                    { title: "Patience", desc: "Resist the urge to act before you've defined what you're actually solving." }
+                  ].map((habit, i) => (
+                    <motion.div 
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.5 + (i * 0.3) }}
+                      className="bg-white/5 border border-white/10 p-6 rounded-2xl"
+                    >
+                      <div className="text-brand-green font-bold text-xl mb-2">{habit.title}</div>
+                      <div className="text-white/60">{habit.desc}</div>
+                    </motion.div>
+                  ))}
+                </div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 2 }}
+                  className="space-y-4"
+                >
+                  <p className="text-2xl text-white/40 font-medium">In a world where how to do something is free —</p>
+                  <p className="text-4xl font-black tracking-tighter">"What to create" <span className="text-brand-green">becomes everything.</span></p>
+                </motion.div>
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 3.5 }}
+                  onClick={nextStep}
+                  className="mt-16 text-white/20 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.3em]"
+                >
+                  Final Move
+                </motion.button>
+              </motion.div>
+            )}
+
+            {defineSimStep === 6 && (
+              <motion.div 
+                key="step6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="max-w-3xl w-full text-center"
+              >
+                <motion.h1 
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: "spring", damping: 12 }}
+                  className="text-7xl md:text-9xl font-black tracking-tighter mb-12 text-brand-green uppercase"
+                >
+                  Your move.
+                </motion.h1>
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="space-y-8"
+                >
+                  <p className="text-2xl text-white/80 leading-relaxed">
+                    Before your next AI prompt — <span className="font-bold">pause for 10 seconds.</span>
+                  </p>
+                  <p className="text-4xl font-black tracking-tight text-white leading-tight">
+                    Ask: <span className="text-brand-green">"What is actually broken here?"</span>
+                  </p>
+                  <p className="text-xl text-white/40 font-medium">
+                    That question is where your value lives.
+                  </p>
+                  <div className="pt-16">
+                    <button 
+                      onClick={resetSim}
+                      className="px-12 py-6 bg-brand-green text-brand-black rounded-full font-black uppercase tracking-[0.2em] text-sm hover:bg-white transition-all flex items-center gap-3 mx-auto shadow-[0_0_30px_rgba(0,255,0,0.2)]"
+                    >
+                      <RotateCcw className="w-5 h-5" /> Replay Simulation
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Progress indicator */}
+        <div className="absolute bottom-0 left-0 w-full p-8 flex justify-center gap-2">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <div 
+              key={i}
+              className={`h-1 transition-all duration-500 rounded-full ${i <= defineSimStep ? 'w-8 bg-brand-green' : 'w-2 bg-white/10'}`}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   const renderTaste = () => {
     const renderTab1 = () => (
       <div className="max-w-5xl mx-auto px-6 py-12">
@@ -2305,6 +2753,7 @@ const App: React.FC = () => {
       case AppView.VERIFICATION: return renderVerification();
       case AppView.LEARN: return renderLearn();
       case AppView.TASTE: return renderTaste();
+      case AppView.DEFINE_THE_WHAT: return renderDefineTheWhat();
       default: return renderHub();
     }
   };
