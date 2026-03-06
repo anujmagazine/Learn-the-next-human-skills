@@ -1847,7 +1847,7 @@ const App: React.FC = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 2.5 }}
                   onClick={nextStep}
-                  className="mt-12 text-white/20 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.3em]"
+                  className="mt-12 px-8 py-4 bg-brand-green text-brand-black rounded-full font-black uppercase tracking-[0.2em] text-xs hover:bg-white transition-all shadow-[0_0_20px_rgba(0,255,0,0.3)]"
                 >
                   Click to start
                 </motion.button>
@@ -1910,7 +1910,7 @@ const App: React.FC = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 3.5 }}
                   onClick={nextStep}
-                  className="mt-16 text-white/20 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.3em]"
+                  className="mt-16 px-8 py-4 bg-brand-green text-brand-black rounded-full font-black uppercase tracking-[0.2em] text-xs hover:bg-white transition-all shadow-[0_0_20px_rgba(0,255,0,0.3)]"
                 >
                   Next
                 </motion.button>
@@ -1978,7 +1978,7 @@ const App: React.FC = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 5 }}
                   onClick={nextStep}
-                  className="mt-12 text-white/20 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.3em]"
+                  className="mt-12 px-8 py-4 bg-brand-green text-brand-black rounded-full font-black uppercase tracking-[0.2em] text-xs hover:bg-white transition-all shadow-[0_0_20px_rgba(0,255,0,0.3)]"
                 >
                   The failure
                 </motion.button>
@@ -2038,7 +2038,7 @@ const App: React.FC = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 4 }}
                   onClick={nextStep}
-                  className="mt-16 text-white/20 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.3em]"
+                  className="mt-16 px-8 py-4 bg-brand-green text-brand-black rounded-full font-black uppercase tracking-[0.2em] text-xs hover:bg-white transition-all shadow-[0_0_20px_rgba(0,255,0,0.3)]"
                 >
                   The comparison
                 </motion.button>
@@ -2110,7 +2110,7 @@ const App: React.FC = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 5 }}
                   onClick={nextStep}
-                  className="mt-16 text-white/20 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.3em] mx-auto block"
+                  className="mt-16 px-8 py-4 bg-brand-green text-brand-black rounded-full font-black uppercase tracking-[0.2em] text-xs hover:bg-white transition-all shadow-[0_0_20px_rgba(0,255,0,0.3)] mx-auto block"
                 >
                   The Habits
                 </motion.button>
@@ -2167,7 +2167,7 @@ const App: React.FC = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 3.5 }}
                   onClick={nextStep}
-                  className="mt-16 text-white/20 hover:text-white transition-colors text-xs font-bold uppercase tracking-[0.3em]"
+                  className="mt-16 px-8 py-4 bg-brand-green text-brand-black rounded-full font-black uppercase tracking-[0.2em] text-xs hover:bg-white transition-all shadow-[0_0_20px_rgba(0,255,0,0.3)]"
                 >
                   Final Move
                 </motion.button>
