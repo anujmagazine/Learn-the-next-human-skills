@@ -2315,7 +2315,7 @@ const App: React.FC = () => {
           >
             What you're about to see
           </motion.div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-6 max-w-3xl">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">
             We give the <span className="text-blue-600">same brief</span> to AI twice. The only difference? The second time, a human with <span className="italic">taste</span> adds context before asking. Watch how every single output changes.
           </h2>
           
