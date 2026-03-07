@@ -2255,7 +2255,7 @@ const App: React.FC = () => {
             transition={{ delay: 0.2 }}
             className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-sm"
           >
-            <div className="text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-6">The Old World</div>
+            <div className="text-2xl font-black text-gray-900 uppercase tracking-[0.2em] mb-6">The Old World</div>
             <p className="text-2xl text-gray-500 leading-relaxed italic">
               Skill was the bottleneck. Not everyone could design, code, write, or build. The barrier protected quality.
             </p>
@@ -2266,7 +2266,7 @@ const App: React.FC = () => {
             transition={{ delay: 0.3 }}
             className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-sm"
           >
-            <div className="text-sm font-black text-blue-600 uppercase tracking-[0.2em] mb-6">The AI World</div>
+            <div className="text-2xl font-black text-blue-600 uppercase tracking-[0.2em] mb-6">The AI World</div>
             <p className="text-2xl text-gray-900 font-medium leading-relaxed">
               Now anyone can make anything. The bottleneck has shifted. The new question isn't <span className="text-blue-600">can you?</span> — it's <span className="text-blue-600">should you, and why?</span>
             </p>
@@ -2293,9 +2293,9 @@ const App: React.FC = () => {
         >
           <button 
             onClick={() => setTasteTab(2)}
-            className="px-16 py-10 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-full font-black uppercase tracking-widest text-2xl transition-all flex items-center gap-6 mx-auto"
+            className="px-12 py-6 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-full font-black uppercase tracking-widest text-xl transition-all flex items-center gap-4 mx-auto"
           >
-            See Taste in Action <ArrowRight className="w-10 h-10" />
+            See Taste in Action <ArrowRight className="w-6 h-6" />
           </button>
         </motion.div>
       </div>
