@@ -2563,21 +2563,77 @@ const App: React.FC = () => {
 
         {tasteContextAdded && (
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-12 border-t border-gray-100"
+            className="mt-24 space-y-12"
           >
-            <div className="bg-red-50/50 p-8 rounded-3xl border border-red-100">
-              <p className="text-red-900/60 font-medium leading-relaxed">
-                <span className="font-bold block mb-2 text-red-900">The result without taste:</span>
-                Technically correct. Could belong to any brand, in any industry, anywhere on earth.
+            <div className="text-center max-w-3xl mx-auto">
+              <h3 className="text-4xl font-display font-black text-gray-900 mb-6 tracking-tight italic">
+                Taste is not just the prompt. It's the <span className="text-blue-600 underline underline-offset-8">Filter</span>.
+              </h3>
+              <p className="text-xl text-gray-500 leading-relaxed">
+                AI can generate 1,000 variations in seconds. But it can't tell you which one is <span className="text-gray-900 font-bold">Great</span>. Taste is the human ability to say "no" to the average and "yes" to the exceptional.
               </p>
             </div>
-            <div className="bg-green-50/50 p-8 rounded-3xl border border-green-100">
-              <p className="text-green-900 font-medium leading-relaxed">
-                <span className="font-bold block mb-2">The result with taste:</span>
-                Every element is intentional. This could only be this brand, for this founder.
-              </p>
+
+            <div className="bg-gray-900 rounded-[48px] p-12 text-white overflow-hidden relative group">
+              <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-500/5 blur-[120px] pointer-events-none" />
+              
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
+                <div className="space-y-6">
+                  <div className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em]">Step 1: The AI Flood</div>
+                  <div className="space-y-2 opacity-40">
+                    {[1,2,3,4,5].map(i => (
+                      <div key={i} className="p-4 border border-white/10 rounded-xl text-[10px] font-mono italic">
+                        Generic Variation #{i}...
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-400 italic">"The AI gives you the average of everything it has ever seen."</p>
+                </div>
+
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="w-24 h-24 rounded-full border-2 border-dashed border-blue-500/50 flex items-center justify-center animate-spin-slow mb-6">
+                    <Target className="w-10 h-10 text-blue-500" />
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-display font-black mb-2">The Discernment</div>
+                    <p className="text-xs text-gray-400 uppercase tracking-widest leading-relaxed">
+                      Selecting for <br />
+                      <span className="text-white">Soul, Intent, and Truth</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="text-[10px] font-black text-green-400 uppercase tracking-[0.2em]">Step 2: The Human Choice</div>
+                  <div className="p-6 bg-white/5 border border-green-500/30 rounded-2xl shadow-[0_0_30px_rgba(34,197,94,0.1)] relative">
+                    <div className="absolute -top-3 -right-3 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+                      <CheckCircle2 className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="text-lg font-serif italic text-white mb-4">"We got the thing wrong."</div>
+                    <p className="text-xs text-gray-400 leading-relaxed">
+                      This subject line works because it breaks the pattern of "Exciting News!". It feels like a real person wrote it. It builds trust through vulnerability.
+                    </p>
+                  </div>
+                  <p className="text-sm text-gray-400 italic">"Taste is knowing which 1% is actually worth keeping."</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-12 border-t border-gray-100">
+              <div className="bg-red-50/50 p-8 rounded-3xl border border-red-100">
+                <p className="text-red-900/60 font-medium leading-relaxed">
+                  <span className="font-bold block mb-2 text-red-900">The result without taste:</span>
+                  Technically correct. Could belong to any brand, in any industry, anywhere on earth.
+                </p>
+              </div>
+              <div className="bg-green-50/50 p-8 rounded-3xl border border-green-100">
+                <p className="text-green-900 font-medium leading-relaxed">
+                  <span className="font-bold block mb-2">The result with taste:</span>
+                  Every element is intentional. This could only be this brand, for this founder.
+                </p>
+              </div>
             </div>
           </motion.div>
         )}
