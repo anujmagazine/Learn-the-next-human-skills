@@ -2325,7 +2325,7 @@ const App: React.FC = () => {
           {/* Column 1: Without Taste */}
           <div className="space-y-6">
             <div className="bg-red-50 p-8 rounded-[32px] border border-red-100">
-              <div className="text-lg font-black text-red-600 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
+              <div className="text-4xl font-black text-red-600 uppercase tracking-[0.2em] mb-6 flex items-center gap-4">
                 <span className="opacity-50">✕</span> AI Without Taste
               </div>
               <p className="text-sm text-red-900/60 italic mb-4">No context given. AI just runs with the brief.</p>
@@ -2423,7 +2423,7 @@ const App: React.FC = () => {
           {/* Column 2: Guided by Taste */}
           <div className="space-y-6">
             <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
-              <div className="text-lg font-black text-green-600 uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
+              <div className="text-4xl font-black text-green-600 uppercase tracking-[0.2em] mb-8 flex items-center gap-4">
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
                 AI Guided by Taste
               </div>
