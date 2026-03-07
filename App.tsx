@@ -2328,7 +2328,11 @@ const App: React.FC = () => {
               <div className="text-lg font-black text-red-600 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
                 <span className="opacity-50">✕</span> AI Without Taste
               </div>
-              <p className="text-sm text-red-900/60 italic">No context given. AI just runs with the brief.</p>
+              <p className="text-sm text-red-900/60 italic mb-4">No context given. AI just runs with the brief.</p>
+              <div className="p-4 bg-white/50 rounded-2xl border border-red-200/50">
+                <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">The Prompt</div>
+                <div className="text-xs text-red-900/80 font-mono italic">"Create a brand for a fintech startup for shared finances."</div>
+              </div>
             </div>
 
             <div className="space-y-4">
@@ -2431,13 +2435,15 @@ const App: React.FC = () => {
                   <Play className="w-3 h-3 fill-current" /> Add Taste Context First
                 </button>
               ) : (
-                <motion.p 
+                <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-sm text-green-900 font-medium italic"
                 >
-                  "A founder who loves brutalist architecture, reads Murakami, wants her product to feel like an open conversation. She hates hype. She respects her users."
-                </motion.p>
+                  <div className="text-[10px] font-bold text-green-600 uppercase tracking-widest mb-2">The Prompt</div>
+                  <p className="text-sm text-green-900 font-medium italic">
+                    "A founder who loves brutalist architecture, reads Murakami, wants her product to feel like an open conversation. She hates hype. She respects her users."
+                  </p>
+                </motion.div>
               )}
             </div>
 
