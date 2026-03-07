@@ -2238,14 +2238,6 @@ const App: React.FC = () => {
     const renderTab1 = () => (
       <div className="max-w-5xl mx-auto px-6 py-12">
         <div className="text-center mb-20">
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-widest mb-6 border border-blue-100"
-          >
-            <Zap className="w-3 h-3" />
-            Interactive Simulation
-          </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
