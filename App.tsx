@@ -2293,9 +2293,9 @@ const App: React.FC = () => {
         >
           <button 
             onClick={() => setTasteTab(2)}
-            className="px-10 py-5 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-full font-black uppercase tracking-widest text-sm transition-all flex items-center gap-3 mx-auto"
+            className="px-16 py-10 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-full font-black uppercase tracking-widest text-2xl transition-all flex items-center gap-6 mx-auto"
           >
-            See Taste in Action <ArrowRight className="w-4 h-4" />
+            See Taste in Action <ArrowRight className="w-10 h-10" />
           </button>
         </motion.div>
       </div>
