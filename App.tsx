@@ -101,6 +101,7 @@ const App: React.FC = () => {
   // Taste Simulation State
   const [tasteTab, setTasteTab] = useState(1);
   const [tasteContextAdded, setTasteContextAdded] = useState(false);
+  const [noTastePromptShown, setNoTastePromptShown] = useState(false);
   const [defineSimStep, setDefineSimStep] = useState(0);
   const [isDefineSimRunning, setIsDefineSimRunning] = useState(false);
 
@@ -1790,7 +1791,10 @@ const App: React.FC = () => {
 
   const renderDefineTheWhat = () => {
     const nextStep = () => setDefineSimStep(prev => prev + 1);
-    const resetSim = () => setDefineSimStep(0);
+    const resetSim = () => {
+      setDefineSimStep(0);
+      setNoTastePromptShown(false);
+    };
 
     return (
       <div className="min-h-screen bg-black text-white font-sans selection:bg-brand-green selection:text-black overflow-hidden relative">
@@ -2329,13 +2333,26 @@ const App: React.FC = () => {
                 <span className="opacity-50">✕</span> AI Without Taste
               </div>
               <p className="text-sm text-red-900/60 italic mb-4">No context given. AI just runs with the brief.</p>
-              <div className="p-4 bg-white/50 rounded-2xl border border-red-200/50">
-                <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">The Prompt</div>
-                <div className="text-xs text-red-900/80 font-mono italic">"Create a brand for a fintech startup for shared finances."</div>
-              </div>
+              {!noTastePromptShown ? (
+                <button 
+                  onClick={() => setNoTastePromptShown(true)}
+                  className="w-full py-3 bg-red-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-red-700 transition-colors"
+                >
+                  <Play className="w-3 h-3 fill-current" /> Run Without Taste
+                </button>
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="p-4 bg-white/50 rounded-2xl border border-red-200/50"
+                >
+                  <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">The Prompt</div>
+                  <div className="text-xs text-red-900/80 font-mono italic">"Create a brand for a fintech startup for shared finances."</div>
+                </motion.div>
+              )}
             </div>
 
-            <div className="space-y-4">
+            <div className={`space-y-4 transition-all duration-1000 ${noTastePromptShown ? 'opacity-100 translate-y-0' : 'opacity-20 translate-y-8 pointer-events-none'}`}>
               <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                 <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Brand Name</div>
                 <div className="text-xl font-bold text-gray-900 mb-1">SmartConnect Pro Plus™</div>
@@ -2727,6 +2744,7 @@ const App: React.FC = () => {
             onClick={() => {
               setTasteTab(1);
               setTasteContextAdded(false);
+              setNoTastePromptShown(false);
             }}
             className="px-10 py-5 bg-gray-900 text-white rounded-full font-black uppercase tracking-widest text-sm transition-all flex items-center gap-3"
           >
