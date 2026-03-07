@@ -449,7 +449,7 @@ const App: React.FC = () => {
             </p>
           </div>
           <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
-            Launch Skill Trainer <span className="group-hover:translate-x-2 transition-transform">→</span>
+            Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
           </div>
         </div>
 
