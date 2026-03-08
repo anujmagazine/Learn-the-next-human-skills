@@ -424,7 +424,7 @@ const App: React.FC = () => {
               <div className="w-10 h-10 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
                 <Compass className="w-5 h-5 text-brand-green" />
               </div>
-              <h2 className="text-xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Literacy, not training</h2>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Literacy, not training</h2>
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               Shift from tool proficiency to strategic judgment. Master the "what" and "why" of AI application, focusing on direction and workflow redesign over simple automation.
@@ -447,7 +447,7 @@ const App: React.FC = () => {
               <div className="w-10 h-10 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
                 <Layers className="w-5 h-5 text-brand-green" />
               </div>
-              <h2 className="text-xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Parallelism</h2>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Parallelism</h2>
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               The "Orchestration Gym." Learn to maintain a unified vision while multiple agents bombard you with conflicting logs and critical decisions.
@@ -470,7 +470,7 @@ const App: React.FC = () => {
               <div className="w-10 h-10 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
                 <Sparkles className="w-5 h-5 text-brand-green" />
               </div>
-              <h2 className="text-xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Taste</h2>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Taste</h2>
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               AI can generate infinite options. Taste is your ability to say “yes to this, no to that and explain why.”
@@ -493,7 +493,7 @@ const App: React.FC = () => {
               <div className="w-10 h-10 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
                 <Target className="w-5 h-5 text-brand-green" />
               </div>
-              <h2 className="text-xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Define the What</h2>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Define the What</h2>
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               In an AI-driven world where execution is instant, advantage shifts to clearly defining the right problem before asking for solutions.
@@ -516,7 +516,7 @@ const App: React.FC = () => {
               <div className="w-10 h-10 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
                 <Eye className="w-5 h-5 text-brand-green" />
               </div>
-              <h2 className="text-xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Verification Fatigue</h2>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Verification Fatigue</h2>
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               Master high-speed auditing. Train your ability to spot hallucinations and logic errors without succumbing to cognitive exhaustion.
@@ -536,7 +536,7 @@ const App: React.FC = () => {
               <div className="w-10 h-10 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
                 <Brain className="w-5 h-5 text-brand-platinum" />
               </div>
-              <h2 className="text-xl font-bold text-brand-platinum leading-tight">Thinking in Prompts</h2>
+              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Thinking in Prompts</h2>
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               Thinking in prompts is the habit of framing your thoughts as questions or instructions you could give to an AI.
@@ -558,7 +558,7 @@ const App: React.FC = () => {
               <div className="w-10 h-10 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
                 <FlaskConical className="w-5 h-5 text-brand-platinum" />
               </div>
-              <h2 className="text-xl font-bold text-brand-platinum leading-tight">Become a CEO</h2>
+              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Become a CEO</h2>
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               Chief Experimentation Officer. In the AI era, the speed of your learning loops determines your competitive advantage.
@@ -580,7 +580,7 @@ const App: React.FC = () => {
               <div className="w-10 h-10 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
                 <Shield className="w-5 h-5 text-brand-platinum" />
               </div>
-              <h2 className="text-xl font-bold text-brand-platinum leading-tight">Resist Intellectual Laziness</h2>
+              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Resist Intellectual Laziness</h2>
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               Use AI without switching off your own thinking. Build habits that keep your reasoning, judgment, and creativity sharp.
@@ -602,7 +602,7 @@ const App: React.FC = () => {
               <div className="w-10 h-10 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
                 <Users className="w-5 h-5 text-brand-platinum" />
               </div>
-              <h2 className="text-xl font-bold text-brand-platinum leading-tight">Interview AI Models</h2>
+              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Interview AI Models</h2>
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               Learn the art of "Agent Onboarding." Protocols to stress-test and validate an AI's logic and personality before delegating tasks.
