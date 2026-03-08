@@ -490,8 +490,8 @@ const App: React.FC = () => {
           </div>
           <div className="relative z-10 flex-1">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 group-hover:scale-110 transition-transform shrink-0">
-                <Target className="w-6 h-6 text-brand-platinum" />
+              <div className="w-12 h-12 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                <Target className="w-6 h-6 text-brand-green" />
               </div>
               <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Define the What</h2>
             </div>
@@ -508,13 +508,13 @@ const App: React.FC = () => {
           onClick={() => setView(AppView.VERIFICATION)}
           className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
         >
-          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-platinum">
+          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
             <Eye className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 group-hover:scale-110 transition-transform shrink-0">
-                <Eye className="w-6 h-6 text-brand-platinum" />
+              <div className="w-12 h-12 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                <Eye className="w-6 h-6 text-brand-green" />
               </div>
               <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Verification Fatigue</h2>
             </div>
