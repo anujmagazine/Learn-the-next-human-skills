@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Scatter, ComposedChart } from 'recharts';
-import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle, BookOpen, Layers, Sparkles } from 'lucide-react';
+import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle, BookOpen, Layers, Sparkles, FlaskConical, MessageSquare, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AppView, AgentStream, DrillScenario } from './types';
 import { orchestrationService } from './services/gemini';
@@ -420,10 +420,12 @@ const App: React.FC = () => {
             <Compass className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="w-16 h-16 bg-brand-green/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-green/20 group-hover:scale-110 transition-transform">
-              <Compass className="w-8 h-8 text-brand-green" />
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                <Compass className="w-6 h-6 text-brand-green" />
+              </div>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Literacy, not training</h2>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-brand-platinum group-hover:text-brand-green transition-colors">Literacy, not training</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               Shift from tool proficiency to strategic judgment. Master the "what" and "why" of AI application, focusing on direction and workflow redesign over simple automation.
             </p>
@@ -441,10 +443,12 @@ const App: React.FC = () => {
             <Layers className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="w-16 h-16 bg-brand-green/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-green/20 group-hover:scale-110 transition-transform">
-              <Layers className="w-8 h-8 text-brand-green" />
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                <Layers className="w-6 h-6 text-brand-green" />
+              </div>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Parallelism</h2>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-brand-platinum group-hover:text-brand-green transition-colors">Parallelism</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               The "Orchestration Gym." Learn to maintain a unified vision while multiple agents bombard you with conflicting logs and critical decisions.
             </p>
@@ -462,10 +466,12 @@ const App: React.FC = () => {
             <Sparkles className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="w-16 h-16 bg-brand-green/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-green/20 group-hover:scale-110 transition-transform">
-              <Sparkles className="w-8 h-8 text-brand-green" />
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                <Sparkles className="w-6 h-6 text-brand-green" />
+              </div>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Taste</h2>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-brand-platinum group-hover:text-brand-green transition-colors">Taste</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               AI can generate infinite options. Taste is your ability to say “yes to this, no to that and explain why.”
             </p>
@@ -480,13 +486,15 @@ const App: React.FC = () => {
           className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
         >
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-            <svg className="w-24 h-24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <Target className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20 group-hover:scale-110 transition-transform">
-              <span className="text-3xl">🎯</span>
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 group-hover:scale-110 transition-transform shrink-0">
+                <Target className="w-6 h-6 text-brand-platinum" />
+              </div>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Define the What</h2>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-brand-platinum group-hover:text-brand-green transition-colors">Define the What</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               In an AI-driven world where execution is instant, advantage shifts to clearly defining the right problem before asking for solutions.
             </p>
@@ -501,13 +509,15 @@ const App: React.FC = () => {
           className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
         >
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-platinum">
-            <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            <Eye className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20 group-hover:scale-110 transition-transform">
-              <span className="text-3xl">👁️</span>
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 group-hover:scale-110 transition-transform shrink-0">
+                <Eye className="w-6 h-6 text-brand-platinum" />
+              </div>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Verification Fatigue</h2>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-brand-platinum group-hover:text-brand-green transition-colors">Verification Fatigue</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               Master high-speed auditing. Train your ability to spot hallucinations and logic errors without succumbing to cognitive exhaustion.
             </p>
@@ -519,13 +529,15 @@ const App: React.FC = () => {
 
         <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
           <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
-            <svg className="w-24 h-24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+            <MessageSquare className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
-              <span className="text-3xl">🧠</span>
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
+                <Brain className="w-6 h-6 text-brand-platinum" />
+              </div>
+              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Thinking in Prompts</h2>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Thinking in Prompts</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               Thinking in prompts is the habit of framing your thoughts as questions or instructions you could give to an AI.
             </p>
@@ -539,13 +551,15 @@ const App: React.FC = () => {
 
         <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
           <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
-            <svg className="w-24 h-24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+            <FlaskConical className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
-              <span className="text-3xl">🧪</span>
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
+                <FlaskConical className="w-6 h-6 text-brand-platinum" />
+              </div>
+              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Become a CEO</h2>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Become a CEO</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               Chief Experimentation Officer. In the AI era, the speed of your learning loops determines your competitive advantage.
             </p>
@@ -559,13 +573,15 @@ const App: React.FC = () => {
 
         <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
           <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
-            <svg className="w-24 h-24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            <Shield className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
-              <span className="text-3xl">🛡️</span>
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
+                <Shield className="w-6 h-6 text-brand-platinum" />
+              </div>
+              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Resist Intellectual Laziness</h2>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Resist Intellectual Laziness</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               Use AI without switching off your own thinking. Build habits that keep your reasoning, judgment, and creativity sharp.
             </p>
@@ -579,13 +595,15 @@ const App: React.FC = () => {
 
         <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
           <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
-            <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M11.5 3C7.36 3 4 6.36 4 10.5S7.36 18 11.5 18c1.71 0 3.29-.58 4.55-1.56l4.74 4.74 1.41-1.41-4.74-4.74c.98-1.26 1.56-2.84 1.56-4.55C19 6.36 15.64 3 11.5 3zm0 2C14.54 5 17 7.46 17 10.5S14.54 16 11.5 16 6 13.54 6 10.5 8.46 5 11.5 5z"/></svg>
+            <Users className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="w-16 h-16 bg-brand-platinum/10 rounded-2xl flex items-center justify-center mb-6 border border-brand-platinum/20">
-              <span className="text-3xl">🤝</span>
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
+                <Users className="w-6 h-6 text-brand-platinum" />
+              </div>
+              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Interview AI Models</h2>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-brand-platinum">Interview AI Models</h2>
             <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
               Learn the art of "Agent Onboarding." Protocols to stress-test and validate an AI's logic and personality before delegating tasks.
             </p>
