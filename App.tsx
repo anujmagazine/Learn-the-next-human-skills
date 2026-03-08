@@ -2325,13 +2325,13 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          {/* Column 1: Without Taste */}
-          <div className="space-y-6">
-            <div className="bg-red-50 p-8 rounded-[32px] border border-red-100">
-              <div className="text-4xl font-black text-red-600 uppercase tracking-[0.2em] mb-8 flex items-center gap-4">
-                <span className="opacity-50">✕</span> AI Without Taste
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 items-stretch">
+          {/* Row 1: Headers */}
+          <div className="bg-red-50 p-8 rounded-[32px] border border-red-100 h-full flex flex-col">
+            <div className="text-4xl font-black text-red-600 uppercase tracking-[0.2em] mb-8 flex items-center gap-4">
+              <span className="opacity-50">✕</span> AI Without Taste
+            </div>
+            <div className="flex-1 flex flex-col justify-center">
               {!noTastePromptShown ? (
                 <button 
                   onClick={() => setNoTastePromptShown(true)}
@@ -2350,99 +2350,14 @@ const App: React.FC = () => {
                 </motion.div>
               )}
             </div>
-
-            <div className={`space-y-4 transition-all duration-1000 ${noTastePromptShown ? 'opacity-100 translate-y-0' : 'opacity-20 translate-y-8 pointer-events-none'}`}>
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Brand Name</div>
-                <div className="text-xl font-bold text-gray-900 mb-1">SmartConnect Pro Plus™</div>
-                <div className="text-[10px] text-red-500 font-medium italic">✕ Generic. Corporate. Forgettable.</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Tagline</div>
-                <div className="text-sm font-bold text-gray-900 mb-1 uppercase tracking-tight">INNOVATION. EXCELLENCE. RESULTS. YOUR SUCCESS IS OUR MISSION.</div>
-                <div className="text-[10px] text-red-500 font-medium italic">✕ Four buzzwords. Says nothing.</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Color Palette</div>
-                <div className="flex gap-2 mb-3">
-                  <div className="w-10 h-10 rounded bg-blue-500" />
-                  <div className="w-10 h-10 rounded bg-green-500" />
-                  <div className="w-10 h-10 rounded bg-orange-500" />
-                  <div className="w-10 h-10 rounded bg-cyan-500" />
-                </div>
-                <div className="text-[10px] text-red-500 font-medium italic">✕ Default primary colors. No mood.</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">First Email Subject</div>
-                <div className="bg-gray-50 p-3 rounded border border-gray-100 mb-2">
-                  <div className="text-xs font-bold text-gray-900">Exciting News! Our AMAZING Launch is HERE — Don't Miss This!</div>
-                </div>
-                <div className="text-[10px] text-red-500 font-medium italic">✕ Screaming. Deleted.</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Hero Image Prompt</div>
-                <div className="bg-gray-50 p-3 rounded border border-gray-100 mb-2">
-                  <div className="text-xs text-gray-600">"Smiling diverse team of professionals shaking hands in a bright, modern office with glass walls."</div>
-                </div>
-                <div className="text-[10px] text-red-500 font-medium italic">✕ Stock photo cliché.</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Call to Action</div>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <div className="px-3 py-1.5 bg-blue-600 text-white text-[10px] font-bold rounded">CLICK HERE TO START!</div>
-                  <div className="px-3 py-1.5 border border-blue-600 text-blue-600 text-[10px] font-bold rounded">BEGIN YOUR JOURNEY →</div>
-                </div>
-                <div className="text-[10px] text-red-500 font-medium italic">✕ Aggressive. Desperate.</div>
-              </div>
-
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Mobile App Interface</div>
-                <div className="w-full aspect-[9/16] bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden flex flex-col">
-                  <div className="bg-blue-600 p-4 text-white">
-                    <div className="text-[10px] opacity-70">Welcome back,</div>
-                    <div className="text-sm font-bold">User #48291</div>
-                  </div>
-                  <div className="p-4 space-y-3 flex-1">
-                    <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm flex items-center justify-between">
-                      <div className="text-[10px] font-bold">BALANCE</div>
-                      <div className="text-sm font-bold text-blue-600">$12,402.00</div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
-                        <div className="w-6 h-6 bg-blue-100 rounded-full mx-auto mb-1 flex items-center justify-center">
-                          <ArrowRight className="w-3 h-3 text-blue-600" />
-                        </div>
-                        <div className="text-[8px] font-bold">TRANSFER</div>
-                      </div>
-                      <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
-                        <div className="w-6 h-6 bg-blue-100 rounded-full mx-auto mb-1 flex items-center justify-center">
-                          <Zap className="w-3 h-3 text-blue-600" />
-                        </div>
-                        <div className="text-[8px] font-bold">PAY BILLS</div>
-                      </div>
-                    </div>
-                    <div className="bg-blue-600 p-3 rounded-lg text-white text-center text-[10px] font-bold">
-                      UPGRADE TO PRO NOW!
-                    </div>
-                  </div>
-                  <div className="bg-white border-t border-gray-200 p-2 flex justify-around">
-                    <div className="w-4 h-4 bg-blue-600 rounded-sm" />
-                    <div className="w-4 h-4 bg-gray-300 rounded-sm" />
-                    <div className="w-4 h-4 bg-gray-300 rounded-sm" />
-                  </div>
-                </div>
-                <div className="text-[10px] text-red-500 font-medium italic mt-4">✕ Cluttered. Feature-first. No soul.</div>
-              </div>
-            </div>
           </div>
 
-          {/* Column 2: Guided by Taste */}
-          <div className="space-y-6">
-            <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
-              <div className="text-4xl font-black text-green-600 uppercase tracking-[0.2em] mb-8 flex items-center gap-4">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
-                AI Guided by Taste
-              </div>
+          <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm h-full flex flex-col">
+            <div className="text-4xl font-black text-green-600 uppercase tracking-[0.2em] mb-8 flex items-center gap-4">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+              AI Guided by Taste
+            </div>
+            <div className="flex-1 flex flex-col justify-center">
               {!tasteContextAdded ? (
                 <button 
                   onClick={() => setTasteContextAdded(true)}
@@ -2462,116 +2377,236 @@ const App: React.FC = () => {
                 </motion.div>
               )}
             </div>
+          </div>
 
-            <div className={`space-y-6 transition-all duration-1000 ${tasteContextAdded ? 'opacity-100 translate-y-0' : 'opacity-20 translate-y-8 pointer-events-none'}`}>
-              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <Target className="w-12 h-12 text-[#2D3A2D]" />
+          {/* Row 2: Brand Name */}
+          <div className={`transition-all duration-1000 ${noTastePromptShown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
+              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Brand Name</div>
+              <div className="text-xl font-bold text-gray-900 mb-1">SmartConnect Pro Plus™</div>
+              <div className="text-[10px] text-red-500 font-medium italic">✕ Generic. Corporate. Forgettable.</div>
+            </div>
+          </div>
+
+          <div className={`transition-all duration-1000 ${tasteContextAdded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm relative overflow-hidden group h-full">
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Target className="w-12 h-12 text-[#2D3A2D]" />
+              </div>
+              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">Brand Name</div>
+              <div className="text-4xl font-display font-black text-[#2D3A2D] mb-2 tracking-tighter">Gather</div>
+              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+                <CheckCircle2 className="w-3 h-3 text-green-600" /> One word. Warm. Human.
+              </div>
+            </div>
+          </div>
+
+          {/* Row 3: Tagline */}
+          <div className={`transition-all duration-1000 ${noTastePromptShown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
+              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Tagline</div>
+              <div className="text-sm font-bold text-gray-900 mb-1 uppercase tracking-tight">INNOVATION. EXCELLENCE. RESULTS. YOUR SUCCESS IS OUR MISSION.</div>
+              <div className="text-[10px] text-red-500 font-medium italic">✕ Four buzzwords. Says nothing.</div>
+            </div>
+          </div>
+
+          <div className={`transition-all duration-1000 ${tasteContextAdded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm group h-full">
+              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">Tagline</div>
+              <div className="text-2xl font-serif italic text-[#2D3A2D] mb-3 leading-tight">"Quietly powerful."</div>
+              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+                <CheckCircle2 className="w-3 h-3 text-green-600" /> Holds tension. Earns curiosity.
+              </div>
+            </div>
+          </div>
+
+          {/* Row 4: Color Palette */}
+          <div className={`transition-all duration-1000 ${noTastePromptShown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
+              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Color Palette</div>
+              <div className="flex gap-2 mb-3">
+                <div className="w-10 h-10 rounded bg-blue-500" />
+                <div className="w-10 h-10 rounded bg-green-500" />
+                <div className="w-10 h-10 rounded bg-orange-500" />
+                <div className="w-10 h-10 rounded bg-cyan-500" />
+              </div>
+              <div className="text-[10px] text-red-500 font-medium italic">✕ Default primary colors. No mood.</div>
+            </div>
+          </div>
+
+          <div className={`transition-all duration-1000 ${tasteContextAdded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm h-full">
+              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-6">Color Palette</div>
+              <div className="flex gap-4 mb-6">
+                <div className="group relative">
+                  <div className="w-16 h-16 rounded-2xl bg-[#F5F5F0] border border-[#E8E4E1] shadow-sm transition-transform group-hover:scale-110" />
+                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Linen</div>
                 </div>
-                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">Brand Name</div>
-                <div className="text-4xl font-display font-black text-[#2D3A2D] mb-2 tracking-tighter">Gather</div>
-                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
-                  <CheckCircle2 className="w-3 h-3 text-green-600" /> One word. Warm. Human.
+                <div className="group relative">
+                  <div className="w-16 h-16 rounded-2xl bg-[#2D3A2D] shadow-md transition-transform group-hover:scale-110" />
+                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Forest</div>
+                </div>
+                <div className="group relative">
+                  <div className="w-16 h-16 rounded-2xl bg-[#A65E4E] shadow-md transition-transform group-hover:scale-110" />
+                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Terracotta</div>
                 </div>
               </div>
+              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest mt-4">
+                <CheckCircle2 className="w-3 h-3 text-green-600" /> Unexpected. Warm. Sophisticated.
+              </div>
+            </div>
+          </div>
 
-              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm group">
-                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">Tagline</div>
-                <div className="text-2xl font-serif italic text-[#2D3A2D] mb-3 leading-tight">"Quietly powerful."</div>
-                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
-                  <CheckCircle2 className="w-3 h-3 text-green-600" /> Holds tension. Earns curiosity.
+          {/* Row 5: First Email Subject */}
+          <div className={`transition-all duration-1000 ${noTastePromptShown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
+              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">First Email Subject</div>
+              <div className="bg-gray-50 p-3 rounded border border-gray-100 mb-2">
+                <div className="text-xs font-bold text-gray-900">Exciting News! Our AMAZING Launch is HERE — Don't Miss This!</div>
+              </div>
+              <div className="text-[10px] text-red-500 font-medium italic">✕ Screaming. Deleted.</div>
+            </div>
+          </div>
+
+          <div className={`transition-all duration-1000 ${tasteContextAdded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm h-full">
+              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">First Email Subject</div>
+              <div className="bg-white p-5 rounded-2xl border border-[#E8E4E1] mb-3 shadow-inner">
+                <div className="text-lg font-serif text-[#2D3A2D]">We got the thing wrong.</div>
+              </div>
+              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+                <CheckCircle2 className="w-3 h-3 text-green-600" /> Impossible not to open.
+              </div>
+            </div>
+          </div>
+
+          {/* Row 6: Hero Image Prompt */}
+          <div className={`transition-all duration-1000 ${noTastePromptShown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
+              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Hero Image Prompt</div>
+              <div className="bg-gray-50 p-3 rounded border border-gray-100 mb-2">
+                <div className="text-xs text-gray-600">"Smiling diverse team of professionals shaking hands in a bright, modern office with glass walls."</div>
+              </div>
+              <div className="text-[10px] text-red-500 font-medium italic">✕ Stock photo cliché.</div>
+            </div>
+          </div>
+
+          <div className={`transition-all duration-1000 ${tasteContextAdded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm h-full">
+              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">Hero Image Prompt</div>
+              <div className="bg-white p-5 rounded-2xl border border-[#E8E4E1] mb-3 shadow-inner">
+                <div className="text-sm text-[#2D3A2D] font-serif italic leading-relaxed">
+                  "Empty chair at a kitchen table. Morning light. Steam rising from one cup."
                 </div>
               </div>
+              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+                <CheckCircle2 className="w-3 h-3 text-green-600" /> A feeling, not a stock photo.
+              </div>
+            </div>
+          </div>
 
-              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
-                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-6">Color Palette</div>
-                <div className="flex gap-4 mb-6">
-                  <div className="group relative">
-                    <div className="w-16 h-16 rounded-2xl bg-[#F5F5F0] border border-[#E8E4E1] shadow-sm transition-transform group-hover:scale-110" />
-                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Linen</div>
+          {/* Row 7: Call to Action */}
+          <div className={`transition-all duration-1000 ${noTastePromptShown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
+              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Call to Action</div>
+              <div className="flex flex-wrap gap-2 mb-3">
+                <div className="px-3 py-1.5 bg-blue-600 text-white text-[10px] font-bold rounded">CLICK HERE TO START!</div>
+                <div className="px-3 py-1.5 border border-blue-600 text-blue-600 text-[10px] font-bold rounded">BEGIN YOUR JOURNEY →</div>
+              </div>
+              <div className="text-[10px] text-red-500 font-medium italic">✕ Aggressive. Desperate.</div>
+            </div>
+          </div>
+
+          <div className={`transition-all duration-1000 ${tasteContextAdded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm h-full">
+              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-6">Call to Action</div>
+              <div className="mb-4">
+                <div className="text-4xl font-display italic text-[#2D3A2D] tracking-tight">When you're ready.</div>
+              </div>
+              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+                <CheckCircle2 className="w-3 h-3 text-green-600" /> It waits. That's respect.
+              </div>
+            </div>
+          </div>
+
+          {/* Row 8: Mobile App Interface */}
+          <div className={`transition-all duration-1000 ${noTastePromptShown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
+              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Mobile App Interface</div>
+              <div className="w-full aspect-[9/16] bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden flex flex-col">
+                <div className="bg-blue-600 p-4 text-white">
+                  <div className="text-[10px] opacity-70">Welcome back,</div>
+                  <div className="text-sm font-bold">User #48291</div>
+                </div>
+                <div className="p-4 space-y-3 flex-1">
+                  <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm flex items-center justify-between">
+                    <div className="text-[10px] font-bold">BALANCE</div>
+                    <div className="text-sm font-bold text-blue-600">$12,402.00</div>
                   </div>
-                  <div className="group relative">
-                    <div className="w-16 h-16 rounded-2xl bg-[#2D3A2D] shadow-md transition-transform group-hover:scale-110" />
-                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Forest</div>
-                  </div>
-                  <div className="group relative">
-                    <div className="w-16 h-16 rounded-2xl bg-[#A65E4E] shadow-md transition-transform group-hover:scale-110" />
-                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Terracotta</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest mt-4">
-                  <CheckCircle2 className="w-3 h-3 text-green-600" /> Unexpected. Warm. Sophisticated.
-                </div>
-              </div>
-
-              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
-                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">First Email Subject</div>
-                <div className="bg-white p-5 rounded-2xl border border-[#E8E4E1] mb-3 shadow-inner">
-                  <div className="text-lg font-serif text-[#2D3A2D]">We got the thing wrong.</div>
-                </div>
-                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
-                  <CheckCircle2 className="w-3 h-3 text-green-600" /> Impossible not to open.
-                </div>
-              </div>
-
-              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
-                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">Hero Image Prompt</div>
-                <div className="bg-white p-5 rounded-2xl border border-[#E8E4E1] mb-3 shadow-inner">
-                  <div className="text-sm text-[#2D3A2D] font-serif italic leading-relaxed">
-                    "Empty chair at a kitchen table. Morning light. Steam rising from one cup."
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
-                  <CheckCircle2 className="w-3 h-3 text-green-600" /> A feeling, not a stock photo.
-                </div>
-              </div>
-
-              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
-                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-6">Call to Action</div>
-                <div className="mb-4">
-                  <div className="text-4xl font-display italic text-[#2D3A2D] tracking-tight">When you're ready.</div>
-                </div>
-                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
-                  <CheckCircle2 className="w-3 h-3 text-green-600" /> It waits. That's respect.
-                </div>
-              </div>
-
-              <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm">
-                <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-6">Mobile App Interface</div>
-                <div className="w-full aspect-[9/16] bg-[#F5F5F0] rounded-[40px] border border-[#E8E4E1] overflow-hidden flex flex-col shadow-xl">
-                  <div className="p-8 pt-12">
-                    <div className="text-3xl font-display font-black text-[#2D3A2D] mb-1">Gather.</div>
-                    <div className="text-[10px] font-bold text-[#A65E4E] uppercase tracking-widest">Everything in its place.</div>
-                  </div>
-                  <div className="px-8 flex-1 space-y-8">
-                    <div className="space-y-2">
-                      <div className="text-[10px] font-bold text-[#2D3A2D]/40 uppercase tracking-widest">Shared with Sarah</div>
-                      <div className="text-4xl font-serif italic text-[#2D3A2D]">$12,402</div>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-4 group">
-                        <div className="w-12 h-12 rounded-full bg-[#2D3A2D] flex items-center justify-center text-[#F5F5F0]">
-                          <ArrowRight className="w-5 h-5" />
-                        </div>
-                        <div className="text-sm font-bold text-[#2D3A2D] uppercase tracking-widest">Move</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full mx-auto mb-1 flex items-center justify-center">
+                        <ArrowRight className="w-3 h-3 text-blue-600" />
                       </div>
-                      <div className="flex items-center gap-4 group">
-                        <div className="w-12 h-12 rounded-full border border-[#2D3A2D]/20 flex items-center justify-center text-[#2D3A2D]">
-                          <Zap className="w-5 h-5" />
-                        </div>
-                        <div className="text-sm font-bold text-[#2D3A2D] uppercase tracking-widest">Activity</div>
+                      <div className="text-[8px] font-bold">TRANSFER</div>
+                    </div>
+                    <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full mx-auto mb-1 flex items-center justify-center">
+                        <Zap className="w-3 h-3 text-blue-600" />
                       </div>
+                      <div className="text-[8px] font-bold">PAY BILLS</div>
                     </div>
                   </div>
-                  <div className="p-8 pb-10">
-                    <div className="w-full py-4 bg-[#A65E4E] rounded-full text-[#F5F5F0] text-center text-[10px] font-black uppercase tracking-[0.2em]">
-                      Open Conversation
+                  <div className="bg-blue-600 p-3 rounded-lg text-white text-center text-[10px] font-bold">
+                    UPGRADE TO PRO NOW!
+                  </div>
+                </div>
+                <div className="bg-white border-t border-gray-200 p-2 flex justify-around">
+                  <div className="w-4 h-4 bg-blue-600 rounded-sm" />
+                  <div className="w-4 h-4 bg-gray-300 rounded-sm" />
+                  <div className="w-4 h-4 bg-gray-300 rounded-sm" />
+                </div>
+              </div>
+              <div className="text-[10px] text-red-500 font-medium italic mt-4">✕ Cluttered. Feature-first. No soul.</div>
+            </div>
+          </div>
+
+          <div className={`transition-all duration-1000 ${tasteContextAdded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm h-full">
+              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-6">Mobile App Interface</div>
+              <div className="w-full aspect-[9/16] bg-[#F5F5F0] rounded-[40px] border border-[#E8E4E1] overflow-hidden flex flex-col shadow-xl">
+                <div className="p-8 pt-12">
+                  <div className="text-3xl font-display font-black text-[#2D3A2D] mb-1">Gather.</div>
+                  <div className="text-[10px] font-bold text-[#A65E4E] uppercase tracking-widest">Everything in its place.</div>
+                </div>
+                <div className="px-8 flex-1 space-y-8">
+                  <div className="space-y-2">
+                    <div className="text-[10px] font-bold text-[#2D3A2D]/40 uppercase tracking-widest">Shared with Sarah</div>
+                    <div className="text-4xl font-serif italic text-[#2D3A2D]">$12,402</div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4 group">
+                      <div className="w-12 h-12 rounded-full bg-[#2D3A2D] flex items-center justify-center text-[#F5F5F0]">
+                        <ArrowRight className="w-5 h-5" />
+                      </div>
+                      <div className="text-sm font-bold text-[#2D3A2D] uppercase tracking-widest">Move</div>
+                    </div>
+                    <div className="flex items-center gap-4 group">
+                      <div className="w-12 h-12 rounded-full border border-[#2D3A2D]/20 flex items-center justify-center text-[#2D3A2D]">
+                        <Zap className="w-5 h-5" />
+                      </div>
+                      <div className="text-sm font-bold text-[#2D3A2D] uppercase tracking-widest">Activity</div>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest mt-6">
-                  <CheckCircle2 className="w-3 h-3 text-green-600" /> Quiet. Human-first. Intentional.
+                <div className="p-8 pb-10">
+                  <div className="w-full py-4 bg-[#A65E4E] rounded-full text-[#F5F5F0] text-center text-[10px] font-black uppercase tracking-[0.2em]">
+                    Open Conversation
+                  </div>
                 </div>
+              </div>
+              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest mt-6">
+                <CheckCircle2 className="w-3 h-3 text-green-600" /> Quiet. Human-first. Intentional.
               </div>
             </div>
           </div>
