@@ -411,22 +411,22 @@ const App: React.FC = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4">
         <button 
           onClick={() => setView(AppView.LEARN)}
-          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full text-left w-full appearance-none"
+          className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full text-left w-full appearance-none"
         >
-          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-            <Compass className="w-24 h-24" />
+          <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
+            <Compass className="w-20 h-20" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                <Compass className="w-6 h-6 text-brand-green" />
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                <Compass className="w-5 h-5 text-brand-green" />
               </div>
-              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Literacy, not training</h2>
+              <h2 className="text-xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Literacy, not training</h2>
             </div>
-            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+            <p className="text-brand-platinum/60 text-base leading-relaxed mb-6">
               Shift from tool proficiency to strategic judgment. Master the "what" and "why" of AI application, focusing on direction and workflow redesign over simple automation.
             </p>
           </div>
@@ -437,19 +437,19 @@ const App: React.FC = () => {
 
         <div 
           onClick={() => setView(AppView.LANDING)}
-          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
+          className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
         >
-          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-            <Layers className="w-24 h-24" />
+          <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
+            <Layers className="w-20 h-20" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                <Layers className="w-6 h-6 text-brand-green" />
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                <Layers className="w-5 h-5 text-brand-green" />
               </div>
-              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Parallelism</h2>
+              <h2 className="text-xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Parallelism</h2>
             </div>
-            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+            <p className="text-brand-platinum/60 text-base leading-relaxed mb-6">
               The "Orchestration Gym." Learn to maintain a unified vision while multiple agents bombard you with conflicting logs and critical decisions.
             </p>
           </div>
@@ -460,19 +460,19 @@ const App: React.FC = () => {
 
         <div 
           onClick={() => setView(AppView.TASTE)}
-          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
+          className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
         >
-          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-            <Sparkles className="w-24 h-24" />
+          <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
+            <Sparkles className="w-20 h-20" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                <Sparkles className="w-6 h-6 text-brand-green" />
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                <Sparkles className="w-5 h-5 text-brand-green" />
               </div>
-              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Taste</h2>
+              <h2 className="text-xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Taste</h2>
             </div>
-            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+            <p className="text-brand-platinum/60 text-base leading-relaxed mb-6">
               AI can generate infinite options. Taste is your ability to say “yes to this, no to that and explain why.”
             </p>
           </div>
@@ -483,19 +483,19 @@ const App: React.FC = () => {
 
         <div 
           onClick={() => setView(AppView.DEFINE_THE_WHAT)}
-          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
+          className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
         >
-          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-            <Target className="w-24 h-24" />
+          <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
+            <Target className="w-20 h-20" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                <Target className="w-6 h-6 text-brand-green" />
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                <Target className="w-5 h-5 text-brand-green" />
               </div>
-              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Define the What</h2>
+              <h2 className="text-xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Define the What</h2>
             </div>
-            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+            <p className="text-brand-platinum/60 text-base leading-relaxed mb-6">
               In an AI-driven world where execution is instant, advantage shifts to clearly defining the right problem before asking for solutions.
             </p>
           </div>
@@ -506,19 +506,19 @@ const App: React.FC = () => {
 
         <div 
           onClick={() => setView(AppView.VERIFICATION)}
-          className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
+          className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
         >
-          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-            <Eye className="w-24 h-24" />
+          <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
+            <Eye className="w-20 h-20" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                <Eye className="w-6 h-6 text-brand-green" />
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                <Eye className="w-5 h-5 text-brand-green" />
               </div>
-              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Verification Fatigue</h2>
+              <h2 className="text-xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Verification Fatigue</h2>
             </div>
-            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+            <p className="text-brand-platinum/60 text-base leading-relaxed mb-6">
               Master high-speed auditing. Train your ability to spot hallucinations and logic errors without succumbing to cognitive exhaustion.
             </p>
           </div>
@@ -527,18 +527,18 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
-          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
-            <MessageSquare className="w-24 h-24" />
+        <div className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
+          <div className="absolute top-0 right-0 p-6 opacity-5 text-brand-platinum">
+            <MessageSquare className="w-20 h-20" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
-                <Brain className="w-6 h-6 text-brand-platinum" />
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
+                <Brain className="w-5 h-5 text-brand-platinum" />
               </div>
-              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Thinking in Prompts</h2>
+              <h2 className="text-xl font-bold text-brand-platinum leading-tight">Thinking in Prompts</h2>
             </div>
-            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+            <p className="text-brand-platinum/60 text-base leading-relaxed mb-6">
               Thinking in prompts is the habit of framing your thoughts as questions or instructions you could give to an AI.
             </p>
           </div>
@@ -549,18 +549,18 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
-          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
-            <FlaskConical className="w-24 h-24" />
+        <div className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
+          <div className="absolute top-0 right-0 p-6 opacity-5 text-brand-platinum">
+            <FlaskConical className="w-20 h-20" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
-                <FlaskConical className="w-6 h-6 text-brand-platinum" />
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
+                <FlaskConical className="w-5 h-5 text-brand-platinum" />
               </div>
-              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Become a CEO</h2>
+              <h2 className="text-xl font-bold text-brand-platinum leading-tight">Become a CEO</h2>
             </div>
-            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+            <p className="text-brand-platinum/60 text-base leading-relaxed mb-6">
               Chief Experimentation Officer. In the AI era, the speed of your learning loops determines your competitive advantage.
             </p>
           </div>
@@ -571,18 +571,18 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
-          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
-            <Shield className="w-24 h-24" />
+        <div className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
+          <div className="absolute top-0 right-0 p-6 opacity-5 text-brand-platinum">
+            <Shield className="w-20 h-20" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
-                <Shield className="w-6 h-6 text-brand-platinum" />
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
+                <Shield className="w-5 h-5 text-brand-platinum" />
               </div>
-              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Resist Intellectual Laziness</h2>
+              <h2 className="text-xl font-bold text-brand-platinum leading-tight">Resist Intellectual Laziness</h2>
             </div>
-            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+            <p className="text-brand-platinum/60 text-base leading-relaxed mb-6">
               Use AI without switching off your own thinking. Build habits that keep your reasoning, judgment, and creativity sharp.
             </p>
           </div>
@@ -593,18 +593,18 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="group relative glass p-10 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
-          <div className="absolute top-0 right-0 p-8 opacity-5 text-brand-platinum">
-            <Users className="w-24 h-24" />
+        <div className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
+          <div className="absolute top-0 right-0 p-6 opacity-5 text-brand-platinum">
+            <Users className="w-20 h-20" />
           </div>
           <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
-                <Users className="w-6 h-6 text-brand-platinum" />
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
+                <Users className="w-5 h-5 text-brand-platinum" />
               </div>
-              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Interview AI Models</h2>
+              <h2 className="text-xl font-bold text-brand-platinum leading-tight">Interview AI Models</h2>
             </div>
-            <p className="text-brand-platinum/60 text-lg leading-relaxed mb-8">
+            <p className="text-brand-platinum/60 text-base leading-relaxed mb-6">
               Learn the art of "Agent Onboarding." Protocols to stress-test and validate an AI's logic and personality before delegating tasks.
             </p>
           </div>
