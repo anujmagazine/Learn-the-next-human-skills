@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Scatter, ComposedChart } from 'recharts';
-import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle, BookOpen, Layers, Sparkles, FlaskConical, MessageSquare, Shield } from 'lucide-react';
+import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle, BookOpen, Layers, Sparkles, FlaskConical, MessageSquare, Shield, Workflow, GraduationCap } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AppView, AgentStream, DrillScenario } from './types';
 import { orchestrationService } from './services/gemini';
@@ -606,6 +606,50 @@ const App: React.FC = () => {
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               Learn the art of "Agent Onboarding." Protocols to stress-test and validate an AI's logic and personality before delegating tasks.
+            </p>
+          </div>
+          <div className="relative z-10 mt-auto">
+            <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
+              Coming Soon
+            </div>
+          </div>
+        </div>
+
+        <div className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
+          <div className="absolute top-0 right-0 p-6 opacity-5 text-brand-platinum">
+            <Workflow className="w-24 h-24" />
+          </div>
+          <div className="relative z-10 flex-1">
+            <div className="flex items-center gap-4 mb-5">
+              <div className="w-14 h-14 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
+                <Workflow className="w-7 h-7 text-brand-platinum" />
+              </div>
+              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Thinking in Workflows</h2>
+            </div>
+            <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
+              Deconstruct complex goals into modular, agent-ready sequences. Master the architecture of multi-step AI orchestration.
+            </p>
+          </div>
+          <div className="relative z-10 mt-auto">
+            <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
+              Coming Soon
+            </div>
+          </div>
+        </div>
+
+        <div className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
+          <div className="absolute top-0 right-0 p-6 opacity-5 text-brand-platinum">
+            <GraduationCap className="w-24 h-24" />
+          </div>
+          <div className="relative z-10 flex-1">
+            <div className="flex items-center gap-4 mb-5">
+              <div className="w-14 h-14 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
+                <GraduationCap className="w-7 h-7 text-brand-platinum" />
+              </div>
+              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Learning how to learn</h2>
+            </div>
+            <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
+              In an era of rapid obsolescence, your ability to acquire new mental models is the only permanent competitive advantage.
             </p>
           </div>
           <div className="relative z-10 mt-auto">
