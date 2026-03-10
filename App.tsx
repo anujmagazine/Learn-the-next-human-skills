@@ -2369,7 +2369,37 @@ const App: React.FC = () => {
 
     const renderTab2 = () => (
       <div className="max-w-6xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 items-center">
+          <div className="text-center">
+            <div className="text-[10px] font-black text-red-600 uppercase tracking-[0.2em] mb-2">The Generic Output</div>
+            <h4 className="text-2xl font-black text-gray-900 uppercase tracking-tighter">AI Without Taste</h4>
+          </div>
+          <div className="text-center">
+            <div className="text-[10px] font-black text-green-600 uppercase tracking-[0.2em] mb-2">The Human Filter</div>
+            <h4 className="text-2xl font-black text-[#A65E4E] uppercase tracking-tighter">AI Guided by Taste</h4>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 items-stretch">
+          {/* Row 1: The Prompts */}
+          <div className={`transition-all duration-1000 ${noTastePromptShown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 h-full">
+              <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">The Prompt</div>
+              <div className="text-xs text-gray-600 font-mono leading-relaxed">
+                "Generate a brand name, tagline, and color palette for a new tech connectivity company."
+              </div>
+            </div>
+          </div>
+
+          <div className={`transition-all duration-1000 ${tasteContextAdded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
+            <div className="bg-[#FDFCFB] p-6 rounded-[32px] border border-[#E8E4E1] h-full">
+              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-2">The Taste-Guided Prompt</div>
+              <div className="text-xs text-[#2D3A2D] font-serif italic leading-relaxed">
+                "We are building a company that helps people gather. It should feel like a warm kitchen, not a server room. One word name. Quiet tagline. Earthy colors."
+              </div>
+            </div>
+          </div>
+
           {/* Row 2: Brand Name */}
           <div className={`transition-all duration-1000 ${noTastePromptShown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
