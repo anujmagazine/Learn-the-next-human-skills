@@ -100,8 +100,8 @@ const App: React.FC = () => {
 
   // Taste Simulation State
   const [tasteTab, setTasteTab] = useState(1);
-  const [tasteContextAdded, setTasteContextAdded] = useState(true);
-  const [noTastePromptShown, setNoTastePromptShown] = useState(true);
+  const [tasteContextAdded, setTasteContextAdded] = useState(false);
+  const [noTastePromptShown, setNoTastePromptShown] = useState(false);
   const [defineSimStep, setDefineSimStep] = useState(0);
   const [isDefineSimRunning, setIsDefineSimRunning] = useState(false);
 
@@ -2370,14 +2370,33 @@ const App: React.FC = () => {
     const renderTab2 = () => (
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 items-center">
-          <div className="text-center">
+          <button 
+            onClick={() => setNoTastePromptShown(true)}
+            disabled={noTastePromptShown}
+            className={`p-8 rounded-[32px] border-2 transition-all text-center group ${noTastePromptShown ? 'bg-white border-gray-100 opacity-50' : 'bg-white border-red-100 hover:border-red-200 hover:shadow-xl'}`}
+          >
             <div className="text-[10px] font-black text-red-600 uppercase tracking-[0.2em] mb-2">The Generic Output</div>
-            <h4 className="text-2xl font-black text-gray-900 uppercase tracking-tighter">AI Without Taste</h4>
-          </div>
-          <div className="text-center">
+            <h4 className="text-2xl font-black text-gray-900 uppercase tracking-tighter mb-4">AI Without Taste</h4>
+            {!noTastePromptShown && (
+              <div className="flex items-center justify-center gap-2 text-red-600 font-bold text-xs">
+                <Play className="w-4 h-4 fill-current" /> CLICK TO RUN PROMPT
+              </div>
+            )}
+          </button>
+
+          <button 
+            onClick={() => setTasteContextAdded(true)}
+            disabled={tasteContextAdded}
+            className={`p-8 rounded-[32px] border-2 transition-all text-center group ${tasteContextAdded ? 'bg-white border-gray-100 opacity-50' : 'bg-white border-green-100 hover:border-green-200 hover:shadow-xl'}`}
+          >
             <div className="text-[10px] font-black text-green-600 uppercase tracking-[0.2em] mb-2">The Human Filter</div>
-            <h4 className="text-2xl font-black text-[#A65E4E] uppercase tracking-tighter">AI Guided by Taste</h4>
-          </div>
+            <h4 className="text-2xl font-black text-[#A65E4E] uppercase tracking-tighter mb-4">AI Guided by Taste</h4>
+            {!tasteContextAdded && (
+              <div className="flex items-center justify-center gap-2 text-green-600 font-bold text-xs">
+                <Sparkles className="w-4 h-4 fill-current" /> CLICK TO ADD TASTE
+              </div>
+            )}
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 items-stretch">
