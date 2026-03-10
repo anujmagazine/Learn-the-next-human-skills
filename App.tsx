@@ -100,8 +100,8 @@ const App: React.FC = () => {
 
   // Taste Simulation State
   const [tasteTab, setTasteTab] = useState(1);
-  const [tasteContextAdded, setTasteContextAdded] = useState(false);
-  const [noTastePromptShown, setNoTastePromptShown] = useState(false);
+  const [tasteContextAdded, setTasteContextAdded] = useState(true);
+  const [noTastePromptShown, setNoTastePromptShown] = useState(true);
   const [defineSimStep, setDefineSimStep] = useState(0);
   const [isDefineSimRunning, setIsDefineSimRunning] = useState(false);
 
@@ -2369,78 +2369,7 @@ const App: React.FC = () => {
 
     const renderTab2 = () => (
       <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="mb-16">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="bg-orange-50 text-orange-600 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest inline-block mb-6 border border-orange-100"
-          >
-            What you're about to see
-          </motion.div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">
-            We give the <span className="text-blue-600">same brief</span> to AI twice. The only difference? The second time, a human with <span className="italic">taste</span> adds context before asking. Watch how every single output changes.
-          </h2>
-          
-          <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex items-center gap-6">
-            <div className="text-xs font-black text-gray-400 uppercase tracking-widest">The Brief</div>
-            <div className="text-xl font-medium text-gray-900 italic">"Build a brand for a new fintech startup that helps people manage money together."</div>
-          </div>
-        </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 items-stretch">
-          {/* Row 1: Headers */}
-          <div className="bg-red-50 p-8 rounded-[32px] border border-red-100 h-full flex flex-col">
-            <div className="text-4xl font-black text-red-600 uppercase tracking-[0.2em] mb-8 flex items-center gap-4">
-              <span className="opacity-50">✕</span> AI Without Taste
-            </div>
-            <div className="flex-1 flex flex-col justify-center">
-              {!noTastePromptShown ? (
-                <button 
-                  onClick={() => setNoTastePromptShown(true)}
-                  className="w-full py-3 bg-red-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-red-700 transition-colors"
-                >
-                  <Play className="w-3 h-3 fill-current" /> Run Without Taste
-                </button>
-              ) : (
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="p-4 bg-white/50 rounded-2xl border border-red-200/50"
-                >
-                  <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">The Prompt</div>
-                  <div className="text-xs text-red-900/80 font-mono italic">"Create a brand for a fintech startup for shared finances."</div>
-                </motion.div>
-              )}
-            </div>
-          </div>
-
-          <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm h-full flex flex-col">
-            <div className="text-4xl font-black text-green-600 uppercase tracking-[0.2em] mb-8 flex items-center gap-4">
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
-              AI Guided by Taste
-            </div>
-            <div className="flex-1 flex flex-col justify-center">
-              {!tasteContextAdded ? (
-                <button 
-                  onClick={() => setTasteContextAdded(true)}
-                  className="w-full py-3 bg-green-600 text-white rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-green-700 transition-colors"
-                >
-                  <Play className="w-3 h-3 fill-current" /> Add Taste Context First
-                </button>
-              ) : (
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  <div className="text-[10px] font-bold text-green-600 uppercase tracking-widest mb-2">The Prompt</div>
-                  <p className="text-sm text-green-900 font-medium italic">
-                    "A founder who loves brutalist architecture, reads Murakami, wants her product to feel like an open conversation. She hates hype. She respects her users."
-                  </p>
-                </motion.div>
-              )}
-            </div>
-          </div>
-
           {/* Row 2: Brand Name */}
           <div className={`transition-all duration-1000 ${noTastePromptShown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none h-0 overflow-hidden'}`}>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
