@@ -2375,7 +2375,7 @@ const App: React.FC = () => {
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
               <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Brand Name</div>
               <div className="text-xl font-bold text-gray-900 mb-1">SmartConnect Pro Plus™</div>
-              <div className="text-[10px] text-red-500 font-medium italic">✕ Generic. Corporate. Forgettable.</div>
+              <div className="text-xs text-red-700 font-bold italic">✕ Generic. Corporate. Forgettable.</div>
             </div>
           </div>
 
@@ -2397,7 +2397,7 @@ const App: React.FC = () => {
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
               <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Tagline</div>
               <div className="text-sm font-bold text-gray-900 mb-1 uppercase tracking-tight">INNOVATION. EXCELLENCE. RESULTS. YOUR SUCCESS IS OUR MISSION.</div>
-              <div className="text-[10px] text-red-500 font-medium italic">✕ Four buzzwords. Says nothing.</div>
+              <div className="text-xs text-red-700 font-bold italic">✕ Four buzzwords. Says nothing.</div>
             </div>
           </div>
 
@@ -2416,12 +2416,12 @@ const App: React.FC = () => {
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-full">
               <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Color Palette</div>
               <div className="flex gap-2 mb-3">
-                <div className="w-10 h-10 rounded bg-blue-500" />
-                <div className="w-10 h-10 rounded bg-green-500" />
-                <div className="w-10 h-10 rounded bg-orange-500" />
-                <div className="w-10 h-10 rounded bg-cyan-500" />
+                <div className="w-10 h-10 rounded bg-[#7A8B99]" />
+                <div className="w-10 h-10 rounded bg-[#8B9474]" />
+                <div className="w-10 h-10 rounded bg-[#A68A64]" />
+                <div className="w-10 h-10 rounded bg-[#8E7C93]" />
               </div>
-              <div className="text-[10px] text-red-500 font-medium italic">✕ Default primary colors. No mood.</div>
+              <div className="text-xs text-red-700 font-bold italic">✕ Default primary colors. No mood.</div>
             </div>
           </div>
 
@@ -2455,7 +2455,7 @@ const App: React.FC = () => {
               <div className="bg-gray-50 p-3 rounded border border-gray-100 mb-2">
                 <div className="text-xs font-bold text-gray-900">Exciting News! Our AMAZING Launch is HERE — Don't Miss This!</div>
               </div>
-              <div className="text-[10px] text-red-500 font-medium italic">✕ Screaming. Deleted.</div>
+              <div className="text-xs text-red-700 font-bold italic">✕ Screaming. Deleted.</div>
             </div>
           </div>
 
@@ -2478,7 +2478,7 @@ const App: React.FC = () => {
               <div className="bg-gray-50 p-3 rounded border border-gray-100 mb-2">
                 <div className="text-xs text-gray-600">"Smiling diverse team of professionals shaking hands in a bright, modern office with glass walls."</div>
               </div>
-              <div className="text-[10px] text-red-500 font-medium italic">✕ Stock photo cliché.</div>
+              <div className="text-xs text-red-700 font-bold italic">✕ Stock photo cliché.</div>
             </div>
           </div>
 
@@ -2504,7 +2504,7 @@ const App: React.FC = () => {
                 <div className="px-3 py-1.5 bg-blue-600 text-white text-[10px] font-bold rounded">CLICK HERE TO START!</div>
                 <div className="px-3 py-1.5 border border-blue-600 text-blue-600 text-[10px] font-bold rounded">BEGIN YOUR JOURNEY →</div>
               </div>
-              <div className="text-[10px] text-red-500 font-medium italic">✕ Aggressive. Desperate.</div>
+              <div className="text-xs text-red-700 font-bold italic">✕ Aggressive. Desperate.</div>
             </div>
           </div>
 
