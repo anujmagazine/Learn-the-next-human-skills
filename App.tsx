@@ -2529,28 +2529,28 @@ const App: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             className="mt-24 space-y-12"
           >
-            <div className="text-center max-w-3xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+              <div className="bg-red-50/50 p-8 rounded-3xl border border-red-100">
+                <p className="text-red-900/60 font-medium leading-relaxed text-xs">
+                  <span className="font-bold block mb-2 text-red-900 text-sm">The result without taste:</span>
+                  Technically correct. Could belong to any brand, in any industry, anywhere on earth.
+                </p>
+              </div>
+              <div className="bg-green-50/50 p-8 rounded-3xl border border-green-100">
+                <p className="text-green-900 font-medium leading-relaxed text-xs">
+                  <span className="font-bold block mb-2 text-sm">The result with taste:</span>
+                  Every element is intentional. This could only be this brand, for this founder.
+                </p>
+              </div>
+            </div>
+
+            <div className="text-center max-w-3xl mx-auto pt-12 border-t border-gray-100">
               <h3 className="text-4xl font-display font-black text-gray-900 mb-6 tracking-tight italic">
                 Taste is not just the prompt. It's the <span className="text-blue-600 underline underline-offset-8">Filter</span>.
               </h3>
               <p className="text-xl text-gray-500 leading-relaxed">
                 AI can generate 1,000 variations in seconds. But it can't tell you which one is <span className="text-gray-900 font-bold">Great</span>. Taste is the human ability to say "no" to the average and "yes" to the exceptional.
               </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-12 border-t border-gray-100">
-              <div className="bg-red-50/50 p-8 rounded-3xl border border-red-100">
-                <p className="text-red-900/60 font-medium leading-relaxed">
-                  <span className="font-bold block mb-2 text-red-900">The result without taste:</span>
-                  Technically correct. Could belong to any brand, in any industry, anywhere on earth.
-                </p>
-              </div>
-              <div className="bg-green-50/50 p-8 rounded-3xl border border-green-100">
-                <p className="text-green-900 font-medium leading-relaxed">
-                  <span className="font-bold block mb-2">The result with taste:</span>
-                  Every element is intentional. This could only be this brand, for this founder.
-                </p>
-              </div>
             </div>
           </motion.div>
         )}
