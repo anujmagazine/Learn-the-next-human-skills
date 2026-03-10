@@ -2386,7 +2386,7 @@ const App: React.FC = () => {
               </div>
               <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">Brand Name</div>
               <div className="text-4xl font-display font-black text-[#2D3A2D] mb-2 tracking-tighter">Gather</div>
-              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-xs text-green-700 font-bold uppercase tracking-widest">
                 <CheckCircle2 className="w-3 h-3 text-green-600" /> One word. Warm. Human.
               </div>
             </div>
@@ -2405,7 +2405,7 @@ const App: React.FC = () => {
             <div className="bg-[#FDFCFB] p-8 rounded-[32px] border border-[#E8E4E1] shadow-sm group h-full">
               <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-4">Tagline</div>
               <div className="text-2xl font-serif italic text-[#2D3A2D] mb-3 leading-tight">"Quietly powerful."</div>
-              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-xs text-green-700 font-bold uppercase tracking-widest">
                 <CheckCircle2 className="w-3 h-3 text-green-600" /> Holds tension. Earns curiosity.
               </div>
             </div>
@@ -2430,19 +2430,19 @@ const App: React.FC = () => {
               <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.2em] mb-6">Color Palette</div>
               <div className="flex gap-4 mb-6">
                 <div className="group relative">
-                  <div className="w-16 h-16 rounded-2xl bg-[#F5F5F0] border border-[#E8E4E1] shadow-sm transition-transform group-hover:scale-110" />
-                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Linen</div>
+                  <div className="w-16 h-16 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] shadow-sm transition-transform group-hover:scale-110" />
+                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Pearl</div>
                 </div>
                 <div className="group relative">
-                  <div className="w-16 h-16 rounded-2xl bg-[#2D3A2D] shadow-md transition-transform group-hover:scale-110" />
-                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Forest</div>
+                  <div className="w-16 h-16 rounded-2xl bg-[#064E3B] shadow-md transition-transform group-hover:scale-110" />
+                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Emerald</div>
                 </div>
                 <div className="group relative">
-                  <div className="w-16 h-16 rounded-2xl bg-[#A65E4E] shadow-md transition-transform group-hover:scale-110" />
-                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Terracotta</div>
+                  <div className="w-16 h-16 rounded-2xl bg-[#B45309] shadow-md transition-transform group-hover:scale-110" />
+                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold text-gray-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Ochre</div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest mt-4">
+              <div className="flex items-center gap-2 text-xs text-green-700 font-bold uppercase tracking-widest mt-4">
                 <CheckCircle2 className="w-3 h-3 text-green-600" /> Unexpected. Warm. Sophisticated.
               </div>
             </div>
@@ -2465,7 +2465,7 @@ const App: React.FC = () => {
               <div className="bg-white p-5 rounded-2xl border border-[#E8E4E1] mb-3 shadow-inner">
                 <div className="text-lg font-serif text-[#2D3A2D]">We got the thing wrong.</div>
               </div>
-              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-xs text-green-700 font-bold uppercase tracking-widest">
                 <CheckCircle2 className="w-3 h-3 text-green-600" /> Impossible not to open.
               </div>
             </div>
@@ -2490,7 +2490,7 @@ const App: React.FC = () => {
                   "Empty chair at a kitchen table. Morning light. Steam rising from one cup."
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-xs text-green-700 font-bold uppercase tracking-widest">
                 <CheckCircle2 className="w-3 h-3 text-green-600" /> A feeling, not a stock photo.
               </div>
             </div>
@@ -2514,7 +2514,7 @@ const App: React.FC = () => {
               <div className="mb-4">
                 <div className="text-4xl font-display italic text-[#2D3A2D] tracking-tight">When you're ready.</div>
               </div>
-              <div className="flex items-center gap-2 text-[10px] text-[#2D3A2D]/60 font-bold uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-xs text-green-700 font-bold uppercase tracking-widest">
                 <CheckCircle2 className="w-3 h-3 text-green-600" /> It waits. That's respect.
               </div>
             </div>
