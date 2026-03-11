@@ -2639,22 +2639,18 @@ const App: React.FC = () => {
           {[
             {
               title: "Signal vs. Noise",
-              icon: <Target className="w-6 h-6" />,
               text: "AI produces 10,000 options in seconds. Without taste you drown. With it, you know which one to keep — and why."
             },
             {
               title: "The Articulation Muscle",
-              icon: <RotateCcw className="w-6 h-6" />,
               text: "Taste isn't just liking things. It's being able to say WHY — precisely enough that AI executes your vision, not the generic average."
             },
             {
               title: "Identity as Filter",
-              icon: <LayoutIcon className="w-6 h-6" />,
               text: "In a world where anyone can make anything, what you choose NOT to make defines you as much as what you do."
             },
             {
               title: "Cultural Fluency",
-              icon: <Zap className="w-6 h-6" />,
               text: "AI trained on averages produces the average. Tastemakers move culture forward — they don't simply reflect it back."
             }
           ].map((card, i) => (
@@ -2665,9 +2661,6 @@ const App: React.FC = () => {
               transition={{ delay: 0.1 * i }}
               className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-sm group hover:border-blue-200 transition-all"
             >
-              <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-gray-400 group-hover:text-blue-600 group-hover:bg-blue-50 transition-all">
-                {card.icon}
-              </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4">{card.title}</h3>
               <p className="text-gray-500 leading-relaxed text-lg">{card.text}</p>
             </motion.div>
