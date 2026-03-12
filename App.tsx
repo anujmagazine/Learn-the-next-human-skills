@@ -1906,7 +1906,7 @@ const App: React.FC = () => {
                   <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-brand-green">
                     what is left for you?
                   </h2>
-                  <p className="text-xl text-white/40 font-medium">
+                  <p className="text-xl text-white/70 font-medium">
                     This simulation answers that question.
                   </p>
                 </motion.div>
