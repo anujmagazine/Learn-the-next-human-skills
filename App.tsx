@@ -1784,7 +1784,7 @@ const App: React.FC = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-[#F8F9FA] text-[#333]">
         {/* Navigation Controls */}
-        <div className="fixed top-24 left-8 z-50 flex flex-col gap-4">
+        <div className="absolute top-12 left-10 z-[60] flex flex-col gap-4">
           <button 
             onClick={() => {
               setView(AppView.HUB);
@@ -1816,7 +1816,7 @@ const App: React.FC = () => {
           )}
           
           {isLearnSimRunning && (
-            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 w-fit">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
               <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Auto-Playing</span>
             </div>
@@ -1824,7 +1824,7 @@ const App: React.FC = () => {
         </div>
 
         {/* Progress Bar */}
-        <div className="fixed top-24 left-1/2 -translate-x-1/2 flex gap-2 z-50">
+        <div className="absolute top-12 left-1/2 -translate-x-1/2 flex gap-2 z-[60]">
           {steps.map((_, i) => (
             <div 
               key={i}
@@ -1861,7 +1861,7 @@ const App: React.FC = () => {
     return (
       <div className="min-h-screen bg-black text-white font-sans selection:bg-brand-green selection:text-black overflow-hidden relative">
         {/* Navigation / Header */}
-        <div className="absolute top-0 left-0 w-full p-8 flex justify-between items-center z-50">
+        <div className="absolute top-4 left-0 w-full p-8 flex justify-between items-center z-[60]">
           <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.4em]">
             Simulation 04 — Define the What
           </div>
@@ -2708,7 +2708,7 @@ const App: React.FC = () => {
     return (
       <div className="min-h-screen bg-[#F9F8F6] text-[#2D3A2D]">
         {/* Navigation Bar */}
-        <div className="fixed top-0 left-0 w-full bg-white/60 backdrop-blur-xl border-b border-[#E8E4E1] z-50">
+        <div className="absolute top-0 left-0 w-full bg-white/60 backdrop-blur-xl border-b border-[#E8E4E1] z-[60]">
           <div className="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
             <div className="flex items-center gap-10">
               <button 
