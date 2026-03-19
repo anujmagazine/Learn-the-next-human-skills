@@ -2762,48 +2762,57 @@ const App: React.FC = () => {
 
   const renderVerificationGateway = () => {
     return (
-      <div className="min-h-screen bg-[#F9F8F6] text-[#2D3A2D] pt-24">
-        {/* Navigation Bar */}
-        <div className="absolute top-0 left-0 w-full bg-white/60 backdrop-blur-xl border-b border-[#E8E4E1] z-[60]">
-          <div className="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
-            <div className="flex items-center gap-10">
-              <button 
-                onClick={() => setView(AppView.HUB)}
-                className="text-[#2D3A2D] font-black uppercase tracking-tighter text-base group flex items-center gap-3"
-              >
-                <div className="w-10 h-10 bg-[#2D3A2D] rounded-xl flex items-center justify-center text-white transition-transform group-hover:scale-110">H</div>
-                Master the Next <span className="text-[#A65E4E]">Human Skills</span>
-              </button>
-              <div className="h-6 w-[1px] bg-[#E8E4E1]" />
-              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.4em]">
-                Verification Fatigue
-              </div>
-            </div>
-            <div className="flex gap-10">
-              <button 
-                className="text-[10px] font-black uppercase tracking-[0.2em] transition-all pb-2 border-b-2 text-[#A65E4E] border-[#A65E4E]"
-                onClick={() => setView(AppView.VERIFICATION)}
-              >
-                Launch Simulation
-              </button>
-            </div>
-          </div>
+      <div className="max-w-7xl mx-auto py-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+        <div className="mb-16">
+          <h1 className="text-6xl font-black tracking-tighter text-brand-platinum mb-4">
+            Learn and Grow <span className="text-brand-green">the skill</span>
+          </h1>
+          <p className="text-xl text-brand-platinum/60 max-w-2xl">
+            Verification fatigue is the drift of human judgment as cognitive volume increases. 
+            Master the ability to maintain sharpness in high-speed environments.
+          </p>
         </div>
 
-        <div className="flex items-center justify-center h-[calc(100vh-96px)]">
-           <div className="text-center max-w-2xl px-6">
-              <h1 className="text-5xl font-black tracking-tighter text-[#2D3A2D] mb-6">Learn and Grow the skill</h1>
-              <p className="text-xl text-gray-500 mb-12">
-                Verification fatigue is the drift of human judgment as cognitive volume increases. 
-                Master the ability to maintain sharpness in high-speed environments.
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div 
+            onClick={() => setView(AppView.VERIFICATION)}
+            className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
+          >
+            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
+              <Eye className="w-24 h-24" />
+            </div>
+            <div className="relative z-10 flex-1">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                  <Eye className="w-7 h-7 text-brand-green" />
+                </div>
+                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Launch Verification Fatigue Simulation</h2>
+              </div>
+              <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
+                Test your cognitive endurance. Review AI outputs across a simulated workday and see how fatigue impacts your judgment.
               </p>
-              <button 
-                onClick={() => setView(AppView.VERIFICATION)}
-                className="px-10 py-4 bg-[#A65E4E] text-white rounded-full font-black uppercase tracking-widest text-sm hover:scale-105 transition-transform shadow-xl"
-              >
-                Launch Simulation
-              </button>
-           </div>
+            </div>
+            <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
+              Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
+            </div>
+          </div>
+          
+          <div className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 opacity-40 grayscale transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
+            <div className="absolute top-0 right-0 p-6 opacity-5 text-brand-platinum">
+              <ShieldCheck className="w-24 h-24" />
+            </div>
+            <div className="relative z-10 flex-1">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-14 h-14 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
+                  <ShieldCheck className="w-7 h-7 text-brand-platinum" />
+                </div>
+                <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Advanced Auditing</h2>
+              </div>
+              <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
+                Coming soon: Complex logic verification and multi-agent consistency checks.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     );
