@@ -505,7 +505,7 @@ const App: React.FC = () => {
         </div>
 
         <div 
-          onClick={() => setView(AppView.VERIFICATION)}
+          onClick={() => setView(AppView.VERIFICATION_GATEWAY)}
           className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
         >
           <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
@@ -523,7 +523,7 @@ const App: React.FC = () => {
             </p>
           </div>
           <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
-            Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
+            Learn and Grow the skill <span className="group-hover:translate-x-2 transition-transform">→</span>
           </div>
         </div>
 
@@ -2760,6 +2760,55 @@ const App: React.FC = () => {
     );
   };
 
+  const renderVerificationGateway = () => {
+    return (
+      <div className="min-h-screen bg-[#F9F8F6] text-[#2D3A2D] pt-24">
+        {/* Navigation Bar */}
+        <div className="absolute top-0 left-0 w-full bg-white/60 backdrop-blur-xl border-b border-[#E8E4E1] z-[60]">
+          <div className="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
+            <div className="flex items-center gap-10">
+              <button 
+                onClick={() => setView(AppView.HUB)}
+                className="text-[#2D3A2D] font-black uppercase tracking-tighter text-base group flex items-center gap-3"
+              >
+                <div className="w-10 h-10 bg-[#2D3A2D] rounded-xl flex items-center justify-center text-white transition-transform group-hover:scale-110">H</div>
+                Master the Next <span className="text-[#A65E4E]">Human Skills</span>
+              </button>
+              <div className="h-6 w-[1px] bg-[#E8E4E1]" />
+              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.4em]">
+                Verification Fatigue
+              </div>
+            </div>
+            <div className="flex gap-10">
+              <button 
+                className="text-[10px] font-black uppercase tracking-[0.2em] transition-all pb-2 border-b-2 text-[#A65E4E] border-[#A65E4E]"
+                onClick={() => setView(AppView.VERIFICATION)}
+              >
+                Launch Simulation
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center h-[calc(100vh-96px)]">
+           <div className="text-center max-w-2xl px-6">
+              <h1 className="text-5xl font-black tracking-tighter text-[#2D3A2D] mb-6">Learn and Grow the skill</h1>
+              <p className="text-xl text-gray-500 mb-12">
+                Verification fatigue is the drift of human judgment as cognitive volume increases. 
+                Master the ability to maintain sharpness in high-speed environments.
+              </p>
+              <button 
+                onClick={() => setView(AppView.VERIFICATION)}
+                className="px-10 py-4 bg-[#A65E4E] text-white rounded-full font-black uppercase tracking-widest text-sm hover:scale-105 transition-transform shadow-xl"
+              >
+                Launch Simulation
+              </button>
+           </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderContent = () => {
     switch (view) {
       case AppView.HUB: return renderHub();
@@ -2767,6 +2816,7 @@ const App: React.FC = () => {
       case AppView.TRAINER: return renderTrainer();
       case AppView.EVOLUTION: return renderEvolution();
       case AppView.VERIFICATION: return renderVerification();
+      case AppView.VERIFICATION_GATEWAY: return renderVerificationGateway();
       case AppView.LEARN: return renderLearn();
       case AppView.TASTE: return renderTaste();
       case AppView.DEFINE_THE_WHAT: return renderDefineTheWhat();

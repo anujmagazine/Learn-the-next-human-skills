@@ -6,6 +6,7 @@ export enum AppView {
   LANDING = 'landing',
   EVOLUTION = 'evolution',
   VERIFICATION = 'verification',
+  VERIFICATION_GATEWAY = 'verification_gateway',
   TASTE = 'taste',
   DEFINE_THE_WHAT = 'define_the_what'
 }
