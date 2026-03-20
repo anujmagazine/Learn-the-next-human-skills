@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Scatter, ComposedChart } from 'recharts';
-import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle, BookOpen, Layers, Sparkles, FlaskConical, MessageSquare, Shield, Workflow, GraduationCap, Plus } from 'lucide-react';
+import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle, BookOpen, Layers, Sparkles, FlaskConical, MessageSquare, Shield, Workflow, GraduationCap, Plus, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AppView, AgentStream, DrillScenario } from './types';
 import { orchestrationService } from './services/gemini';
@@ -122,6 +122,16 @@ const App: React.FC = () => {
 
   const [selectedOutput, setSelectedOutput] = useState<any>(null);
 
+  const [enduranceSim, setEnduranceSim] = useState({
+    isRunning: false,
+    isDone: false,
+    time: 0,
+    fatigue: 0,
+    errors: 0,
+    data: [] as { time: number, fatigue: number, errors: number }[],
+    textOffset: 0
+  });
+
   const FATIGUE_TASKS = [
     { id: 1, type: 'fact', content: "The capital of France is Paris.", hasError: false, difficulty: 10 },
     { id: 2, type: 'code', content: "function add(a, b) { return a - b; }", hasError: true, difficulty: 30, error: "Subtraction instead of addition" },
@@ -146,6 +156,18 @@ const App: React.FC = () => {
       isDone: false,
       currentTask: FATIGUE_TASKS[0],
       history: []
+    });
+  };
+
+  const startEnduranceSim = () => {
+    setEnduranceSim({
+      isRunning: true,
+      isDone: false,
+      time: 0,
+      fatigue: 0,
+      errors: 0,
+      data: [{ time: 0, fatigue: 0, errors: 0 }],
+      textOffset: 0
     });
   };
 
@@ -563,6 +585,44 @@ const App: React.FC = () => {
     setStats(prev => ({ ...prev, interventions: prev.interventions + 1 }));
     setIntervention(null);
   };
+
+  useEffect(() => {
+    if (!enduranceSim.isRunning) return;
+
+    const interval = setInterval(() => {
+      setEnduranceSim(prev => {
+        const nextTime = prev.time + 1;
+        if (nextTime > 480) { // 8 hours
+          return { ...prev, isRunning: false, isDone: true };
+        }
+
+        // Fatigue increases non-linearly
+        const nextFatigue = Math.min(100, prev.fatigue + (0.1 * (1 + prev.fatigue / 50)));
+        
+        // Error rate increases with fatigue
+        let nextErrors = prev.errors;
+        const errorChance = (prev.fatigue / 100) * 0.05;
+        if (Math.random() < errorChance) {
+          nextErrors++;
+        }
+
+        const newData = [...prev.data];
+        if (nextTime % 10 === 0) {
+          newData.push({ time: nextTime, fatigue: nextFatigue, errors: nextErrors });
+        }
+
+        return {
+          ...prev,
+          time: nextTime,
+          fatigue: nextFatigue,
+          errors: nextErrors,
+          data: newData
+        };
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [enduranceSim.isRunning]);
 
   const renderHub = () => (
     <div className="max-w-7xl mx-auto py-16 animate-in fade-in duration-700">
@@ -1215,9 +1275,9 @@ const App: React.FC = () => {
         <div className="flex justify-between items-start mb-12">
           <div className="flex items-start gap-6">
             <button 
-              onClick={() => setView(AppView.HUB)}
+              onClick={() => setView(AppView.VERIFICATION_GATEWAY)}
               className="mt-1 p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-900"
-              title="Back to Hub"
+              title="Back to Verification Hub"
             >
               <ArrowRight className="w-6 h-6 rotate-180" />
             </button>
@@ -1598,10 +1658,10 @@ const App: React.FC = () => {
 
               <div className="text-center">
                 <button 
-                  onClick={() => setView(AppView.HUB)}
+                  onClick={() => setView(AppView.VERIFICATION_GATEWAY)}
                   className="bg-blue-500 text-white px-12 py-4 rounded-full font-bold text-lg shadow-lg shadow-blue-200 hover:bg-blue-600 transition-all hover:scale-105"
                 >
-                  Finish & Return to Hub
+                  Finish & Return to Verification Hub
                 </button>
               </div>
             </motion.div>
@@ -3268,6 +3328,150 @@ const App: React.FC = () => {
     );
   };
 
+  const renderFatigueEndurance = () => {
+    return (
+      <div className="max-w-7xl mx-auto py-12 px-6 animate-in fade-in duration-700 min-h-screen bg-brand-black text-brand-platinum">
+        <div className="flex justify-between items-start mb-12">
+          <div>
+            <button onClick={() => setView(AppView.VERIFICATION_GATEWAY)} className="text-brand-platinum/40 hover:text-brand-green transition-colors flex items-center gap-2 font-bold uppercase text-[10px] tracking-widest mb-4">
+              <ArrowLeft className="w-3 h-3" />
+              Back to Gateway
+            </button>
+            <h1 className="text-4xl font-black tracking-tight text-brand-platinum mb-2 uppercase">
+              Fatigue <span className="text-brand-green">Endurance Test</span>
+            </h1>
+            <p className="text-brand-platinum/60 text-lg">
+              Watch how cognitive fatigue compounds over an 8-hour shift.
+            </p>
+          </div>
+          <div className="flex gap-4">
+            {!enduranceSim.isRunning && !enduranceSim.isDone && (
+              <button 
+                onClick={startEnduranceSim}
+                className="px-8 py-3 bg-brand-green text-brand-black rounded-xl font-bold text-sm hover:bg-brand-green/90 transition-all shadow-lg shadow-brand-green/20"
+              >
+                Start Endurance Test
+              </button>
+            )}
+            {(enduranceSim.isRunning || enduranceSim.isDone) && (
+              <button 
+                onClick={() => setEnduranceSim(prev => ({ ...prev, isRunning: false, isDone: false, time: 0, fatigue: 0, errors: 0, data: [] }))}
+                className="px-8 py-3 bg-white/5 border border-white/10 text-brand-platinum rounded-xl font-bold text-sm hover:bg-white/10 transition-all"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Left: Rolling Text */}
+          <div className="lg:col-span-5 bg-brand-navy/50 rounded-[32px] border border-brand-platinum/5 p-8 h-[600px] overflow-hidden relative">
+            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-brand-navy to-transparent z-10"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-brand-navy to-transparent z-10"></div>
+            
+            <motion.div 
+              animate={enduranceSim.isRunning ? { y: -2000 } : { y: 0 }}
+              transition={{ duration: 480, ease: "linear" }}
+              className="space-y-8 opacity-40"
+            >
+              {Array.from({ length: 20 }).map((_, i) => (
+                <div key={i} className="space-y-4">
+                  <div className="h-4 bg-brand-platinum/10 rounded w-3/4"></div>
+                  <div className="h-4 bg-brand-platinum/10 rounded w-full"></div>
+                  <div className="h-4 bg-brand-platinum/10 rounded w-5/6"></div>
+                  <div className="h-4 bg-brand-platinum/10 rounded w-2/3"></div>
+                </div>
+              ))}
+            </motion.div>
+
+            <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+              <div className="bg-brand-black/80 backdrop-blur-md p-6 rounded-2xl border border-brand-green/20 text-center max-w-xs">
+                <div className="text-[10px] font-bold text-brand-green uppercase tracking-widest mb-2">Simulating Verification Stream</div>
+                <div className="text-2xl font-black text-brand-platinum mb-1">
+                  {Math.floor(enduranceSim.time / 60)}h {enduranceSim.time % 60}m
+                </div>
+                <div className="text-[10px] text-brand-platinum/40 uppercase font-bold tracking-widest">Shift Progress</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Graph & Metrics */}
+          <div className="lg:col-span-7 space-y-8">
+            <div className="grid grid-cols-3 gap-6">
+              <div className="glass p-6 rounded-3xl border-brand-platinum/5">
+                <div className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest mb-2">Fatigue Level</div>
+                <div className="text-3xl font-black text-brand-green">{Math.round(enduranceSim.fatigue)}%</div>
+              </div>
+              <div className="glass p-6 rounded-3xl border-brand-platinum/5">
+                <div className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest mb-2">Missed Errors</div>
+                <div className="text-3xl font-black text-red-500">{enduranceSim.errors}</div>
+              </div>
+              <div className="glass p-6 rounded-3xl border-brand-platinum/5">
+                <div className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest mb-2">Cognitive Load</div>
+                <div className="text-3xl font-black text-blue-400">High</div>
+              </div>
+            </div>
+
+            <div className="glass p-8 rounded-[32px] border-brand-platinum/5 h-[450px]">
+              <div className="flex justify-between items-center mb-8">
+                <h3 className="text-sm font-bold uppercase tracking-widest text-brand-platinum/60">Fatigue vs. Error Rate</h3>
+                <div className="flex gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-brand-green"></div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-brand-platinum/40">Fatigue</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-brand-platinum/40">Errors</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={enduranceSim.data}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                    <XAxis 
+                      dataKey="time" 
+                      stroke="rgba(255,255,255,0.2)" 
+                      fontSize={10} 
+                      tickFormatter={(val) => `${Math.floor(val / 60)}h`}
+                    />
+                    <YAxis yAxisId="left" stroke="rgba(255,255,255,0.2)" fontSize={10} />
+                    <YAxis yAxisId="right" orientation="right" stroke="rgba(255,255,255,0.2)" fontSize={10} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#0A0A0B', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                      itemStyle={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase' }}
+                    />
+                    <Line 
+                      yAxisId="left"
+                      type="monotone" 
+                      dataKey="fatigue" 
+                      stroke="#00FF88" 
+                      strokeWidth={3} 
+                      dot={false} 
+                      animationDuration={0}
+                    />
+                    <Line 
+                      yAxisId="right"
+                      type="monotone" 
+                      dataKey="errors" 
+                      stroke="#FF4444" 
+                      strokeWidth={3} 
+                      dot={false} 
+                      animationDuration={0}
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderVerificationGateway = () => {
     return (
       <div className="max-w-7xl mx-auto py-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
@@ -3312,7 +3516,31 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          {/* Tile 2: Triage & ROI */}
+          {/* Tile 2: Fatigue Endurance Test */}
+          <div 
+            onClick={() => setView(AppView.VERIFICATION_FATIGUE_ENDURANCE)}
+            className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
+          >
+            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
+              <Activity className="w-24 h-24" />
+            </div>
+            <div className="relative z-10 flex-1">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                  <Activity className="w-7 h-7 text-brand-green" />
+                </div>
+                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight uppercase">Fatigue Endurance Test</h2>
+              </div>
+              <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
+                The original endurance simulation. Watch AI text roll up as your fatigue and error rates rise throughout the day.
+              </p>
+            </div>
+            <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
+              Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
+            </div>
+          </div>
+
+          {/* Tile 3: Triage & ROI */}
           <div 
             onClick={() => setView(AppView.VERIFICATION)}
             className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
@@ -3325,34 +3553,10 @@ const App: React.FC = () => {
                 <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
                   <ShieldCheck className="w-7 h-7 text-brand-green" />
                 </div>
-                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight uppercase">Verification Triage & ROI Simulator</h2>
+                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight uppercase">Verification Triage & ROI</h2>
               </div>
               <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
                 Master the "Fact-Check Tax." Learn to triage AI outputs based on risk and complexity to maximize your effective productivity.
-              </p>
-            </div>
-            <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
-              Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
-            </div>
-          </div>
-
-          {/* Tile 3: The Verification Instinct */}
-          <div 
-            onClick={() => setView(AppView.VERIFICATION_INSTINCT)}
-            className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
-          >
-            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-              <Shield className="w-24 h-24" />
-            </div>
-            <div className="relative z-10 flex-1">
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                  <Shield className="w-7 h-7 text-brand-green" />
-                </div>
-                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight uppercase">The Verification Instinct</h2>
-              </div>
-              <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
-                Build a reflexive, efficient verification habit that spots "slow hallucinations" before they compound into costly rework.
               </p>
             </div>
             <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
@@ -3373,6 +3577,7 @@ const App: React.FC = () => {
       case AppView.VERIFICATION: return renderVerification();
       case AppView.VERIFICATION_INSTINCT: return renderVerification();
       case AppView.VERIFICATION_FATIGUE: return renderVerificationFatigue();
+      case AppView.VERIFICATION_FATIGUE_ENDURANCE: return renderFatigueEndurance();
       case AppView.VERIFICATION_GATEWAY: return renderVerificationGateway();
       case AppView.LEARN: return renderLearn();
       case AppView.TASTE: return renderTaste();
