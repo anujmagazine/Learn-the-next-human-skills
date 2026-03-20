@@ -107,6 +107,91 @@ const App: React.FC = () => {
     currentStep: 'triage' as 'triage' | 'results'
   });
 
+  // Verification Fatigue Simulation State
+  const [fatigueSim, setFatigueSim] = useState({
+    isRunning: false,
+    energy: 100,
+    accuracy: 100,
+    tasksCompleted: 0,
+    errorsMissed: 0,
+    timeElapsed: 0,
+    isDone: false,
+    currentTask: null as any,
+    history: [] as any[]
+  });
+
+  const [selectedOutput, setSelectedOutput] = useState<any>(null);
+
+  const FATIGUE_TASKS = [
+    { id: 1, type: 'fact', content: "The capital of France is Paris.", hasError: false, difficulty: 10 },
+    { id: 2, type: 'code', content: "function add(a, b) { return a - b; }", hasError: true, difficulty: 30, error: "Subtraction instead of addition" },
+    { id: 3, type: 'fact', content: "The speed of light is 299,792,458 m/s.", hasError: false, difficulty: 15 },
+    { id: 4, type: 'logic', content: "If all A are B, and some B are C, then all A are C.", hasError: true, difficulty: 40, error: "Invalid syllogism" },
+    { id: 5, type: 'fact', content: "Water boils at 100°C at sea level.", hasError: false, difficulty: 10 },
+    { id: 6, type: 'code', content: "const x = [1, 2, 3]; console.log(x[3]);", hasError: true, difficulty: 25, error: "Index out of bounds" },
+    { id: 7, type: 'fact', content: "The Great Wall of China is visible from the moon.", hasError: true, difficulty: 20, error: "Common myth, not true" },
+    { id: 8, type: 'logic', content: "A implies B. B is true. Therefore A is true.", hasError: true, difficulty: 35, error: "Affirming the consequent" },
+    { id: 9, type: 'fact', content: "Jupiter is the largest planet in our solar system.", hasError: false, difficulty: 10 },
+    { id: 10, type: 'code', content: "for (let i = 0; i < 10; i--) { ... }", hasError: true, difficulty: 30, error: "Infinite loop" },
+  ];
+
+  const startFatigueSim = () => {
+    setFatigueSim({
+      isRunning: true,
+      energy: 100,
+      accuracy: 100,
+      tasksCompleted: 0,
+      errorsMissed: 0,
+      timeElapsed: 0,
+      isDone: false,
+      currentTask: FATIGUE_TASKS[0],
+      history: []
+    });
+  };
+
+  const handleFatigueAction = (action: 'verify' | 'skip' | 'tool' | 'break') => {
+    setFatigueSim(prev => {
+      if (!prev.currentTask) return prev;
+
+      let newEnergy = prev.energy;
+      let newErrorsMissed = prev.errorsMissed;
+      let newAccuracy = prev.accuracy;
+      let nextTaskIndex = prev.tasksCompleted + 1;
+      let isDone = nextTaskIndex >= FATIGUE_TASKS.length;
+
+      if (action === 'verify') {
+        newEnergy -= prev.currentTask.difficulty * (1 + (100 - prev.energy) / 100);
+        // Chance to miss error based on fatigue
+        const missChance = (100 - prev.energy) / 200;
+        if (prev.currentTask.hasError && Math.random() < missChance) {
+          newErrorsMissed++;
+        }
+      } else if (action === 'skip') {
+        if (prev.currentTask.hasError) {
+          newErrorsMissed++;
+        }
+      } else if (action === 'tool') {
+        newEnergy -= 5; // Tool is efficient
+      } else if (action === 'break') {
+        newEnergy = Math.min(100, newEnergy + 30);
+        return { ...prev, energy: newEnergy }; // Break doesn't advance task
+      }
+
+      newAccuracy = Math.max(0, 100 - (newErrorsMissed / (prev.tasksCompleted + 1)) * 100);
+
+      return {
+        ...prev,
+        energy: Math.max(0, newEnergy),
+        errorsMissed: newErrorsMissed,
+        accuracy: newAccuracy,
+        tasksCompleted: nextTaskIndex,
+        currentTask: isDone ? null : FATIGUE_TASKS[nextTaskIndex],
+        isDone,
+        history: [...prev.history, { task: prev.currentTask, action, energy: newEnergy }]
+      };
+    });
+  };
+
   const INSTINCT_OUTPUTS = [
     {
       id: 'o1',
@@ -744,8 +829,6 @@ const App: React.FC = () => {
   );
 
   const renderVerification = () => {
-    const [selectedOutput, setSelectedOutput] = useState<any>(null);
-
     return (
       <div className="max-w-7xl mx-auto py-12 px-6 animate-in fade-in duration-700 min-h-screen bg-[#F8F9FA] text-gray-900">
         {/* Header */}
@@ -2978,10 +3061,224 @@ const App: React.FC = () => {
     );
   };
 
+  const renderVerificationFatigue = () => {
+    if (!fatigueSim.isRunning && !fatigueSim.isDone) {
+      return (
+        <div className="max-w-4xl mx-auto py-20 px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="glass p-12 rounded-[60px] border-brand-platinum/10"
+          >
+            <div className="w-24 h-24 bg-brand-green/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-brand-green/20">
+              <Zap className="w-12 h-12 text-brand-green" />
+            </div>
+            <h1 className="text-5xl font-black text-brand-platinum mb-6 tracking-tighter uppercase">
+              The Fatigue <span className="text-brand-green">Wall</span>
+            </h1>
+            <p className="text-xl text-brand-platinum/60 mb-12 max-w-2xl mx-auto leading-relaxed">
+              In the agentic age, you don't just verify once. You verify <span className="text-brand-platinum font-bold italic underline decoration-brand-green underline-offset-4">thousands</span> of times. 
+              Master the cognitive drain of the "Verification Tax."
+            </p>
+            <button 
+              onClick={startFatigueSim}
+              className="px-12 py-6 bg-brand-green text-brand-black rounded-full font-black uppercase tracking-[0.2em] text-sm hover:scale-105 transition-all shadow-[0_0_30px_rgba(0,255,0,0.2)]"
+            >
+              Start Endurance Test
+            </button>
+          </motion.div>
+        </div>
+      );
+    }
+
+    if (fatigueSim.isDone) {
+      return (
+        <div className="max-w-4xl mx-auto py-20 px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass p-12 rounded-[60px] border-brand-platinum/10 text-center"
+          >
+            <h2 className="text-4xl font-black text-brand-platinum mb-4 uppercase tracking-tighter">Simulation Complete</h2>
+            <div className="grid grid-cols-3 gap-8 my-12">
+              <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
+                <div className="text-xs font-black text-brand-platinum/40 uppercase tracking-widest mb-2">Accuracy</div>
+                <div className={`text-4xl font-black ${fatigueSim.accuracy > 90 ? 'text-brand-green' : 'text-red-500'}`}>
+                  {Math.round(fatigueSim.accuracy)}%
+                </div>
+              </div>
+              <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
+                <div className="text-xs font-black text-brand-platinum/40 uppercase tracking-widest mb-2">Energy Left</div>
+                <div className="text-4xl font-black text-brand-platinum">
+                  {Math.round(fatigueSim.energy)}%
+                </div>
+              </div>
+              <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
+                <div className="text-xs font-black text-brand-platinum/40 uppercase tracking-widest mb-2">Missed Errors</div>
+                <div className="text-4xl font-black text-red-500">
+                  {fatigueSim.errorsMissed}
+                </div>
+              </div>
+            </div>
+
+            <div className="text-left bg-black/20 p-8 rounded-3xl border border-white/5 mb-12">
+              <h3 className="text-sm font-black text-brand-platinum uppercase tracking-widest mb-4">Post-Simulation Analysis</h3>
+              <p className="text-brand-platinum/70 leading-relaxed italic">
+                {fatigueSim.accuracy > 90 
+                  ? "Exceptional focus. You maintained high standards even as cognitive load increased. This is the hallmark of a high-performance orchestrator."
+                  : fatigueSim.energy < 20
+                  ? "You pushed through the fatigue wall, but your accuracy suffered. In real-world orchestration, this leads to 'Slow Hallucinations' that compound into catastrophic failure."
+                  : "Inconsistent verification. Your judgment wavered as the task volume increased. Focus on building sustainable verification rhythms."}
+              </p>
+            </div>
+
+            <div className="flex gap-4 justify-center">
+              <button 
+                onClick={startFatigueSim}
+                className="px-10 py-5 bg-brand-green text-brand-black rounded-full font-black uppercase tracking-widest text-xs hover:scale-105 transition-all"
+              >
+                Try Again
+              </button>
+              <button 
+                onClick={() => setView(AppView.VERIFICATION_GATEWAY)}
+                className="px-10 py-5 border border-brand-platinum/20 text-brand-platinum rounded-full font-black uppercase tracking-widest text-xs hover:bg-white/5 transition-all"
+              >
+                Return to Gateway
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="max-w-6xl mx-auto py-12 px-6">
+        <div className="flex items-center justify-between mb-12">
+          <div className="flex items-center gap-6">
+            <button 
+              onClick={() => setView(AppView.VERIFICATION_GATEWAY)}
+              className="w-12 h-12 rounded-xl border border-white/10 flex items-center justify-center text-brand-platinum/40 hover:text-brand-platinum hover:border-white/30 transition-all"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div>
+              <h1 className="text-2xl font-black text-brand-platinum uppercase tracking-tighter">Fatigue Endurance Test</h1>
+              <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.3em]">Task {fatigueSim.tasksCompleted + 1} of {FATIGUE_TASKS.length}</div>
+            </div>
+          </div>
+
+          <div className="flex gap-8">
+            <div className="text-right">
+              <div className="text-[10px] font-black text-brand-platinum/40 uppercase tracking-widest mb-2">Cognitive Energy</div>
+              <div className="w-48 h-3 bg-white/5 rounded-full overflow-hidden border border-white/10">
+                <motion.div 
+                  className={`h-full ${fatigueSim.energy > 50 ? 'bg-brand-green' : fatigueSim.energy > 20 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                  initial={{ width: '100%' }}
+                  animate={{ width: `${fatigueSim.energy}%` }}
+                />
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-[10px] font-black text-brand-platinum/40 uppercase tracking-widest mb-2">Current Accuracy</div>
+              <div className="text-xl font-black text-brand-platinum">{Math.round(fatigueSim.accuracy)}%</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={fatigueSim.currentTask?.id}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="glass p-12 rounded-[40px] border-brand-platinum/10 min-h-[400px] flex flex-col justify-center"
+              >
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="px-3 py-1 bg-brand-green/10 border border-brand-green/20 rounded text-[10px] font-black text-brand-green uppercase tracking-widest">
+                    {fatigueSim.currentTask?.type}
+                  </div>
+                  <div className="text-brand-platinum/40 text-[10px] font-black uppercase tracking-widest">
+                    Difficulty: {fatigueSim.currentTask?.difficulty}
+                  </div>
+                </div>
+                <div className="text-3xl font-medium text-brand-platinum leading-relaxed mb-12 font-mono">
+                  {fatigueSim.currentTask?.content}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={() => handleFatigueAction('verify')}
+                    className="p-6 bg-white/5 border border-white/10 rounded-3xl hover:border-brand-green/50 hover:bg-brand-green/5 transition-all group text-left"
+                  >
+                    <div className="text-xs font-black text-brand-platinum/40 uppercase tracking-widest mb-2 group-hover:text-brand-green">Manual Verify</div>
+                    <div className="text-brand-platinum font-bold">Deep Scan Content</div>
+                  </button>
+                  <button 
+                    onClick={() => handleFatigueAction('tool')}
+                    className="p-6 bg-white/5 border border-white/10 rounded-3xl hover:border-brand-green/50 hover:bg-brand-green/5 transition-all group text-left"
+                  >
+                    <div className="text-xs font-black text-brand-platinum/40 uppercase tracking-widest mb-2 group-hover:text-brand-green">Use Tool</div>
+                    <div className="text-brand-platinum font-bold">Automated Cross-Check</div>
+                  </button>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <div className="space-y-6">
+            <div className="glass p-8 rounded-[40px] border-brand-platinum/10">
+              <h3 className="text-sm font-black text-brand-platinum uppercase tracking-widest mb-6">Simulation Controls</h3>
+              <div className="space-y-4">
+                <button 
+                  onClick={() => handleFatigueAction('break')}
+                  className="w-full p-4 bg-brand-platinum/5 border border-white/10 rounded-2xl text-brand-platinum font-bold uppercase tracking-widest text-xs hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                >
+                  <Clock className="w-4 h-4" /> Take 5m Break (+30 Energy)
+                </button>
+                <button 
+                  onClick={() => handleFatigueAction('skip')}
+                  className="w-full p-4 border border-red-500/20 text-red-500 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-red-500/5 transition-all"
+                >
+                  Skip Verification (High Risk)
+                </button>
+              </div>
+            </div>
+
+            <div className="glass p-8 rounded-[40px] border-brand-platinum/10">
+              <h3 className="text-sm font-black text-brand-platinum uppercase tracking-widest mb-6">Live Log</h3>
+              <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                {fatigueSim.history.slice().reverse().map((h, i) => (
+                  <div key={i} className="text-[10px] font-medium border-l-2 border-white/10 pl-3 py-1">
+                    <span className="text-brand-platinum/40 uppercase tracking-widest mr-2">{h.action}</span>
+                    <span className={h.task.hasError && h.action === 'skip' ? 'text-red-500' : 'text-brand-platinum/60'}>
+                      {h.task.title || `Task ${h.task.id}`}
+                    </span>
+                  </div>
+                ))}
+                {fatigueSim.history.length === 0 && (
+                  <div className="text-[10px] text-brand-platinum/20 italic">Awaiting first action...</div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderVerificationGateway = () => {
     return (
       <div className="max-w-7xl mx-auto py-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
         <div className="mb-16">
+          <button 
+            onClick={() => setView(AppView.HUB)}
+            className="text-brand-platinum/40 hover:text-brand-green transition-colors flex items-center gap-2 font-bold uppercase text-[10px] tracking-widest mb-8"
+          >
+            <ArrowLeft className="w-3 h-3" />
+            Back to Hub
+          </button>
           <h1 className="text-6xl font-black tracking-tighter text-brand-platinum mb-4 uppercase">
             Verification <span className="text-brand-green">Simulations</span>
           </h1>
@@ -2991,7 +3288,31 @@ const App: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Tile 1: Triage & ROI */}
+          {/* Tile 1: The Fatigue Wall (Moved to first) */}
+          <div 
+            onClick={() => setView(AppView.VERIFICATION_FATIGUE)}
+            className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
+          >
+            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
+              <Zap className="w-24 h-24" />
+            </div>
+            <div className="relative z-10 flex-1">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                  <Zap className="w-7 h-7 text-brand-green" />
+                </div>
+                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight uppercase">The Fatigue Wall</h2>
+              </div>
+              <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
+                Test your endurance. Learn to manage cognitive load and maintain accuracy across high-volume verification streams.
+              </p>
+            </div>
+            <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
+              Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
+            </div>
+          </div>
+
+          {/* Tile 2: Triage & ROI */}
           <div 
             onClick={() => setView(AppView.VERIFICATION)}
             className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
@@ -3015,9 +3336,9 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          {/* Tile 2: The Verification Instinct */}
+          {/* Tile 3: The Verification Instinct */}
           <div 
-            onClick={() => setView(AppView.VERIFICATION)}
+            onClick={() => setView(AppView.VERIFICATION_INSTINCT)}
             className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
           >
             <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
@@ -3038,23 +3359,6 @@ const App: React.FC = () => {
               Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
             </div>
           </div>
-          
-          <div className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 opacity-40 grayscale transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
-            <div className="absolute top-0 right-0 p-6 opacity-5 text-brand-platinum">
-              <Plus className="w-24 h-24" />
-            </div>
-            <div className="relative z-10 flex-1">
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-14 h-14 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
-                  <Plus className="w-7 h-7 text-brand-platinum" />
-                </div>
-                <h2 className="text-2xl font-bold text-brand-platinum leading-tight uppercase">More Skills Coming Soon</h2>
-              </div>
-              <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
-                We are developing more simulations to help you master AI literacy.
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     );
@@ -3067,6 +3371,8 @@ const App: React.FC = () => {
       case AppView.TRAINER: return renderTrainer();
       case AppView.EVOLUTION: return renderEvolution();
       case AppView.VERIFICATION: return renderVerification();
+      case AppView.VERIFICATION_INSTINCT: return renderVerification();
+      case AppView.VERIFICATION_FATIGUE: return renderVerificationFatigue();
       case AppView.VERIFICATION_GATEWAY: return renderVerificationGateway();
       case AppView.LEARN: return renderLearn();
       case AppView.TASTE: return renderTaste();
