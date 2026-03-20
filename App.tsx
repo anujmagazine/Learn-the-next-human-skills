@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Scatter, ComposedChart } from 'recharts';
-import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle, BookOpen, Layers, Sparkles, FlaskConical, MessageSquare, Shield, Workflow, GraduationCap } from 'lucide-react';
+import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle, BookOpen, Layers, Sparkles, FlaskConical, MessageSquare, Shield, Workflow, GraduationCap, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AppView, AgentStream, DrillScenario } from './types';
 import { orchestrationService } from './services/gemini';
@@ -88,16 +88,6 @@ const App: React.FC = () => {
     activeDevice: 'laptop' as 'laptop' | 'browser' | 'phone'
   });
 
-  // Verification Fatigue Simulation State
-  const [verSim, setVerSim] = useState({
-    isRunning: false,
-    linesReviewed: 0,
-    fatigue: 0,
-    errors: 0,
-    chartData: [] as { x: number, y: number, errorY?: number | null }[],
-    isDone: false
-  });
-
   // Taste Simulation State
   const [tasteTab, setTasteTab] = useState(1);
   const [tasteContextAdded, setTasteContextAdded] = useState(false);
@@ -111,6 +101,7 @@ const App: React.FC = () => {
     score: 0,
     timeSaved: 0,
     verificationTax: 0,
+    hallucinationHits: [] as any[],
     outputs: [] as any[],
     isDone: false,
     currentStep: 'triage' as 'triage' | 'results'
@@ -121,6 +112,7 @@ const App: React.FC = () => {
       id: 'o1',
       title: "Quarterly Financial Summary",
       content: "Revenue grew 12% to $4.2M. Net margin improved to 14.1%. Operating expenses were $2.8M, a 5% decrease from Q3. The cash position remains strong at $1.5M.",
+      fullText: "The company's performance in Q4 was exceptional, driven by a strong rebound in the APAC region and a significant reduction in overhead costs. Revenue grew 12% to $4.2M, primarily due to the successful launch of the 'Enterprise Plus' tier. Net margin improved to 14.1%, up from 11.2% in the previous quarter. Operating expenses were $2.8M, a 5% decrease from Q3, as we optimized our cloud infrastructure spending. The cash position remains strong at $1.5M, providing ample runway for our planned expansion into the European market in early 2027.",
       risk: 'low',
       hasError: false,
       isSlowHallucination: false,
@@ -130,18 +122,22 @@ const App: React.FC = () => {
     {
       id: 'o2',
       title: "Market Analysis Brief",
-      content: "The APAC region shows a 25% growth potential. Competitor A has lost 5% market share. Our new product line is expected to capture 10% of the mid-market segment by year-end. Market saturation is currently at 65%.",
+      content: "The APAC region shows a 25% growth potential. Competitor A has lost 5% market share. Our new product line is expected to capture 10% of the mid-market segment by year-end.",
+      fullText: "Our latest market research indicates that the APAC region shows a 25% growth potential over the next 18 months, particularly in the emerging tech hubs of Southeast Asia. Competitor A has lost 5% market share due to recent leadership changes and a failed product pivot. Our new product line is expected to capture 10% of the mid-market segment by year-end, assuming current adoption rates continue. Market saturation is currently at 65%, leaving significant room for our expansion strategy.",
       risk: 'medium',
       hasError: true,
       isSlowHallucination: true,
+      hallucinatedSentence: "the APAC region shows a 25% growth potential over the next 18 months",
       errorDetail: "The 25% growth potential in APAC is based on a misread of the 2023 report which actually cited 2.5%. This error compounds in the 'mid-market segment' projection.",
+      errorConsequence: "Cost 15 hours of strategic planning rework because the regional expansion budget was based on a 10x inflated growth projection.",
       verificationCost: 15,
       timeSaved: 45
     },
     {
       id: 'o3',
       title: "Technical Architecture Proposal",
-      content: "The new microservices architecture will use Kafka for messaging. Database latency is expected to be <50ms. We will implement a Redis cache to handle peak loads. Security audit passed with zero critical vulnerabilities.",
+      content: "The new microservices architecture will use Kafka for messaging. Database latency is expected to be <50ms. We will implement a Redis cache to handle peak loads.",
+      fullText: "The proposed architecture for the 'Project Phoenix' migration focuses on scalability and fault tolerance. The new microservices architecture will use Kafka for messaging between services, ensuring reliable event delivery. Database latency is expected to be <50ms for 99% of requests, thanks to the new distributed indexing strategy. We will implement a Redis cache to handle peak loads and reduce the strain on the primary database. Security audit passed with zero critical vulnerabilities, and the system is ready for the first phase of deployment.",
       risk: 'high',
       hasError: false,
       isSlowHallucination: false,
@@ -151,23 +147,41 @@ const App: React.FC = () => {
     {
       id: 'o4',
       title: "Legal Contract Review",
-      content: "The liability clause is standard. Termination requires 30 days notice. Intellectual property remains with the client. The jurisdiction is set to Delaware. No unusual indemnification requirements found.",
+      content: "The liability clause is standard. Termination requires 30 days notice. Intellectual property remains with the client. The jurisdiction is set to Delaware.",
+      fullText: "The contract for the 'Global Logistics' partnership has been reviewed for standard compliance. The liability clause is standard and protects both parties from indirect damages. Termination requires 30 days written notice by either party. Intellectual property remains with the client, with a limited license granted to the provider for the duration of the project. The jurisdiction is set to Delaware, which is standard for our US-based agreements. No unusual indemnification requirements found during the initial audit.",
       risk: 'high',
       hasError: true,
       isSlowHallucination: true,
+      hallucinatedSentence: "The jurisdiction is set to Delaware",
       errorDetail: "The jurisdiction is actually set to New York in the source document, but the AI 'hallucinated' Delaware based on common patterns. This could lead to significant legal complications.",
+      errorConsequence: "Cost 10 hours of legal rework and potential filing delays because the wrong jurisdiction was cited in the summary, leading to incorrect filing preparations.",
       verificationCost: 30,
       timeSaved: 180
     },
     {
       id: 'o5',
       title: "Customer Success Report",
-      content: "Churn reduced to 2.1%. CSAT score is 4.8/5.0. Onboarding time is now 9 days. 85% of users completed the advanced training module within the first month.",
+      content: "Churn reduced to 2.1%. CSAT score is 4.8/5.0. Onboarding time is now 9 days. 85% of users completed the advanced training module.",
+      fullText: "Our customer success metrics for the quarter show a positive trend across all key performance indicators. Churn reduced to 2.1%, down from 2.8% last quarter. The CSAT score is 4.8/5.0, reflecting the impact of our new support portal. Onboarding time is now 9 days on average, a 35% improvement. 85% of users completed the advanced training module within the first month, which correlates strongly with long-term retention. We are on track to meet our annual targets.",
       risk: 'low',
       hasError: false,
       isSlowHallucination: false,
       verificationCost: 5,
       timeSaved: 20
+    },
+    {
+      id: 'o6',
+      title: "Product Roadmap Q3",
+      content: "Mobile app v2.0 launch in August. Integration with Salesforce completed. New AI-powered search feature in beta.",
+      fullText: "The Q3 roadmap focuses on expanding our ecosystem and enhancing user discovery. Mobile app v2.0 launch is scheduled for August, featuring a complete UI overhaul. Integration with Salesforce was completed ahead of schedule, allowing for seamless CRM data sync. The new AI-powered search feature is currently in beta with 500 select enterprise users, showing a 40% increase in search relevancy. We are also exploring a potential partnership with a major cloud provider for edge computing capabilities.",
+      risk: 'medium',
+      hasError: true,
+      isSlowHallucination: true,
+      hallucinatedSentence: "Integration with Salesforce was completed ahead of schedule",
+      errorDetail: "The Salesforce integration is actually delayed by 3 weeks due to API versioning issues, but the AI reported it as 'completed ahead of schedule' based on the original project plan.",
+      errorConsequence: "Cost 5 hours of client communication damage control because sales teams promised immediate CRM sync to 3 major prospects based on this summary.",
+      verificationCost: 12,
+      timeSaved: 40
     }
   ];
 
@@ -177,6 +191,7 @@ const App: React.FC = () => {
       score: 0,
       timeSaved: 0,
       verificationTax: 0,
+      hallucinationHits: [],
       outputs: INSTINCT_OUTPUTS.map(o => ({ ...o, status: 'pending' })),
       isDone: false,
       currentStep: 'triage'
@@ -197,11 +212,13 @@ const App: React.FC = () => {
     setInstinctSim(prev => {
       let totalTimeSaved = 0;
       let totalTax = 0;
+      const hits: any[] = [];
 
       prev.outputs.forEach(o => {
         if (o.status === 'trust') {
           if (o.hasError) {
             totalTimeSaved -= o.timeSaved * 2; 
+            hits.push({ title: o.title, consequence: o.errorConsequence, penalty: o.timeSaved * 2 });
           } else {
             totalTimeSaved += o.timeSaved;
           }
@@ -212,6 +229,7 @@ const App: React.FC = () => {
               totalTimeSaved += o.timeSaved;
             } else {
               totalTimeSaved -= o.timeSaved;
+              hits.push({ title: o.title, consequence: o.errorConsequence, penalty: o.timeSaved });
             }
           } else {
             totalTimeSaved += o.timeSaved;
@@ -228,81 +246,12 @@ const App: React.FC = () => {
         ...prev,
         timeSaved: totalTimeSaved,
         verificationTax: totalTax,
+        hallucinationHits: hits,
         score: effectiveProductivity,
         isDone: true,
         isRunning: false,
         currentStep: 'results'
       };
-    });
-  };
-
-  const VERIFICATION_SNIPPETS = [
-    "Net margin improved from 8.2% to 14.1% despite significant cost pressures in the supply chain and logistics sectors.",
-    "Active users grew from 18,200 to 19,850 representing a 15% growth rate that exceeds the industry average for this quarter.",
-    "Customer churn reduced to 2.1% following comprehensive onboarding improvements and a new customer success initiative.",
-    "Revenue increased 12% quarter over quarter, driven by enterprise renewals and a strong performance in the APAC region.",
-    "Compliance certificate acknowledged by the primary regulator last week, ensuring continued operations in all major territories.",
-    "Board review confirmed strategy is 'risk-neutral' despite a 40% projected loss in the high-volatility emerging markets segment.", // Intelligence Error
-    "Forecast assumes stable fuel prices amid a volatility spike that has seen prices fluctuate by more than 25% in three days.",
-    "Report concludes market is 'saturated' but recommends doubling ad spend to capture a larger share of the existing audience.", // Intelligence Error
-    "User engagement metrics show a 400% increase in daily active sessions following the deployment of the new mobile interface.",
-    "Database latency reduced by 50ms after index optimization and the implementation of a more efficient caching layer.",
-    "Security audit passed with zero critical vulnerabilities found, though some minor patches were recommended for the legacy systems.",
-    "Marketing spend optimized for a 4.2x return on ad spend, significantly outperforming the previous campaign's 2.8x benchmark.",
-    "New hire onboarding time reduced from 14 days to 9 days, allowing teams to scale more rapidly during the peak season.",
-    "Inventory turnover ratio improved to 6.5x annually, reflecting better demand forecasting and streamlined warehouse operations.",
-    "Customer satisfaction score reached an all-time high of 4.8/5.0, based on a survey of over 10,000 verified users."
-  ];
-
-  useEffect(() => {
-    let interval: any;
-    if (verSim.isRunning && verSim.linesReviewed < 5000) {
-      interval = setInterval(() => {
-        setVerSim(prev => {
-          const newLines = Math.min(5000, prev.linesReviewed + 25);
-          // Non-linear fatigue growth
-          const newFatigue = Math.pow(newLines / 5000, 2) * 100;
-          
-          // Errors start slipping through as fatigue increases
-          let newErrors = prev.errors;
-          const isError = newFatigue > 20 && Math.random() < (newFatigue / 250);
-          if (isError) {
-            newErrors += 1;
-          }
-
-          const newChartData = [...prev.chartData];
-          if (newLines % 125 === 0 || isError) {
-            newChartData.push({ 
-              x: newLines, 
-              y: Math.round(newFatigue),
-              errorY: isError ? Math.round(newFatigue) : null
-            });
-          }
-
-          const isDone = newLines >= 5000;
-          return {
-            ...prev,
-            linesReviewed: newLines,
-            fatigue: newFatigue,
-            errors: newErrors,
-            chartData: newChartData,
-            isDone,
-            isRunning: !isDone
-          };
-        });
-      }, 50);
-    }
-    return () => clearInterval(interval);
-  }, [verSim.isRunning, verSim.linesReviewed]);
-
-  const startVerificationSim = () => {
-    setVerSim({
-      isRunning: true,
-      linesReviewed: 0,
-      fatigue: 0,
-      errors: 0,
-      chartData: [{ x: 0, y: 0, errorY: null }],
-      isDone: false
     });
   };
 
@@ -640,14 +589,14 @@ const App: React.FC = () => {
           className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
         >
           <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-            <Eye className="w-24 h-24" />
+            <ShieldCheck className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
             <div className="flex items-center gap-4 mb-5">
               <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                <Eye className="w-7 h-7 text-brand-green" />
+                <ShieldCheck className="w-7 h-7 text-brand-green" />
               </div>
-              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Verification Fatigue</h2>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight uppercase">Verification</h2>
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               Master high-speed auditing. Train your ability to spot hallucinations and logic errors without succumbing to cognitive exhaustion.
@@ -795,179 +744,317 @@ const App: React.FC = () => {
   );
 
   const renderVerification = () => {
+    const [selectedOutput, setSelectedOutput] = useState<any>(null);
+
     return (
-      <div className="max-w-7xl mx-auto py-12 px-6 animate-in fade-in duration-700 min-h-screen bg-white text-gray-900">
+      <div className="max-w-7xl mx-auto py-12 px-6 animate-in fade-in duration-700 min-h-screen bg-[#F8F9FA] text-gray-900">
         {/* Header */}
-        <div className="flex justify-between items-start mb-12 border-b border-gray-100 pb-8">
+        <div className="flex justify-between items-start mb-12 border-b border-gray-200 pb-8">
           <div>
             <button onClick={() => setView(AppView.HUB)} className="text-gray-400 hover:text-gray-900 transition-colors flex items-center gap-2 font-bold uppercase text-[10px] tracking-widest mb-4">
-              <ArrowRight className="w-3 h-3 rotate-180" />
+              <ArrowLeft className="w-3 h-3" />
               Back to Hub
             </button>
-            <h1 className="text-4xl font-light tracking-tight text-gray-900 mb-2">
-              Verification Fatigue: <span className="font-bold">The Drift of Human Judgment</span>
+            <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-2 uppercase">
+              Verification <span className="text-blue-600">Triage & ROI</span>
             </h1>
             <p className="text-gray-500 text-lg">
-              As volume rises across the day, cognitive sharpness declines.
+              Master the "Fact-Check Tax" and build the instinct to spot slow hallucinations.
             </p>
           </div>
-          <button 
-            onClick={startVerificationSim}
-            className="px-8 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-gray-800 transition-all shadow-lg"
-          >
-            {verSim.isRunning || verSim.isDone ? 'Reset' : 'Run workday'}
-          </button>
+          <div className="flex gap-4">
+            {!instinctSim.isRunning && !instinctSim.isDone && (
+              <button 
+                onClick={startInstinctSim}
+                className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+              >
+                Start Triage Drill
+              </button>
+            )}
+            {(instinctSim.isRunning || instinctSim.isDone) && (
+              <button 
+                onClick={() => {
+                  setInstinctSim(prev => ({ ...prev, isRunning: false, isDone: false }));
+                  setSelectedOutput(null);
+                }}
+                className="px-8 py-3 bg-white border border-gray-200 text-gray-900 rounded-xl font-bold text-sm hover:bg-gray-50 transition-all"
+              >
+                Reset Simulation
+              </button>
+            )}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Left Column: Simulation */}
-          <div className="lg:col-span-7 space-y-8">
-            <div>
-              <h2 className="text-xl font-bold mb-1">A professional reviewing AI generated lines throughout the day</h2>
-              <p className="text-gray-400 text-sm mb-8">The stream below represents continuous AI generated text being reviewed.</p>
-              
-              <div className="grid grid-cols-2 gap-8 mb-4">
-                <div>
-                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Lines reviewed</div>
-                  <div className="text-3xl font-bold tabular-nums">{verSim.linesReviewed}</div>
+        {!instinctSim.isRunning && !instinctSim.isDone ? (
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="w-24 h-24 bg-blue-50 rounded-[32px] flex items-center justify-center mb-8 border border-blue-100">
+              <ShieldCheck className="w-12 h-12 text-blue-600" />
+            </div>
+            <h2 className="text-4xl font-black mb-4 tracking-tight">Ready to build the instinct?</h2>
+            <p className="text-gray-500 max-w-md mb-12 text-lg leading-relaxed">
+              You will be presented with a series of AI outputs. Your goal is to triage them efficiently to maximize your <strong>Effective Productivity</strong>.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-12">
+              <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mb-4 text-blue-600">
+                  <Zap className="w-5 h-5" />
                 </div>
-                <div>
-                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Fatigue level</div>
-                  <div className="text-3xl font-bold tabular-nums">{Math.round(verSim.fatigue)}%</div>
+                <h3 className="font-bold mb-2">The Fact-Check Tax</h3>
+                <p className="text-xs text-gray-500">Verification costs time. If you verify everything, you lose the speed AI gave you.</p>
+              </div>
+              <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center mb-4 text-red-600">
+                  <ShieldAlert className="w-5 h-5" />
                 </div>
+                <h3 className="font-bold mb-2">Slow Hallucinations</h3>
+                <p className="text-xs text-gray-500">Errors that are internally consistent and confident. Hard to spot without deep verification.</p>
               </div>
-              
-              {/* Fatigue Progress Bar */}
-              <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden mb-8">
-                <motion.div 
-                  className="h-full bg-gray-900"
-                  animate={{ width: `${verSim.fatigue}%` }}
-                  transition={{ type: 'spring', bounce: 0, duration: 0.5 }}
-                />
+              <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mb-4 text-green-600">
+                  <Target className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold mb-2">Triage Logic</h3>
+                <p className="text-xs text-gray-500">Decide: Trust, Spot-Check, or Deep Verify based on risk and complexity.</p>
               </div>
-
-              {/* Scrolling List */}
-              <div className="relative h-[800px] border border-gray-100 rounded-2xl overflow-hidden bg-gray-50/30">
-                <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white to-transparent z-10" />
-                <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent z-10" />
-                
-                <div className="p-8 space-y-4">
-                  <motion.div
-                    animate={verSim.isRunning ? { y: [0, -5000] } : { y: 0 }}
-                    transition={verSim.isRunning ? { duration: 60, repeat: Infinity, ease: "linear" } : {}}
-                    className="space-y-4"
+            </div>
+            <button 
+              onClick={startInstinctSim}
+              className="px-12 py-4 bg-gray-900 text-white rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-2xl"
+            >
+              Start Simulation
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            {/* Left Column: Triage Inbox */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold flex items-center gap-3">
+                  Triage Inbox
+                  <span className="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-xs font-bold">
+                    {instinctSim.outputs.filter(o => o.status === 'pending').length} Pending
+                  </span>
+                </h2>
+                {instinctSim.isRunning && (
+                  <button 
+                    onClick={completeInstinctSim}
+                    disabled={instinctSim.outputs.some(o => o.status === 'pending')}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg font-bold text-sm disabled:opacity-50 hover:bg-blue-700 transition-all"
                   >
-                    {[...Array(100)].map((_, i) => {
-                      const snippet = VERIFICATION_SNIPPETS[i % VERIFICATION_SNIPPETS.length];
-                      // Calculate individual blur based on fatigue
-                      const blurAmount = Math.max(0, (verSim.fatigue - 20) / 15);
-                      return (
-                        <div 
-                          key={i} 
-                          className="p-4 bg-white border border-gray-100 rounded-xl shadow-sm text-sm font-medium transition-all duration-500"
-                          style={{ filter: `blur(${blurAmount}px)`, opacity: 1 - (blurAmount / 10) }}
-                        >
-                          {snippet}
+                    Calculate ROI
+                  </button>
+                )}
+              </div>
+
+              <div className="space-y-4">
+                {instinctSim.outputs.map(output => (
+                  <div 
+                    key={output.id} 
+                    onClick={() => setSelectedOutput(output)}
+                    className={`p-6 rounded-2xl border transition-all cursor-pointer ${
+                      selectedOutput?.id === output.id 
+                        ? 'bg-white border-blue-500 shadow-lg ring-1 ring-blue-500' 
+                        : 'bg-white border-gray-100 shadow-sm hover:border-blue-200'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                            output.risk === 'low' ? 'bg-green-100 text-green-700' :
+                            output.risk === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-red-100 text-red-700'
+                          }`}>
+                            {output.risk} risk
+                          </span>
+                          <h3 className="font-bold text-lg">{output.title}</h3>
                         </div>
-                      );
-                    })}
-                  </motion.div>
+                        <p className="text-gray-500 text-sm line-clamp-2">{output.content}</p>
+                      </div>
+                      <div className="flex flex-col items-end gap-2">
+                        {output.status === 'pending' ? (
+                          <div className="flex gap-2">
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); handleTriage(output.id, 'trust'); }}
+                              className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-gray-200"
+                            >
+                              Trust
+                            </button>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); handleTriage(output.id, 'spot'); }}
+                              className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-gray-200"
+                            >
+                              Spot
+                            </button>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); handleTriage(output.id, 'deep'); }}
+                              className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-gray-200"
+                            >
+                              Deep
+                            </button>
+                          </div>
+                        ) : (
+                          <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
+                            output.status === 'trust' ? 'bg-gray-900 text-white border-gray-900' :
+                            output.status === 'spot' ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                            'bg-indigo-50 text-indigo-600 border-indigo-200'
+                          }`}>
+                            {output.status} verified
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> Save: {output.timeSaved}m</span>
+                      <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> Tax: {output.verificationCost}m</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Column: Details & ROI */}
+            <div className="lg:col-span-5 space-y-8">
+              {/* ROI Dashboard (Visible when done) */}
+              {instinctSim.isDone && (
+                <div className="p-8 bg-gray-900 text-white rounded-[32px] shadow-2xl space-y-8">
+                  <div>
+                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Effective Productivity</div>
+                    <div className="text-6xl font-black mb-2">{Math.round(instinctSim.score)}m</div>
+                    <p className="text-sm text-gray-400">Total time saved minus the verification tax and hallucination penalties.</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-6 pt-8 border-t border-white/10">
+                    <div>
+                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Gross Saved</div>
+                      <div className="text-2xl font-bold text-green-400">+{instinctSim.timeSaved}m</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Fact-Check Tax</div>
+                      <div className="text-2xl font-bold text-red-400">-{Math.round(instinctSim.verificationTax)}m</div>
+                    </div>
+                  </div>
+
+                  {instinctSim.hallucinationHits.length > 0 && (
+                    <div className="pt-8 border-t border-white/10 space-y-4">
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-red-400 flex items-center gap-2">
+                        <ShieldAlert className="w-4 h-4" />
+                        The Hallucination Hit
+                      </h4>
+                      <div className="space-y-3">
+                        {instinctSim.hallucinationHits.map((hit, i) => (
+                          <div key={i} className="p-4 bg-red-500/10 rounded-xl border border-red-500/20">
+                            <div className="flex justify-between items-start mb-1">
+                              <div className="font-bold text-sm text-red-200">{hit.title}</div>
+                              <div className="text-xs font-black text-red-400">-{hit.penalty}m</div>
+                            </div>
+                            <p className="text-[10px] text-red-300/70 leading-relaxed">{hit.consequence}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <h4 className="text-xs font-bold uppercase tracking-widest mb-2 text-blue-400">The ROI Lesson</h4>
+                    <p className="text-xs text-gray-400 leading-relaxed">
+                      Exhaustive verification is a productivity killer. The instinct is knowing when to trust, when to spot-check, and when to deep-dive based on the cost of being wrong.
+                    </p>
+                  </div>
                 </div>
+              )}
+
+              {/* Output Inspector */}
+              <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden flex flex-col h-[600px]">
+                {selectedOutput ? (
+                  <>
+                    <div className="p-8 border-b border-gray-50">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                          selectedOutput.risk === 'low' ? 'bg-green-100 text-green-700' :
+                          selectedOutput.risk === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-red-100 text-red-700'
+                        }`}>
+                          {selectedOutput.risk} risk
+                        </span>
+                        <h3 className="font-bold text-xl">{selectedOutput.title}</h3>
+                      </div>
+                      <div className="flex items-center gap-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                        <span>ID: {selectedOutput.id}</span>
+                        <span>Type: AI Generated Summary</span>
+                      </div>
+                    </div>
+                    <div className="flex-1 p-8 overflow-y-auto bg-gray-50/50">
+                      <div className="prose prose-sm max-w-none">
+                        <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Full AI Output</h4>
+                        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                          {selectedOutput.fullText}
+                        </p>
+                      </div>
+
+                      {instinctSim.isDone && selectedOutput.hasError && (
+                        <div className="mt-8 p-6 bg-red-50 border border-red-100 rounded-2xl space-y-4">
+                          <div className="flex items-center gap-2 text-red-600">
+                            <ShieldAlert className="w-5 h-5" />
+                            <span className="font-bold uppercase tracking-widest text-xs">Hallucination Detected</span>
+                          </div>
+                          <div>
+                            <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">The Error</div>
+                            <p className="text-sm text-red-900 font-medium italic">"{selectedOutput.hallucinatedSentence}"</p>
+                          </div>
+                          <div>
+                            <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">The Consequence</div>
+                            <p className="text-sm text-red-800">{selectedOutput.errorConsequence}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {instinctSim.isDone && !selectedOutput.hasError && (
+                        <div className="mt-8 p-6 bg-green-50 border border-green-100 rounded-2xl flex items-center gap-3 text-green-700">
+                          <CheckCircle2 className="w-5 h-5" />
+                          <span className="font-bold uppercase tracking-widest text-xs">Verified Reliable</span>
+                        </div>
+                      )}
+                    </div>
+                    {!instinctSim.isDone && (
+                      <div className="p-6 bg-white border-t border-gray-50 flex gap-3">
+                        <button 
+                          onClick={() => handleTriage(selectedOutput.id, 'trust')}
+                          className={`flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${
+                            selectedOutput.status === 'trust' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                          }`}
+                        >
+                          Trust
+                        </button>
+                        <button 
+                          onClick={() => handleTriage(selectedOutput.id, 'spot')}
+                          className={`flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${
+                            selectedOutput.status === 'spot' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                          }`}
+                        >
+                          Spot
+                        </button>
+                        <button 
+                          onClick={() => handleTriage(selectedOutput.id, 'deep')}
+                          className={`flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${
+                            selectedOutput.status === 'deep' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                          }`}
+                        >
+                          Deep
+                        </button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="flex-1 flex flex-col items-center justify-center text-center p-12 text-gray-400">
+                    <Eye className="w-12 h-12 mb-4 opacity-20" />
+                    <p className="text-sm font-medium">Select an output from the inbox to inspect the full text and perform triage.</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-
-          {/* Right Column: Metrics */}
-          <div className="lg:col-span-5 space-y-12">
-            {/* Errors slipping through */}
-            <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm">
-              <div className="text-sm font-medium text-gray-500 mb-4">Errors slipping through</div>
-              <div className="text-7xl font-bold text-red-500 tabular-nums mb-2">{verSim.errors}</div>
-              <p className="text-gray-400 text-xs mb-6">Missed issues increase as fatigue rises</p>
-              
-              <div className="pt-6 border-t border-gray-50">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Simulated Hallucinations</div>
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 shrink-0" />
-                    <div className="text-[11px] text-gray-500 leading-relaxed">
-                      <span className="font-bold text-gray-700">Reasoning Flaws:</span> AI claiming a strategy is "risk-neutral" while citing data that indicates extreme volatility.
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 shrink-0" />
-                    <div className="text-[11px] text-gray-500 leading-relaxed">
-                      <span className="font-bold text-gray-700">Statistical Drift:</span> Subtle mismatches between percentage growth and raw numbers.
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 shrink-0" />
-                    <div className="text-[11px] text-gray-500 leading-relaxed">
-                      <span className="font-bold text-gray-700">Cognitive Blindness:</span> As fatigue peaks, the brain begins to "auto-complete" text, missing obvious flaws.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Chart */}
-            <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm">
-              <div className="text-sm font-bold mb-1">Fatigue measured against volume</div>
-              <div className="text-[10px] text-gray-400 uppercase tracking-widest mb-8">X axis: AI lines reviewed - Y axis: fatigue percentage</div>
-              
-              <div className="h-[300px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart data={verSim.chartData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                    <XAxis 
-                      dataKey="x" 
-                      type="number"
-                      domain={[0, 5000]}
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 10, fill: '#9ca3af' }}
-                      hide
-                    />
-                    <YAxis 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 10, fill: '#9ca3af' }}
-                      domain={[0, 100]}
-                    />
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="y" 
-                      stroke="#111827" 
-                      strokeWidth={3} 
-                      dot={false} 
-                      animationDuration={0}
-                      isAnimationActive={false}
-                    />
-                    <Scatter 
-                      name="Errors"
-                      dataKey="errorY" 
-                      fill="#ef4444" 
-                      isAnimationActive={false}
-                    />
-                  </ComposedChart>
-                </ResponsiveContainer>
-              </div>
-              
-              <div className="flex justify-between mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                <span>0</span>
-                <span>1000</span>
-                <span>2000</span>
-                <span>3000</span>
-                <span>4000</span>
-                <span>5000</span>
-              </div>
-              <div className="text-center mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Lines Reviewed</div>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     );
   };
@@ -2895,32 +2982,32 @@ const App: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto py-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
         <div className="mb-16">
-          <h1 className="text-6xl font-black tracking-tighter text-brand-platinum mb-4">
-            Learn and Grow <span className="text-brand-green">the skill</span>
+          <h1 className="text-6xl font-black tracking-tighter text-brand-platinum mb-4 uppercase">
+            Verification <span className="text-brand-green">Simulations</span>
           </h1>
           <p className="text-xl text-brand-platinum/60 max-w-2xl">
-            Verification fatigue is the drift of human judgment as cognitive volume increases. 
-            Master the ability to maintain sharpness in high-speed environments.
+            Master the skills required to maintain accuracy without sacrificing the speed of AI.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Tile 1: Triage & ROI */}
           <div 
             onClick={() => setView(AppView.VERIFICATION)}
             className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
           >
             <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-              <Eye className="w-24 h-24" />
+              <ShieldCheck className="w-24 h-24" />
             </div>
             <div className="relative z-10 flex-1">
               <div className="flex items-center gap-4 mb-5">
                 <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                  <Eye className="w-7 h-7 text-brand-green" />
+                  <ShieldCheck className="w-7 h-7 text-brand-green" />
                 </div>
-                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Launch Verification Fatigue Simulation</h2>
+                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight uppercase">Verification Triage & ROI Simulator</h2>
               </div>
               <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
-                Test your cognitive endurance. Review AI outputs across a simulated workday and see how fatigue impacts your judgment.
+                Master the "Fact-Check Tax." Learn to triage AI outputs based on risk and complexity to maximize your effective productivity.
               </p>
             </div>
             <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
@@ -2928,8 +3015,9 @@ const App: React.FC = () => {
             </div>
           </div>
 
+          {/* Tile 2: The Verification Instinct */}
           <div 
-            onClick={() => setView(AppView.VERIFICATION_INSTINCT)}
+            onClick={() => setView(AppView.VERIFICATION)}
             className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
           >
             <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
@@ -2940,10 +3028,10 @@ const App: React.FC = () => {
                 <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
                   <Shield className="w-7 h-7 text-brand-green" />
                 </div>
-                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">The Verification Instinct</h2>
+                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight uppercase">The Verification Instinct</h2>
               </div>
               <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
-                Build a reflexive, efficient verification habit that doesn't eat the productivity AI gave you.
+                Build a reflexive, efficient verification habit that spots "slow hallucinations" before they compound into costly rework.
               </p>
             </div>
             <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
@@ -2953,230 +3041,21 @@ const App: React.FC = () => {
           
           <div className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 opacity-40 grayscale transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
             <div className="absolute top-0 right-0 p-6 opacity-5 text-brand-platinum">
-              <ShieldCheck className="w-24 h-24" />
+              <Plus className="w-24 h-24" />
             </div>
             <div className="relative z-10 flex-1">
               <div className="flex items-center gap-4 mb-5">
                 <div className="w-14 h-14 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
-                  <ShieldCheck className="w-7 h-7 text-brand-platinum" />
+                  <Plus className="w-7 h-7 text-brand-platinum" />
                 </div>
-                <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Advanced Auditing</h2>
+                <h2 className="text-2xl font-bold text-brand-platinum leading-tight uppercase">More Skills Coming Soon</h2>
               </div>
               <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
-                Coming soon: Complex logic verification and multi-agent consistency checks.
+                We are developing more simulations to help you master AI literacy.
               </p>
             </div>
           </div>
         </div>
-      </div>
-    );
-  };
-
-  const renderVerificationInstinct = () => {
-    return (
-      <div className="max-w-7xl mx-auto py-12 px-6 animate-in fade-in duration-700 min-h-screen bg-white text-gray-900">
-        {/* Header */}
-        <div className="flex justify-between items-start mb-12 border-b border-gray-100 pb-8">
-          <div>
-            <button onClick={() => setView(AppView.VERIFICATION_GATEWAY)} className="text-gray-400 hover:text-gray-900 transition-colors flex items-center gap-2 font-bold uppercase text-[10px] tracking-widest mb-4">
-              <ArrowRight className="w-3 h-3 rotate-180" />
-              Back to Gateway
-            </button>
-            <h1 className="text-4xl font-light tracking-tight text-gray-900 mb-2">
-              The Verification Instinct: <span className="font-bold">Triage & Efficiency</span>
-            </h1>
-            <p className="text-gray-500 text-lg">
-              Build a reflexive habit that preserves productivity.
-            </p>
-          </div>
-          {!instinctSim.isRunning && !instinctSim.isDone && (
-            <button 
-              onClick={startInstinctSim}
-              className="px-8 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-gray-800 transition-all shadow-lg"
-            >
-              Start Triage Drill
-            </button>
-          )}
-          {(instinctSim.isRunning || instinctSim.isDone) && (
-            <button 
-              onClick={() => setInstinctSim(prev => ({ ...prev, isRunning: false, isDone: false }))}
-              className="px-8 py-3 bg-gray-100 text-gray-900 rounded-xl font-bold text-sm hover:bg-gray-200 transition-all"
-            >
-              Reset
-            </button>
-          )}
-        </div>
-
-        {instinctSim.isRunning && instinctSim.currentStep === 'triage' && (
-          <div className="space-y-12">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="p-6 bg-brand-navy/5 rounded-2xl border border-brand-navy/10">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Concept</div>
-                <h3 className="text-lg font-bold mb-2">The Fact-Check Tax</h3>
-                <p className="text-sm text-gray-600">Verification costs can exceed time saved. Your goal is to maximize effective productivity.</p>
-              </div>
-              <div className="p-6 bg-brand-navy/5 rounded-2xl border border-brand-navy/10">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Threat</div>
-                <h3 className="text-lg font-bold mb-2">Slow Hallucinations</h3>
-                <p className="text-sm text-gray-600">Internally consistent, confident, and wrong in compounding ways. Harder to catch than obvious errors.</p>
-              </div>
-              <div className="p-6 bg-brand-navy/5 rounded-2xl border border-brand-navy/10">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Strategy</div>
-                <h3 className="text-lg font-bold mb-2">Triage Logic</h3>
-                <p className="text-sm text-gray-600">Decide which outputs to verify deeply, spot-check, or trust based on risk and complexity.</p>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Incoming AI Outputs</h2>
-                <button 
-                  onClick={completeInstinctSim}
-                  disabled={instinctSim.outputs.some(o => o.status === 'pending')}
-                  className="px-6 py-2 bg-brand-green text-brand-black rounded-lg font-bold text-sm disabled:opacity-50"
-                >
-                  Calculate Effective Productivity
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4">
-                {instinctSim.outputs.map(output => (
-                  <div key={output.id} className="p-6 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                            output.risk === 'low' ? 'bg-green-100 text-green-700' :
-                            output.risk === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-red-100 text-red-700'
-                          }`}>
-                            {output.risk} risk
-                          </span>
-                          <h3 className="font-bold text-lg">{output.title}</h3>
-                        </div>
-                        <p className="text-gray-600 text-sm">{output.content}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <button 
-                          onClick={() => handleTriage(output.id, 'trust')}
-                          className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-                            output.status === 'trust' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                          }`}
-                        >
-                          Trust
-                        </button>
-                        <button 
-                          onClick={() => handleTriage(output.id, 'spot')}
-                          className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-                            output.status === 'spot' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                          }`}
-                        >
-                          Spot-Check
-                        </button>
-                        <button 
-                          onClick={() => handleTriage(output.id, 'deep')}
-                          className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-                            output.status === 'deep' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                          }`}
-                        >
-                          Deep Verify
-                        </button>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                      <span>Est. Time Saved: {output.timeSaved}m</span>
-                      <span>Full Verification Cost: {output.verificationCost}m</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {instinctSim.isDone && (
-          <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="p-8 bg-gray-900 text-white rounded-[32px] shadow-2xl">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Effective Productivity</div>
-                <div className="text-5xl font-black mb-2">{instinctSim.score}m</div>
-                <p className="text-sm text-gray-400">Total time saved minus the verification tax.</p>
-              </div>
-              <div className="p-8 bg-white border border-gray-100 rounded-[32px] shadow-xl">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Gross Time Saved</div>
-                <div className="text-5xl font-black text-brand-green mb-2">+{instinctSim.timeSaved}m</div>
-                <p className="text-sm text-gray-500">Value generated by AI before verification costs.</p>
-              </div>
-              <div className="p-8 bg-white border border-gray-100 rounded-[32px] shadow-xl">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Fact-Check Tax</div>
-                <div className="text-5xl font-black text-red-500 mb-2">-{instinctSim.verificationTax}m</div>
-                <p className="text-sm text-gray-500">Time spent on verification routines.</p>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold">Post-Drill Analysis</h2>
-              <div className="grid grid-cols-1 gap-4">
-                {instinctSim.outputs.map(output => (
-                  <div key={output.id} className="p-6 bg-white border border-gray-100 rounded-2xl">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="font-bold text-lg mb-1">{output.title}</h3>
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                            output.hasError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
-                          }`}>
-                            {output.hasError ? 'Contained Error' : 'Reliable'}
-                          </span>
-                          <span className="text-xs text-gray-400 font-bold uppercase">Action: {output.status}</span>
-                        </div>
-                      </div>
-                      {output.hasError && (
-                        <div className="text-right max-w-md">
-                          <div className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1">Hallucination Detail</div>
-                          <p className="text-sm text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">{output.errorDetail}</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="p-12 bg-brand-navy/5 rounded-[40px] border border-brand-navy/10 text-center">
-              <h3 className="text-2xl font-bold mb-4">The Lesson</h3>
-              <p className="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">
-                Exhaustive verification is a productivity killer. The instinct is knowing when to trust, 
-                when to spot-check, and when to deep-dive. You just practiced triaging "slow hallucinations"—errors 
-                that look perfectly fine until you dig into the underlying logic.
-              </p>
-              <button 
-                onClick={startInstinctSim}
-                className="mt-8 px-10 py-4 bg-gray-900 text-white rounded-full font-bold hover:scale-105 transition-transform"
-              >
-                Try Again to Improve Efficiency
-              </button>
-            </div>
-          </div>
-        )}
-
-        {!instinctSim.isRunning && !instinctSim.isDone && (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-24 h-24 bg-brand-navy/5 rounded-3xl flex items-center justify-center mb-8">
-              <Shield className="w-12 h-12 text-brand-navy" />
-            </div>
-            <h2 className="text-3xl font-bold mb-4">Ready to build the instinct?</h2>
-            <p className="text-gray-500 max-w-md mb-12">
-              You will be presented with a series of AI outputs. Triage them to maximize your effective productivity.
-            </p>
-            <button 
-              onClick={startInstinctSim}
-              className="px-12 py-4 bg-gray-900 text-white rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-2xl"
-            >
-              Start Simulation
-            </button>
-          </div>
-        )}
       </div>
     );
   };
@@ -3189,7 +3068,6 @@ const App: React.FC = () => {
       case AppView.EVOLUTION: return renderEvolution();
       case AppView.VERIFICATION: return renderVerification();
       case AppView.VERIFICATION_GATEWAY: return renderVerificationGateway();
-      case AppView.VERIFICATION_INSTINCT: return renderVerificationInstinct();
       case AppView.LEARN: return renderLearn();
       case AppView.TASTE: return renderTaste();
       case AppView.DEFINE_THE_WHAT: return renderDefineTheWhat();
