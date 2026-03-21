@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Scatter, ComposedChart } from 'recharts';
-import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle, BookOpen, Layers, Sparkles, FlaskConical, MessageSquare, Shield, Workflow, GraduationCap, Plus, Activity } from 'lucide-react';
+import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle, BookOpen, Layers, Sparkles, FlaskConical, MessageSquare, Shield, Workflow, GraduationCap } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AppView, AgentStream, DrillScenario } from './types';
 import { orchestrationService } from './services/gemini';
@@ -88,6 +88,16 @@ const App: React.FC = () => {
     activeDevice: 'laptop' as 'laptop' | 'browser' | 'phone'
   });
 
+  // Verification Fatigue Simulation State
+  const [verSim, setVerSim] = useState({
+    isRunning: false,
+    linesReviewed: 0,
+    fatigue: 0,
+    errors: 0,
+    chartData: [] as { x: number, y: number, errorY?: number | null }[],
+    isDone: false
+  });
+
   // Taste Simulation State
   const [tasteTab, setTasteTab] = useState(1);
   const [tasteContextAdded, setTasteContextAdded] = useState(false);
@@ -95,270 +105,73 @@ const App: React.FC = () => {
   const [defineSimStep, setDefineSimStep] = useState(0);
   const [isDefineSimRunning, setIsDefineSimRunning] = useState(false);
 
-  // Verification Instinct Simulation State
-  const [instinctSim, setInstinctSim] = useState({
-    isRunning: false,
-    score: 0,
-    timeSaved: 0,
-    verificationTax: 0,
-    hallucinationHits: [] as any[],
-    outputs: [] as any[],
-    isDone: false,
-    currentStep: 'triage' as 'triage' | 'results'
-  });
-
-  // Verification Fatigue Simulation State
-  const [fatigueSim, setFatigueSim] = useState({
-    isRunning: false,
-    energy: 100,
-    accuracy: 100,
-    tasksCompleted: 0,
-    errorsMissed: 0,
-    timeElapsed: 0,
-    isDone: false,
-    currentTask: null as any,
-    history: [] as any[]
-  });
-
-  const [selectedOutput, setSelectedOutput] = useState<any>(null);
-
-  const [enduranceSim, setEnduranceSim] = useState({
-    isRunning: false,
-    isDone: false,
-    time: 0,
-    fatigue: 0,
-    errors: 0,
-    data: [] as { time: number, fatigue: number, errors: number }[],
-    textOffset: 0
-  });
-
-  const FATIGUE_TASKS = [
-    { id: 1, type: 'fact', content: "The capital of France is Paris.", hasError: false, difficulty: 10 },
-    { id: 2, type: 'code', content: "function add(a, b) { return a - b; }", hasError: true, difficulty: 30, error: "Subtraction instead of addition" },
-    { id: 3, type: 'fact', content: "The speed of light is 299,792,458 m/s.", hasError: false, difficulty: 15 },
-    { id: 4, type: 'logic', content: "If all A are B, and some B are C, then all A are C.", hasError: true, difficulty: 40, error: "Invalid syllogism" },
-    { id: 5, type: 'fact', content: "Water boils at 100°C at sea level.", hasError: false, difficulty: 10 },
-    { id: 6, type: 'code', content: "const x = [1, 2, 3]; console.log(x[3]);", hasError: true, difficulty: 25, error: "Index out of bounds" },
-    { id: 7, type: 'fact', content: "The Great Wall of China is visible from the moon.", hasError: true, difficulty: 20, error: "Common myth, not true" },
-    { id: 8, type: 'logic', content: "A implies B. B is true. Therefore A is true.", hasError: true, difficulty: 35, error: "Affirming the consequent" },
-    { id: 9, type: 'fact', content: "Jupiter is the largest planet in our solar system.", hasError: false, difficulty: 10 },
-    { id: 10, type: 'code', content: "for (let i = 0; i < 10; i--) { ... }", hasError: true, difficulty: 30, error: "Infinite loop" },
+  const VERIFICATION_SNIPPETS = [
+    "Net margin improved from 8.2% to 14.1% despite significant cost pressures in the supply chain and logistics sectors.",
+    "Active users grew from 18,200 to 19,850 representing a 15% growth rate that exceeds the industry average for this quarter.",
+    "Customer churn reduced to 2.1% following comprehensive onboarding improvements and a new customer success initiative.",
+    "Revenue increased 12% quarter over quarter, driven by enterprise renewals and a strong performance in the APAC region.",
+    "Compliance certificate acknowledged by the primary regulator last week, ensuring continued operations in all major territories.",
+    "Board review confirmed strategy is 'risk-neutral' despite a 40% projected loss in the high-volatility emerging markets segment.", // Intelligence Error
+    "Forecast assumes stable fuel prices amid a volatility spike that has seen prices fluctuate by more than 25% in three days.",
+    "Report concludes market is 'saturated' but recommends doubling ad spend to capture a larger share of the existing audience.", // Intelligence Error
+    "User engagement metrics show a 400% increase in daily active sessions following the deployment of the new mobile interface.",
+    "Database latency reduced by 50ms after index optimization and the implementation of a more efficient caching layer.",
+    "Security audit passed with zero critical vulnerabilities found, though some minor patches were recommended for the legacy systems.",
+    "Marketing spend optimized for a 4.2x return on ad spend, significantly outperforming the previous campaign's 2.8x benchmark.",
+    "New hire onboarding time reduced from 14 days to 9 days, allowing teams to scale more rapidly during the peak season.",
+    "Inventory turnover ratio improved to 6.5x annually, reflecting better demand forecasting and streamlined warehouse operations.",
+    "Customer satisfaction score reached an all-time high of 4.8/5.0, based on a survey of over 10,000 verified users."
   ];
 
-  const startFatigueSim = () => {
-    setFatigueSim({
-      isRunning: true,
-      energy: 100,
-      accuracy: 100,
-      tasksCompleted: 0,
-      errorsMissed: 0,
-      timeElapsed: 0,
-      isDone: false,
-      currentTask: FATIGUE_TASKS[0],
-      history: []
-    });
-  };
+  useEffect(() => {
+    let interval: any;
+    if (verSim.isRunning && verSim.linesReviewed < 5000) {
+      interval = setInterval(() => {
+        setVerSim(prev => {
+          const newLines = Math.min(5000, prev.linesReviewed + 25);
+          // Non-linear fatigue growth
+          const newFatigue = Math.pow(newLines / 5000, 2) * 100;
+          
+          // Errors start slipping through as fatigue increases
+          let newErrors = prev.errors;
+          const isError = newFatigue > 20 && Math.random() < (newFatigue / 250);
+          if (isError) {
+            newErrors += 1;
+          }
 
-  const startEnduranceSim = () => {
-    setEnduranceSim({
+          const newChartData = [...prev.chartData];
+          if (newLines % 125 === 0 || isError) {
+            newChartData.push({ 
+              x: newLines, 
+              y: Math.round(newFatigue),
+              errorY: isError ? Math.round(newFatigue) : null
+            });
+          }
+
+          const isDone = newLines >= 5000;
+          return {
+            ...prev,
+            linesReviewed: newLines,
+            fatigue: newFatigue,
+            errors: newErrors,
+            chartData: newChartData,
+            isDone,
+            isRunning: !isDone
+          };
+        });
+      }, 50);
+    }
+    return () => clearInterval(interval);
+  }, [verSim.isRunning, verSim.linesReviewed]);
+
+  const startVerificationSim = () => {
+    setVerSim({
       isRunning: true,
-      isDone: false,
-      time: 0,
+      linesReviewed: 0,
       fatigue: 0,
       errors: 0,
-      data: [{ time: 0, fatigue: 0, errors: 0 }],
-      textOffset: 0
-    });
-  };
-
-  const handleFatigueAction = (action: 'verify' | 'skip' | 'tool' | 'break') => {
-    setFatigueSim(prev => {
-      if (!prev.currentTask) return prev;
-
-      let newEnergy = prev.energy;
-      let newErrorsMissed = prev.errorsMissed;
-      let newAccuracy = prev.accuracy;
-      let nextTaskIndex = prev.tasksCompleted + 1;
-      let isDone = nextTaskIndex >= FATIGUE_TASKS.length;
-
-      if (action === 'verify') {
-        newEnergy -= prev.currentTask.difficulty * (1 + (100 - prev.energy) / 100);
-        // Chance to miss error based on fatigue
-        const missChance = (100 - prev.energy) / 200;
-        if (prev.currentTask.hasError && Math.random() < missChance) {
-          newErrorsMissed++;
-        }
-      } else if (action === 'skip') {
-        if (prev.currentTask.hasError) {
-          newErrorsMissed++;
-        }
-      } else if (action === 'tool') {
-        newEnergy -= 5; // Tool is efficient
-      } else if (action === 'break') {
-        newEnergy = Math.min(100, newEnergy + 30);
-        return { ...prev, energy: newEnergy }; // Break doesn't advance task
-      }
-
-      newAccuracy = Math.max(0, 100 - (newErrorsMissed / (prev.tasksCompleted + 1)) * 100);
-
-      return {
-        ...prev,
-        energy: Math.max(0, newEnergy),
-        errorsMissed: newErrorsMissed,
-        accuracy: newAccuracy,
-        tasksCompleted: nextTaskIndex,
-        currentTask: isDone ? null : FATIGUE_TASKS[nextTaskIndex],
-        isDone,
-        history: [...prev.history, { task: prev.currentTask, action, energy: newEnergy }]
-      };
-    });
-  };
-
-  const INSTINCT_OUTPUTS = [
-    {
-      id: 'o1',
-      title: "Quarterly Financial Summary",
-      content: "Revenue grew 12% to $4.2M. Net margin improved to 14.1%. Operating expenses were $2.8M, a 5% decrease from Q3. The cash position remains strong at $1.5M.",
-      fullText: "The company's performance in Q4 was exceptional, driven by a strong rebound in the APAC region and a significant reduction in overhead costs. Revenue grew 12% to $4.2M, primarily due to the successful launch of the 'Enterprise Plus' tier. Net margin improved to 14.1%, up from 11.2% in the previous quarter. Operating expenses were $2.8M, a 5% decrease from Q3, as we optimized our cloud infrastructure spending. The cash position remains strong at $1.5M, providing ample runway for our planned expansion into the European market in early 2027.",
-      risk: 'low',
-      hasError: false,
-      isSlowHallucination: false,
-      verificationCost: 5, // minutes
-      timeSaved: 30 // minutes
-    },
-    {
-      id: 'o2',
-      title: "Market Analysis Brief",
-      content: "The APAC region shows a 25% growth potential. Competitor A has lost 5% market share. Our new product line is expected to capture 10% of the mid-market segment by year-end.",
-      fullText: "Our latest market research indicates that the APAC region shows a 25% growth potential over the next 18 months, particularly in the emerging tech hubs of Southeast Asia. Competitor A has lost 5% market share due to recent leadership changes and a failed product pivot. Our new product line is expected to capture 10% of the mid-market segment by year-end, assuming current adoption rates continue. Market saturation is currently at 65%, leaving significant room for our expansion strategy.",
-      risk: 'medium',
-      hasError: true,
-      isSlowHallucination: true,
-      hallucinatedSentence: "the APAC region shows a 25% growth potential over the next 18 months",
-      errorDetail: "The 25% growth potential in APAC is based on a misread of the 2023 report which actually cited 2.5%. This error compounds in the 'mid-market segment' projection.",
-      errorConsequence: "Cost 15 hours of strategic planning rework because the regional expansion budget was based on a 10x inflated growth projection.",
-      verificationCost: 15,
-      timeSaved: 45
-    },
-    {
-      id: 'o3',
-      title: "Technical Architecture Proposal",
-      content: "The new microservices architecture will use Kafka for messaging. Database latency is expected to be <50ms. We will implement a Redis cache to handle peak loads.",
-      fullText: "The proposed architecture for the 'Project Phoenix' migration focuses on scalability and fault tolerance. The new microservices architecture will use Kafka for messaging between services, ensuring reliable event delivery. Database latency is expected to be <50ms for 99% of requests, thanks to the new distributed indexing strategy. We will implement a Redis cache to handle peak loads and reduce the strain on the primary database. Security audit passed with zero critical vulnerabilities, and the system is ready for the first phase of deployment.",
-      risk: 'high',
-      hasError: false,
-      isSlowHallucination: false,
-      verificationCost: 25,
-      timeSaved: 120
-    },
-    {
-      id: 'o4',
-      title: "Legal Contract Review",
-      content: "The liability clause is standard. Termination requires 30 days notice. Intellectual property remains with the client. The jurisdiction is set to Delaware.",
-      fullText: "The contract for the 'Global Logistics' partnership has been reviewed for standard compliance. The liability clause is standard and protects both parties from indirect damages. Termination requires 30 days written notice by either party. Intellectual property remains with the client, with a limited license granted to the provider for the duration of the project. The jurisdiction is set to Delaware, which is standard for our US-based agreements. No unusual indemnification requirements found during the initial audit.",
-      risk: 'high',
-      hasError: true,
-      isSlowHallucination: true,
-      hallucinatedSentence: "The jurisdiction is set to Delaware",
-      errorDetail: "The jurisdiction is actually set to New York in the source document, but the AI 'hallucinated' Delaware based on common patterns. This could lead to significant legal complications.",
-      errorConsequence: "Cost 10 hours of legal rework and potential filing delays because the wrong jurisdiction was cited in the summary, leading to incorrect filing preparations.",
-      verificationCost: 30,
-      timeSaved: 180
-    },
-    {
-      id: 'o5',
-      title: "Customer Success Report",
-      content: "Churn reduced to 2.1%. CSAT score is 4.8/5.0. Onboarding time is now 9 days. 85% of users completed the advanced training module.",
-      fullText: "Our customer success metrics for the quarter show a positive trend across all key performance indicators. Churn reduced to 2.1%, down from 2.8% last quarter. The CSAT score is 4.8/5.0, reflecting the impact of our new support portal. Onboarding time is now 9 days on average, a 35% improvement. 85% of users completed the advanced training module within the first month, which correlates strongly with long-term retention. We are on track to meet our annual targets.",
-      risk: 'low',
-      hasError: false,
-      isSlowHallucination: false,
-      verificationCost: 5,
-      timeSaved: 20
-    },
-    {
-      id: 'o6',
-      title: "Product Roadmap Q3",
-      content: "Mobile app v2.0 launch in August. Integration with Salesforce completed. New AI-powered search feature in beta.",
-      fullText: "The Q3 roadmap focuses on expanding our ecosystem and enhancing user discovery. Mobile app v2.0 launch is scheduled for August, featuring a complete UI overhaul. Integration with Salesforce was completed ahead of schedule, allowing for seamless CRM data sync. The new AI-powered search feature is currently in beta with 500 select enterprise users, showing a 40% increase in search relevancy. We are also exploring a potential partnership with a major cloud provider for edge computing capabilities.",
-      risk: 'medium',
-      hasError: true,
-      isSlowHallucination: true,
-      hallucinatedSentence: "Integration with Salesforce was completed ahead of schedule",
-      errorDetail: "The Salesforce integration is actually delayed by 3 weeks due to API versioning issues, but the AI reported it as 'completed ahead of schedule' based on the original project plan.",
-      errorConsequence: "Cost 5 hours of client communication damage control because sales teams promised immediate CRM sync to 3 major prospects based on this summary.",
-      verificationCost: 12,
-      timeSaved: 40
-    }
-  ];
-
-  const startInstinctSim = () => {
-    setInstinctSim({
-      isRunning: true,
-      score: 0,
-      timeSaved: 0,
-      verificationTax: 0,
-      hallucinationHits: [],
-      outputs: INSTINCT_OUTPUTS.map(o => ({ ...o, status: 'pending' })),
-      isDone: false,
-      currentStep: 'triage'
-    });
-  };
-
-  const handleTriage = (outputId: string, action: 'deep' | 'spot' | 'trust') => {
-    setInstinctSim(prev => {
-      const newOutputs = prev.outputs.map(o => {
-        if (o.id === outputId) return { ...o, status: action };
-        return o;
-      });
-      return { ...prev, outputs: newOutputs };
-    });
-  };
-
-  const completeInstinctSim = () => {
-    setInstinctSim(prev => {
-      let totalTimeSaved = 0;
-      let totalTax = 0;
-      const hits: any[] = [];
-
-      prev.outputs.forEach(o => {
-        if (o.status === 'trust') {
-          if (o.hasError) {
-            totalTimeSaved -= o.timeSaved * 2; 
-            hits.push({ title: o.title, consequence: o.errorConsequence, penalty: o.timeSaved * 2 });
-          } else {
-            totalTimeSaved += o.timeSaved;
-          }
-        } else if (o.status === 'spot') {
-          totalTax += o.verificationCost * 0.3;
-          if (o.hasError) {
-            if (Math.random() > 0.5) {
-              totalTimeSaved += o.timeSaved;
-            } else {
-              totalTimeSaved -= o.timeSaved;
-              hits.push({ title: o.title, consequence: o.errorConsequence, penalty: o.timeSaved });
-            }
-          } else {
-            totalTimeSaved += o.timeSaved;
-          }
-        } else if (o.status === 'deep') {
-          totalTax += o.verificationCost;
-          totalTimeSaved += o.timeSaved;
-        }
-      });
-
-      const effectiveProductivity = totalTimeSaved - totalTax;
-
-      return {
-        ...prev,
-        timeSaved: totalTimeSaved,
-        verificationTax: totalTax,
-        hallucinationHits: hits,
-        score: effectiveProductivity,
-        isDone: true,
-        isRunning: false,
-        currentStep: 'results'
-      };
+      chartData: [{ x: 0, y: 0, errorY: null }],
+      isDone: false
     });
   };
 
@@ -586,44 +399,6 @@ const App: React.FC = () => {
     setIntervention(null);
   };
 
-  useEffect(() => {
-    if (!enduranceSim.isRunning) return;
-
-    const interval = setInterval(() => {
-      setEnduranceSim(prev => {
-        const nextTime = prev.time + 1;
-        if (nextTime > 480) { // 8 hours
-          return { ...prev, isRunning: false, isDone: true };
-        }
-
-        // Fatigue increases non-linearly
-        const nextFatigue = Math.min(100, prev.fatigue + (0.1 * (1 + prev.fatigue / 50)));
-        
-        // Error rate increases with fatigue
-        let nextErrors = prev.errors;
-        const errorChance = (prev.fatigue / 100) * 0.05;
-        if (Math.random() < errorChance) {
-          nextErrors++;
-        }
-
-        const newData = [...prev.data];
-        if (nextTime % 10 === 0) {
-          newData.push({ time: nextTime, fatigue: nextFatigue, errors: nextErrors });
-        }
-
-        return {
-          ...prev,
-          time: nextTime,
-          fatigue: nextFatigue,
-          errors: nextErrors,
-          data: newData
-        };
-      });
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, [enduranceSim.isRunning]);
-
   const renderHub = () => (
     <div className="max-w-7xl mx-auto py-16 animate-in fade-in duration-700">
       <div className="text-center mb-16">
@@ -734,14 +509,14 @@ const App: React.FC = () => {
           className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
         >
           <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-            <ShieldCheck className="w-24 h-24" />
+            <Eye className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
             <div className="flex items-center gap-4 mb-5">
               <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                <ShieldCheck className="w-7 h-7 text-brand-green" />
+                <Eye className="w-7 h-7 text-brand-green" />
               </div>
-              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight uppercase">Verification</h2>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Verification Fatigue</h2>
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               Master high-speed auditing. Train your ability to spot hallucinations and logic errors without succumbing to cognitive exhaustion.
@@ -890,314 +665,178 @@ const App: React.FC = () => {
 
   const renderVerification = () => {
     return (
-      <div className="max-w-7xl mx-auto py-12 px-6 animate-in fade-in duration-700 min-h-screen bg-[#F8F9FA] text-gray-900">
+      <div className="max-w-7xl mx-auto py-12 px-6 animate-in fade-in duration-700 min-h-screen bg-white text-gray-900">
         {/* Header */}
-        <div className="flex justify-between items-start mb-12 border-b border-gray-200 pb-8">
+        <div className="flex justify-between items-start mb-12 border-b border-gray-100 pb-8">
           <div>
             <button onClick={() => setView(AppView.HUB)} className="text-gray-400 hover:text-gray-900 transition-colors flex items-center gap-2 font-bold uppercase text-[10px] tracking-widest mb-4">
-              <ArrowLeft className="w-3 h-3" />
+              <ArrowRight className="w-3 h-3 rotate-180" />
               Back to Hub
             </button>
-            <h1 className="text-4xl font-black tracking-tight text-gray-900 mb-2 uppercase">
-              Verification <span className="text-blue-600">Triage & ROI</span>
+            <h1 className="text-4xl font-light tracking-tight text-gray-900 mb-2">
+              Verification Fatigue: <span className="font-bold">The Drift of Human Judgment</span>
             </h1>
             <p className="text-gray-500 text-lg">
-              Master the "Fact-Check Tax" and build the instinct to spot slow hallucinations.
+              As volume rises across the day, cognitive sharpness declines.
             </p>
           </div>
-          <div className="flex gap-4">
-            {!instinctSim.isRunning && !instinctSim.isDone && (
-              <button 
-                onClick={startInstinctSim}
-                className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
-              >
-                Start Triage Drill
-              </button>
-            )}
-            {(instinctSim.isRunning || instinctSim.isDone) && (
-              <button 
-                onClick={() => {
-                  setInstinctSim(prev => ({ ...prev, isRunning: false, isDone: false }));
-                  setSelectedOutput(null);
-                }}
-                className="px-8 py-3 bg-white border border-gray-200 text-gray-900 rounded-xl font-bold text-sm hover:bg-gray-50 transition-all"
-              >
-                Reset Simulation
-              </button>
-            )}
-          </div>
+          <button 
+            onClick={startVerificationSim}
+            className="px-8 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-gray-800 transition-all shadow-lg"
+          >
+            {verSim.isRunning || verSim.isDone ? 'Reset' : 'Run workday'}
+          </button>
         </div>
 
-        {!instinctSim.isRunning && !instinctSim.isDone ? (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-24 h-24 bg-blue-50 rounded-[32px] flex items-center justify-center mb-8 border border-blue-100">
-              <ShieldCheck className="w-12 h-12 text-blue-600" />
-            </div>
-            <h2 className="text-4xl font-black mb-4 tracking-tight">Ready to build the instinct?</h2>
-            <p className="text-gray-500 max-w-md mb-12 text-lg leading-relaxed">
-              You will be presented with a series of AI outputs. Your goal is to triage them efficiently to maximize your <strong>Effective Productivity</strong>.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-12">
-              <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mb-4 text-blue-600">
-                  <Zap className="w-5 h-5" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          {/* Left Column: Simulation */}
+          <div className="lg:col-span-7 space-y-8">
+            <div>
+              <h2 className="text-xl font-bold mb-1">A professional reviewing AI generated lines throughout the day</h2>
+              <p className="text-gray-400 text-sm mb-8">The stream below represents continuous AI generated text being reviewed.</p>
+              
+              <div className="grid grid-cols-2 gap-8 mb-4">
+                <div>
+                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Lines reviewed</div>
+                  <div className="text-3xl font-bold tabular-nums">{verSim.linesReviewed}</div>
                 </div>
-                <h3 className="font-bold mb-2">The Fact-Check Tax</h3>
-                <p className="text-xs text-gray-500">Verification costs time. If you verify everything, you lose the speed AI gave you.</p>
-              </div>
-              <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center mb-4 text-red-600">
-                  <ShieldAlert className="w-5 h-5" />
+                <div>
+                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Fatigue level</div>
+                  <div className="text-3xl font-bold tabular-nums">{Math.round(verSim.fatigue)}%</div>
                 </div>
-                <h3 className="font-bold mb-2">Slow Hallucinations</h3>
-                <p className="text-xs text-gray-500">Errors that are internally consistent and confident. Hard to spot without deep verification.</p>
               </div>
-              <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mb-4 text-green-600">
-                  <Target className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold mb-2">Triage Logic</h3>
-                <p className="text-xs text-gray-500">Decide: Trust, Spot-Check, or Deep Verify based on risk and complexity.</p>
+              
+              {/* Fatigue Progress Bar */}
+              <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden mb-8">
+                <motion.div 
+                  className="h-full bg-gray-900"
+                  animate={{ width: `${verSim.fatigue}%` }}
+                  transition={{ type: 'spring', bounce: 0, duration: 0.5 }}
+                />
               </div>
-            </div>
-            <button 
-              onClick={startInstinctSim}
-              className="px-12 py-4 bg-gray-900 text-white rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-2xl"
-            >
-              Start Simulation
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            {/* Left Column: Triage Inbox */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold flex items-center gap-3">
-                  Triage Inbox
-                  <span className="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-xs font-bold">
-                    {instinctSim.outputs.filter(o => o.status === 'pending').length} Pending
-                  </span>
-                </h2>
-                {instinctSim.isRunning && (
-                  <button 
-                    onClick={completeInstinctSim}
-                    disabled={instinctSim.outputs.some(o => o.status === 'pending')}
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg font-bold text-sm disabled:opacity-50 hover:bg-blue-700 transition-all"
+
+              {/* Scrolling List */}
+              <div className="relative h-[800px] border border-gray-100 rounded-2xl overflow-hidden bg-gray-50/30">
+                <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white to-transparent z-10" />
+                <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent z-10" />
+                
+                <div className="p-8 space-y-4">
+                  <motion.div
+                    animate={verSim.isRunning ? { y: [0, -5000] } : { y: 0 }}
+                    transition={verSim.isRunning ? { duration: 60, repeat: Infinity, ease: "linear" } : {}}
+                    className="space-y-4"
                   >
-                    Calculate ROI
-                  </button>
-                )}
-              </div>
-
-              <div className="space-y-4">
-                {instinctSim.outputs.map(output => (
-                  <div 
-                    key={output.id} 
-                    onClick={() => setSelectedOutput(output)}
-                    className={`p-6 rounded-2xl border transition-all cursor-pointer ${
-                      selectedOutput?.id === output.id 
-                        ? 'bg-white border-blue-500 shadow-lg ring-1 ring-blue-500' 
-                        : 'bg-white border-gray-100 shadow-sm hover:border-blue-200'
-                    }`}
-                  >
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                            output.risk === 'low' ? 'bg-green-100 text-green-700' :
-                            output.risk === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-red-100 text-red-700'
-                          }`}>
-                            {output.risk} risk
-                          </span>
-                          <h3 className="font-bold text-lg">{output.title}</h3>
+                    {[...Array(100)].map((_, i) => {
+                      const snippet = VERIFICATION_SNIPPETS[i % VERIFICATION_SNIPPETS.length];
+                      // Calculate individual blur based on fatigue
+                      const blurAmount = Math.max(0, (verSim.fatigue - 20) / 15);
+                      return (
+                        <div 
+                          key={i} 
+                          className="p-4 bg-white border border-gray-100 rounded-xl shadow-sm text-sm font-medium transition-all duration-500"
+                          style={{ filter: `blur(${blurAmount}px)`, opacity: 1 - (blurAmount / 10) }}
+                        >
+                          {snippet}
                         </div>
-                        <p className="text-gray-500 text-sm line-clamp-2">{output.content}</p>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        {output.status === 'pending' ? (
-                          <div className="flex gap-2">
-                            <button 
-                              onClick={(e) => { e.stopPropagation(); handleTriage(output.id, 'trust'); }}
-                              className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-gray-200"
-                            >
-                              Trust
-                            </button>
-                            <button 
-                              onClick={(e) => { e.stopPropagation(); handleTriage(output.id, 'spot'); }}
-                              className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-gray-200"
-                            >
-                              Spot
-                            </button>
-                            <button 
-                              onClick={(e) => { e.stopPropagation(); handleTriage(output.id, 'deep'); }}
-                              className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-gray-200"
-                            >
-                              Deep
-                            </button>
-                          </div>
-                        ) : (
-                          <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
-                            output.status === 'trust' ? 'bg-gray-900 text-white border-gray-900' :
-                            output.status === 'spot' ? 'bg-blue-50 text-blue-600 border-blue-200' :
-                            'bg-indigo-50 text-indigo-600 border-indigo-200'
-                          }`}>
-                            {output.status} verified
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> Save: {output.timeSaved}m</span>
-                      <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> Tax: {output.verificationCost}m</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right Column: Details & ROI */}
-            <div className="lg:col-span-5 space-y-8">
-              {/* ROI Dashboard (Visible when done) */}
-              {instinctSim.isDone && (
-                <div className="p-8 bg-gray-900 text-white rounded-[32px] shadow-2xl space-y-8">
-                  <div>
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Effective Productivity</div>
-                    <div className="text-6xl font-black mb-2">{Math.round(instinctSim.score)}m</div>
-                    <p className="text-sm text-gray-400">Total time saved minus the verification tax and hallucination penalties.</p>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-6 pt-8 border-t border-white/10">
-                    <div>
-                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Gross Saved</div>
-                      <div className="text-2xl font-bold text-green-400">+{instinctSim.timeSaved}m</div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Fact-Check Tax</div>
-                      <div className="text-2xl font-bold text-red-400">-{Math.round(instinctSim.verificationTax)}m</div>
-                    </div>
-                  </div>
-
-                  {instinctSim.hallucinationHits.length > 0 && (
-                    <div className="pt-8 border-t border-white/10 space-y-4">
-                      <h4 className="text-xs font-bold uppercase tracking-widest text-red-400 flex items-center gap-2">
-                        <ShieldAlert className="w-4 h-4" />
-                        The Hallucination Hit
-                      </h4>
-                      <div className="space-y-3">
-                        {instinctSim.hallucinationHits.map((hit, i) => (
-                          <div key={i} className="p-4 bg-red-500/10 rounded-xl border border-red-500/20">
-                            <div className="flex justify-between items-start mb-1">
-                              <div className="font-bold text-sm text-red-200">{hit.title}</div>
-                              <div className="text-xs font-black text-red-400">-{hit.penalty}m</div>
-                            </div>
-                            <p className="text-[10px] text-red-300/70 leading-relaxed">{hit.consequence}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                    <h4 className="text-xs font-bold uppercase tracking-widest mb-2 text-blue-400">The ROI Lesson</h4>
-                    <p className="text-xs text-gray-400 leading-relaxed">
-                      Exhaustive verification is a productivity killer. The instinct is knowing when to trust, when to spot-check, and when to deep-dive based on the cost of being wrong.
-                    </p>
-                  </div>
+                      );
+                    })}
+                  </motion.div>
                 </div>
-              )}
-
-              {/* Output Inspector */}
-              <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden flex flex-col h-[600px]">
-                {selectedOutput ? (
-                  <>
-                    <div className="p-8 border-b border-gray-50">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                          selectedOutput.risk === 'low' ? 'bg-green-100 text-green-700' :
-                          selectedOutput.risk === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-red-100 text-red-700'
-                        }`}>
-                          {selectedOutput.risk} risk
-                        </span>
-                        <h3 className="font-bold text-xl">{selectedOutput.title}</h3>
-                      </div>
-                      <div className="flex items-center gap-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                        <span>ID: {selectedOutput.id}</span>
-                        <span>Type: AI Generated Summary</span>
-                      </div>
-                    </div>
-                    <div className="flex-1 p-8 overflow-y-auto bg-gray-50/50">
-                      <div className="prose prose-sm max-w-none">
-                        <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Full AI Output</h4>
-                        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                          {selectedOutput.fullText}
-                        </p>
-                      </div>
-
-                      {instinctSim.isDone && selectedOutput.hasError && (
-                        <div className="mt-8 p-6 bg-red-50 border border-red-100 rounded-2xl space-y-4">
-                          <div className="flex items-center gap-2 text-red-600">
-                            <ShieldAlert className="w-5 h-5" />
-                            <span className="font-bold uppercase tracking-widest text-xs">Hallucination Detected</span>
-                          </div>
-                          <div>
-                            <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">The Error</div>
-                            <p className="text-sm text-red-900 font-medium italic">"{selectedOutput.hallucinatedSentence}"</p>
-                          </div>
-                          <div>
-                            <div className="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">The Consequence</div>
-                            <p className="text-sm text-red-800">{selectedOutput.errorConsequence}</p>
-                          </div>
-                        </div>
-                      )}
-
-                      {instinctSim.isDone && !selectedOutput.hasError && (
-                        <div className="mt-8 p-6 bg-green-50 border border-green-100 rounded-2xl flex items-center gap-3 text-green-700">
-                          <CheckCircle2 className="w-5 h-5" />
-                          <span className="font-bold uppercase tracking-widest text-xs">Verified Reliable</span>
-                        </div>
-                      )}
-                    </div>
-                    {!instinctSim.isDone && (
-                      <div className="p-6 bg-white border-t border-gray-50 flex gap-3">
-                        <button 
-                          onClick={() => handleTriage(selectedOutput.id, 'trust')}
-                          className={`flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${
-                            selectedOutput.status === 'trust' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                          }`}
-                        >
-                          Trust
-                        </button>
-                        <button 
-                          onClick={() => handleTriage(selectedOutput.id, 'spot')}
-                          className={`flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${
-                            selectedOutput.status === 'spot' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                          }`}
-                        >
-                          Spot
-                        </button>
-                        <button 
-                          onClick={() => handleTriage(selectedOutput.id, 'deep')}
-                          className={`flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${
-                            selectedOutput.status === 'deep' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                          }`}
-                        >
-                          Deep
-                        </button>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center p-12 text-gray-400">
-                    <Eye className="w-12 h-12 mb-4 opacity-20" />
-                    <p className="text-sm font-medium">Select an output from the inbox to inspect the full text and perform triage.</p>
-                  </div>
-                )}
               </div>
             </div>
           </div>
-        )}
+
+          {/* Right Column: Metrics */}
+          <div className="lg:col-span-5 space-y-12">
+            {/* Errors slipping through */}
+            <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm">
+              <div className="text-sm font-medium text-gray-500 mb-4">Errors slipping through</div>
+              <div className="text-7xl font-bold text-red-500 tabular-nums mb-2">{verSim.errors}</div>
+              <p className="text-gray-400 text-xs mb-6">Missed issues increase as fatigue rises</p>
+              
+              <div className="pt-6 border-t border-gray-50">
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Simulated Hallucinations</div>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 shrink-0" />
+                    <div className="text-[11px] text-gray-500 leading-relaxed">
+                      <span className="font-bold text-gray-700">Reasoning Flaws:</span> AI claiming a strategy is "risk-neutral" while citing data that indicates extreme volatility.
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 shrink-0" />
+                    <div className="text-[11px] text-gray-500 leading-relaxed">
+                      <span className="font-bold text-gray-700">Statistical Drift:</span> Subtle mismatches between percentage growth and raw numbers.
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 shrink-0" />
+                    <div className="text-[11px] text-gray-500 leading-relaxed">
+                      <span className="font-bold text-gray-700">Cognitive Blindness:</span> As fatigue peaks, the brain begins to "auto-complete" text, missing obvious flaws.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Chart */}
+            <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm">
+              <div className="text-sm font-bold mb-1">Fatigue measured against volume</div>
+              <div className="text-[10px] text-gray-400 uppercase tracking-widest mb-8">X axis: AI lines reviewed - Y axis: fatigue percentage</div>
+              
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={verSim.chartData}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                    <XAxis 
+                      dataKey="x" 
+                      type="number"
+                      domain={[0, 5000]}
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fontSize: 10, fill: '#9ca3af' }}
+                      hide
+                    />
+                    <YAxis 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fontSize: 10, fill: '#9ca3af' }}
+                      domain={[0, 100]}
+                    />
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="y" 
+                      stroke="#111827" 
+                      strokeWidth={3} 
+                      dot={false} 
+                      animationDuration={0}
+                      isAnimationActive={false}
+                    />
+                    <Scatter 
+                      name="Errors"
+                      dataKey="errorY" 
+                      fill="#ef4444" 
+                      isAnimationActive={false}
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+              
+              <div className="flex justify-between mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <span>0</span>
+                <span>1000</span>
+                <span>2000</span>
+                <span>3000</span>
+                <span>4000</span>
+                <span>5000</span>
+              </div>
+              <div className="text-center mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Lines Reviewed</div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   };
@@ -1275,9 +914,9 @@ const App: React.FC = () => {
         <div className="flex justify-between items-start mb-12">
           <div className="flex items-start gap-6">
             <button 
-              onClick={() => setView(AppView.VERIFICATION_GATEWAY)}
+              onClick={() => setView(AppView.HUB)}
               className="mt-1 p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-900"
-              title="Back to Verification Hub"
+              title="Back to Hub"
             >
               <ArrowRight className="w-6 h-6 rotate-180" />
             </button>
@@ -1658,10 +1297,10 @@ const App: React.FC = () => {
 
               <div className="text-center">
                 <button 
-                  onClick={() => setView(AppView.VERIFICATION_GATEWAY)}
+                  onClick={() => setView(AppView.HUB)}
                   className="bg-blue-500 text-white px-12 py-4 rounded-full font-bold text-lg shadow-lg shadow-blue-200 hover:bg-blue-600 transition-all hover:scale-105"
                 >
-                  Finish & Return to Verification Hub
+                  Finish & Return to Hub
                 </button>
               </div>
             </motion.div>
@@ -3121,448 +2760,50 @@ const App: React.FC = () => {
     );
   };
 
-  const renderVerificationFatigue = () => {
-    if (!fatigueSim.isRunning && !fatigueSim.isDone) {
-      return (
-        <div className="max-w-4xl mx-auto py-20 px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="glass p-12 rounded-[60px] border-brand-platinum/10"
-          >
-            <div className="w-24 h-24 bg-brand-green/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-brand-green/20">
-              <Zap className="w-12 h-12 text-brand-green" />
-            </div>
-            <h1 className="text-5xl font-black text-brand-platinum mb-6 tracking-tighter uppercase">
-              The Fatigue <span className="text-brand-green">Wall</span>
-            </h1>
-            <p className="text-xl text-brand-platinum/60 mb-12 max-w-2xl mx-auto leading-relaxed">
-              In the agentic age, you don't just verify once. You verify <span className="text-brand-platinum font-bold italic underline decoration-brand-green underline-offset-4">thousands</span> of times. 
-              Master the cognitive drain of the "Verification Tax."
-            </p>
-            <button 
-              onClick={startFatigueSim}
-              className="px-12 py-6 bg-brand-green text-brand-black rounded-full font-black uppercase tracking-[0.2em] text-sm hover:scale-105 transition-all shadow-[0_0_30px_rgba(0,255,0,0.2)]"
-            >
-              Start Endurance Test
-            </button>
-          </motion.div>
-        </div>
-      );
-    }
-
-    if (fatigueSim.isDone) {
-      return (
-        <div className="max-w-4xl mx-auto py-20 px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass p-12 rounded-[60px] border-brand-platinum/10 text-center"
-          >
-            <h2 className="text-4xl font-black text-brand-platinum mb-4 uppercase tracking-tighter">Simulation Complete</h2>
-            <div className="grid grid-cols-3 gap-8 my-12">
-              <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
-                <div className="text-xs font-black text-brand-platinum/40 uppercase tracking-widest mb-2">Accuracy</div>
-                <div className={`text-4xl font-black ${fatigueSim.accuracy > 90 ? 'text-brand-green' : 'text-red-500'}`}>
-                  {Math.round(fatigueSim.accuracy)}%
-                </div>
-              </div>
-              <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
-                <div className="text-xs font-black text-brand-platinum/40 uppercase tracking-widest mb-2">Energy Left</div>
-                <div className="text-4xl font-black text-brand-platinum">
-                  {Math.round(fatigueSim.energy)}%
-                </div>
-              </div>
-              <div className="p-6 bg-white/5 rounded-3xl border border-white/10">
-                <div className="text-xs font-black text-brand-platinum/40 uppercase tracking-widest mb-2">Missed Errors</div>
-                <div className="text-4xl font-black text-red-500">
-                  {fatigueSim.errorsMissed}
-                </div>
-              </div>
-            </div>
-
-            <div className="text-left bg-black/20 p-8 rounded-3xl border border-white/5 mb-12">
-              <h3 className="text-sm font-black text-brand-platinum uppercase tracking-widest mb-4">Post-Simulation Analysis</h3>
-              <p className="text-brand-platinum/70 leading-relaxed italic">
-                {fatigueSim.accuracy > 90 
-                  ? "Exceptional focus. You maintained high standards even as cognitive load increased. This is the hallmark of a high-performance orchestrator."
-                  : fatigueSim.energy < 20
-                  ? "You pushed through the fatigue wall, but your accuracy suffered. In real-world orchestration, this leads to 'Slow Hallucinations' that compound into catastrophic failure."
-                  : "Inconsistent verification. Your judgment wavered as the task volume increased. Focus on building sustainable verification rhythms."}
-              </p>
-            </div>
-
-            <div className="flex gap-4 justify-center">
-              <button 
-                onClick={startFatigueSim}
-                className="px-10 py-5 bg-brand-green text-brand-black rounded-full font-black uppercase tracking-widest text-xs hover:scale-105 transition-all"
-              >
-                Try Again
-              </button>
-              <button 
-                onClick={() => setView(AppView.VERIFICATION_GATEWAY)}
-                className="px-10 py-5 border border-brand-platinum/20 text-brand-platinum rounded-full font-black uppercase tracking-widest text-xs hover:bg-white/5 transition-all"
-              >
-                Return to Gateway
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="max-w-6xl mx-auto py-12 px-6">
-        <div className="flex items-center justify-between mb-12">
-          <div className="flex items-center gap-6">
-            <button 
-              onClick={() => setView(AppView.VERIFICATION_GATEWAY)}
-              className="w-12 h-12 rounded-xl border border-white/10 flex items-center justify-center text-brand-platinum/40 hover:text-brand-platinum hover:border-white/30 transition-all"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <div>
-              <h1 className="text-2xl font-black text-brand-platinum uppercase tracking-tighter">Fatigue Endurance Test</h1>
-              <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.3em]">Task {fatigueSim.tasksCompleted + 1} of {FATIGUE_TASKS.length}</div>
-            </div>
-          </div>
-
-          <div className="flex gap-8">
-            <div className="text-right">
-              <div className="text-[10px] font-black text-brand-platinum/40 uppercase tracking-widest mb-2">Cognitive Energy</div>
-              <div className="w-48 h-3 bg-white/5 rounded-full overflow-hidden border border-white/10">
-                <motion.div 
-                  className={`h-full ${fatigueSim.energy > 50 ? 'bg-brand-green' : fatigueSim.energy > 20 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                  initial={{ width: '100%' }}
-                  animate={{ width: `${fatigueSim.energy}%` }}
-                />
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-[10px] font-black text-brand-platinum/40 uppercase tracking-widest mb-2">Current Accuracy</div>
-              <div className="text-xl font-black text-brand-platinum">{Math.round(fatigueSim.accuracy)}%</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={fatigueSim.currentTask?.id}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="glass p-12 rounded-[40px] border-brand-platinum/10 min-h-[400px] flex flex-col justify-center"
-              >
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="px-3 py-1 bg-brand-green/10 border border-brand-green/20 rounded text-[10px] font-black text-brand-green uppercase tracking-widest">
-                    {fatigueSim.currentTask?.type}
-                  </div>
-                  <div className="text-brand-platinum/40 text-[10px] font-black uppercase tracking-widest">
-                    Difficulty: {fatigueSim.currentTask?.difficulty}
-                  </div>
-                </div>
-                <div className="text-3xl font-medium text-brand-platinum leading-relaxed mb-12 font-mono">
-                  {fatigueSim.currentTask?.content}
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <button 
-                    onClick={() => handleFatigueAction('verify')}
-                    className="p-6 bg-white/5 border border-white/10 rounded-3xl hover:border-brand-green/50 hover:bg-brand-green/5 transition-all group text-left"
-                  >
-                    <div className="text-xs font-black text-brand-platinum/40 uppercase tracking-widest mb-2 group-hover:text-brand-green">Manual Verify</div>
-                    <div className="text-brand-platinum font-bold">Deep Scan Content</div>
-                  </button>
-                  <button 
-                    onClick={() => handleFatigueAction('tool')}
-                    className="p-6 bg-white/5 border border-white/10 rounded-3xl hover:border-brand-green/50 hover:bg-brand-green/5 transition-all group text-left"
-                  >
-                    <div className="text-xs font-black text-brand-platinum/40 uppercase tracking-widest mb-2 group-hover:text-brand-green">Use Tool</div>
-                    <div className="text-brand-platinum font-bold">Automated Cross-Check</div>
-                  </button>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          <div className="space-y-6">
-            <div className="glass p-8 rounded-[40px] border-brand-platinum/10">
-              <h3 className="text-sm font-black text-brand-platinum uppercase tracking-widest mb-6">Simulation Controls</h3>
-              <div className="space-y-4">
-                <button 
-                  onClick={() => handleFatigueAction('break')}
-                  className="w-full p-4 bg-brand-platinum/5 border border-white/10 rounded-2xl text-brand-platinum font-bold uppercase tracking-widest text-xs hover:bg-white/10 transition-all flex items-center justify-center gap-2"
-                >
-                  <Clock className="w-4 h-4" /> Take 5m Break (+30 Energy)
-                </button>
-                <button 
-                  onClick={() => handleFatigueAction('skip')}
-                  className="w-full p-4 border border-red-500/20 text-red-500 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-red-500/5 transition-all"
-                >
-                  Skip Verification (High Risk)
-                </button>
-              </div>
-            </div>
-
-            <div className="glass p-8 rounded-[40px] border-brand-platinum/10">
-              <h3 className="text-sm font-black text-brand-platinum uppercase tracking-widest mb-6">Live Log</h3>
-              <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                {fatigueSim.history.slice().reverse().map((h, i) => (
-                  <div key={i} className="text-[10px] font-medium border-l-2 border-white/10 pl-3 py-1">
-                    <span className="text-brand-platinum/40 uppercase tracking-widest mr-2">{h.action}</span>
-                    <span className={h.task.hasError && h.action === 'skip' ? 'text-red-500' : 'text-brand-platinum/60'}>
-                      {h.task.title || `Task ${h.task.id}`}
-                    </span>
-                  </div>
-                ))}
-                {fatigueSim.history.length === 0 && (
-                  <div className="text-[10px] text-brand-platinum/20 italic">Awaiting first action...</div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderFatigueEndurance = () => {
-    return (
-      <div className="max-w-7xl mx-auto py-12 px-6 animate-in fade-in duration-700 min-h-screen bg-brand-black text-brand-platinum">
-        <div className="flex justify-between items-start mb-12">
-          <div>
-            <button onClick={() => setView(AppView.VERIFICATION_GATEWAY)} className="text-brand-platinum/40 hover:text-brand-green transition-colors flex items-center gap-2 font-bold uppercase text-[10px] tracking-widest mb-4">
-              <ArrowLeft className="w-3 h-3" />
-              Back to Gateway
-            </button>
-            <h1 className="text-4xl font-black tracking-tight text-brand-platinum mb-2 uppercase">
-              Fatigue <span className="text-brand-green">Endurance Test</span>
-            </h1>
-            <p className="text-brand-platinum/60 text-lg">
-              Watch how cognitive fatigue compounds over an 8-hour shift.
-            </p>
-          </div>
-          <div className="flex gap-4">
-            {!enduranceSim.isRunning && !enduranceSim.isDone && (
-              <button 
-                onClick={startEnduranceSim}
-                className="px-8 py-3 bg-brand-green text-brand-black rounded-xl font-bold text-sm hover:bg-brand-green/90 transition-all shadow-lg shadow-brand-green/20"
-              >
-                Start Endurance Test
-              </button>
-            )}
-            {(enduranceSim.isRunning || enduranceSim.isDone) && (
-              <button 
-                onClick={() => setEnduranceSim(prev => ({ ...prev, isRunning: false, isDone: false, time: 0, fatigue: 0, errors: 0, data: [] }))}
-                className="px-8 py-3 bg-white/5 border border-white/10 text-brand-platinum rounded-xl font-bold text-sm hover:bg-white/10 transition-all"
-              >
-                Reset
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left: Rolling Text */}
-          <div className="lg:col-span-5 bg-brand-navy/50 rounded-[32px] border border-brand-platinum/5 p-8 h-[600px] overflow-hidden relative">
-            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-brand-navy to-transparent z-10"></div>
-            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-brand-navy to-transparent z-10"></div>
-            
-            <motion.div 
-              animate={enduranceSim.isRunning ? { y: -2000 } : { y: 0 }}
-              transition={{ duration: 480, ease: "linear" }}
-              className="space-y-8 opacity-40"
-            >
-              {Array.from({ length: 20 }).map((_, i) => (
-                <div key={i} className="space-y-4">
-                  <div className="h-4 bg-brand-platinum/10 rounded w-3/4"></div>
-                  <div className="h-4 bg-brand-platinum/10 rounded w-full"></div>
-                  <div className="h-4 bg-brand-platinum/10 rounded w-5/6"></div>
-                  <div className="h-4 bg-brand-platinum/10 rounded w-2/3"></div>
-                </div>
-              ))}
-            </motion.div>
-
-            <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-              <div className="bg-brand-black/80 backdrop-blur-md p-6 rounded-2xl border border-brand-green/20 text-center max-w-xs">
-                <div className="text-[10px] font-bold text-brand-green uppercase tracking-widest mb-2">Simulating Verification Stream</div>
-                <div className="text-2xl font-black text-brand-platinum mb-1">
-                  {Math.floor(enduranceSim.time / 60)}h {enduranceSim.time % 60}m
-                </div>
-                <div className="text-[10px] text-brand-platinum/40 uppercase font-bold tracking-widest">Shift Progress</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right: Graph & Metrics */}
-          <div className="lg:col-span-7 space-y-8">
-            <div className="grid grid-cols-3 gap-6">
-              <div className="glass p-6 rounded-3xl border-brand-platinum/5">
-                <div className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest mb-2">Fatigue Level</div>
-                <div className="text-3xl font-black text-brand-green">{Math.round(enduranceSim.fatigue)}%</div>
-              </div>
-              <div className="glass p-6 rounded-3xl border-brand-platinum/5">
-                <div className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest mb-2">Missed Errors</div>
-                <div className="text-3xl font-black text-red-500">{enduranceSim.errors}</div>
-              </div>
-              <div className="glass p-6 rounded-3xl border-brand-platinum/5">
-                <div className="text-[10px] font-bold text-brand-platinum/40 uppercase tracking-widest mb-2">Cognitive Load</div>
-                <div className="text-3xl font-black text-blue-400">High</div>
-              </div>
-            </div>
-
-            <div className="glass p-8 rounded-[32px] border-brand-platinum/5 h-[450px]">
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="text-sm font-bold uppercase tracking-widest text-brand-platinum/60">Fatigue vs. Error Rate</h3>
-                <div className="flex gap-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-brand-green"></div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-brand-platinum/40">Fatigue</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-brand-platinum/40">Errors</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="h-[300px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart data={enduranceSim.data}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                    <XAxis 
-                      dataKey="time" 
-                      stroke="rgba(255,255,255,0.2)" 
-                      fontSize={10} 
-                      tickFormatter={(val) => `${Math.floor(val / 60)}h`}
-                    />
-                    <YAxis yAxisId="left" stroke="rgba(255,255,255,0.2)" fontSize={10} />
-                    <YAxis yAxisId="right" orientation="right" stroke="rgba(255,255,255,0.2)" fontSize={10} />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: '#0A0A0B', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                      itemStyle={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase' }}
-                    />
-                    <Line 
-                      yAxisId="left"
-                      type="monotone" 
-                      dataKey="fatigue" 
-                      stroke="#00FF88" 
-                      strokeWidth={3} 
-                      dot={false} 
-                      animationDuration={0}
-                    />
-                    <Line 
-                      yAxisId="right"
-                      type="monotone" 
-                      dataKey="errors" 
-                      stroke="#FF4444" 
-                      strokeWidth={3} 
-                      dot={false} 
-                      animationDuration={0}
-                    />
-                  </ComposedChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const renderVerificationGateway = () => {
     return (
-      <div className="max-w-7xl mx-auto py-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-        <div className="mb-16">
-          <button 
-            onClick={() => setView(AppView.HUB)}
-            className="text-brand-platinum/40 hover:text-brand-green transition-colors flex items-center gap-2 font-bold uppercase text-[10px] tracking-widest mb-8"
-          >
-            <ArrowLeft className="w-3 h-3" />
-            Back to Hub
-          </button>
-          <h1 className="text-6xl font-black tracking-tighter text-brand-platinum mb-4 uppercase">
-            Verification <span className="text-brand-green">Simulations</span>
-          </h1>
-          <p className="text-xl text-brand-platinum/60 max-w-2xl">
-            Master the skills required to maintain accuracy without sacrificing the speed of AI.
-          </p>
+      <div className="min-h-screen bg-[#F9F8F6] text-[#2D3A2D] pt-24">
+        {/* Navigation Bar */}
+        <div className="absolute top-0 left-0 w-full bg-white/60 backdrop-blur-xl border-b border-[#E8E4E1] z-[60]">
+          <div className="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
+            <div className="flex items-center gap-10">
+              <button 
+                onClick={() => setView(AppView.HUB)}
+                className="text-[#2D3A2D] font-black uppercase tracking-tighter text-base group flex items-center gap-3"
+              >
+                <div className="w-10 h-10 bg-[#2D3A2D] rounded-xl flex items-center justify-center text-white transition-transform group-hover:scale-110">H</div>
+                Master the Next <span className="text-[#A65E4E]">Human Skills</span>
+              </button>
+              <div className="h-6 w-[1px] bg-[#E8E4E1]" />
+              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.4em]">
+                Verification Fatigue
+              </div>
+            </div>
+            <div className="flex gap-10">
+              <button 
+                className="text-[10px] font-black uppercase tracking-[0.2em] transition-all pb-2 border-b-2 text-[#A65E4E] border-[#A65E4E]"
+                onClick={() => setView(AppView.VERIFICATION)}
+              >
+                Launch Simulation
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Tile 1: The Fatigue Wall (Moved to first) */}
-          <div 
-            onClick={() => setView(AppView.VERIFICATION_FATIGUE)}
-            className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
-          >
-            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-              <Zap className="w-24 h-24" />
-            </div>
-            <div className="relative z-10 flex-1">
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                  <Zap className="w-7 h-7 text-brand-green" />
-                </div>
-                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight uppercase">The Fatigue Wall</h2>
-              </div>
-              <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
-                Test your endurance. Learn to manage cognitive load and maintain accuracy across high-volume verification streams.
+        <div className="flex items-center justify-center h-[calc(100vh-96px)]">
+           <div className="text-center max-w-2xl px-6">
+              <h1 className="text-5xl font-black tracking-tighter text-[#2D3A2D] mb-6">Learn and Grow the skill</h1>
+              <p className="text-xl text-gray-500 mb-12">
+                Verification fatigue is the drift of human judgment as cognitive volume increases. 
+                Master the ability to maintain sharpness in high-speed environments.
               </p>
-            </div>
-            <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
-              Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
-            </div>
-          </div>
-
-          {/* Tile 2: Fatigue Endurance Test */}
-          <div 
-            onClick={() => setView(AppView.VERIFICATION_FATIGUE_ENDURANCE)}
-            className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
-          >
-            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-              <Activity className="w-24 h-24" />
-            </div>
-            <div className="relative z-10 flex-1">
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                  <Activity className="w-7 h-7 text-brand-green" />
-                </div>
-                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight uppercase">Fatigue Endurance Test</h2>
-              </div>
-              <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
-                The original endurance simulation. Watch AI text roll up as your fatigue and error rates rise throughout the day.
-              </p>
-            </div>
-            <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
-              Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
-            </div>
-          </div>
-
-          {/* Tile 3: Triage & ROI */}
-          <div 
-            onClick={() => setView(AppView.VERIFICATION)}
-            className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
-          >
-            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-              <ShieldCheck className="w-24 h-24" />
-            </div>
-            <div className="relative z-10 flex-1">
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                  <ShieldCheck className="w-7 h-7 text-brand-green" />
-                </div>
-                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight uppercase">Verification Triage & ROI</h2>
-              </div>
-              <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
-                Master the "Fact-Check Tax." Learn to triage AI outputs based on risk and complexity to maximize your effective productivity.
-              </p>
-            </div>
-            <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
-              Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
-            </div>
-          </div>
+              <button 
+                onClick={() => setView(AppView.VERIFICATION)}
+                className="px-10 py-4 bg-[#A65E4E] text-white rounded-full font-black uppercase tracking-widest text-sm hover:scale-105 transition-transform shadow-xl"
+              >
+                Launch Simulation
+              </button>
+           </div>
         </div>
       </div>
     );
@@ -3575,9 +2816,6 @@ const App: React.FC = () => {
       case AppView.TRAINER: return renderTrainer();
       case AppView.EVOLUTION: return renderEvolution();
       case AppView.VERIFICATION: return renderVerification();
-      case AppView.VERIFICATION_INSTINCT: return renderVerification();
-      case AppView.VERIFICATION_FATIGUE: return renderVerificationFatigue();
-      case AppView.VERIFICATION_FATIGUE_ENDURANCE: return renderFatigueEndurance();
       case AppView.VERIFICATION_GATEWAY: return renderVerificationGateway();
       case AppView.LEARN: return renderLearn();
       case AppView.TASTE: return renderTaste();
