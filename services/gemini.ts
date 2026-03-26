@@ -89,6 +89,41 @@ export class OrchestrationService {
     });
     return response.text;
   }
+
+  async evaluatePrompt(prompt: string, goal: string): Promise<{ score: number; feedback: string; improved: string }> {
+    const response = await this.ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: `
+        Evaluate the following prompt based on how well it achieves the goal.
+        
+        GOAL: ${goal}
+        USER PROMPT: ${prompt}
+        
+        Provide:
+        1. A score from 0-100.
+        2. Constructive feedback on clarity, constraints, and context.
+        3. An improved version of the prompt.
+      `,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            score: { type: Type.NUMBER },
+            feedback: { type: Type.STRING },
+            improved: { type: Type.STRING }
+          },
+          required: ["score", "feedback", "improved"]
+        }
+      }
+    });
+
+    try {
+      return JSON.parse(response.text || "{}");
+    } catch (e) {
+      return { score: 0, feedback: "Error evaluating prompt.", improved: "" };
+    }
+  }
 }
 
 export const orchestrationService = new OrchestrationService();

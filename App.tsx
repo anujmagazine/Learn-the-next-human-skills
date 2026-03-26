@@ -105,6 +105,12 @@ const App: React.FC = () => {
   const [defineSimStep, setDefineSimStep] = useState(0);
   const [isDefineSimRunning, setIsDefineSimRunning] = useState(false);
 
+  // Prompt Thinking State
+  const [promptInput, setPromptInput] = useState('');
+  const [promptGoal, setPromptGoal] = useState('Create a marketing plan for a new sustainable coffee brand.');
+  const [promptResult, setPromptResult] = useState<{ score: number; feedback: string; improved: string } | null>(null);
+  const [isEvaluatingPrompt, setIsEvaluatingPrompt] = useState(false);
+
   const VERIFICATION_SNIPPETS = [
     "Net margin improved from 8.2% to 14.1% despite significant cost pressures in the supply chain and logistics sectors.",
     "Active users grew from 18,200 to 19,850 representing a 15% growth rate that exceeds the industry average for this quarter.",
@@ -196,6 +202,19 @@ const App: React.FC = () => {
       setIsDrillRunning(true);
     }
     setStats({ switches: 0, interventions: 0 });
+  };
+
+  const handleEvaluatePrompt = async () => {
+    if (!promptInput.trim()) return;
+    setIsEvaluatingPrompt(true);
+    try {
+      const result = await orchestrationService.evaluatePrompt(promptInput, promptGoal);
+      setPromptResult(result);
+    } catch (error) {
+      console.error("Prompt evaluation failed", error);
+    } finally {
+      setIsEvaluatingPrompt(false);
+    }
   };
 
   const resetSimulations = () => {
@@ -527,25 +546,26 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 opacity-60 grayscale hover:grayscale-0 transition-all cursor-not-allowed overflow-hidden flex flex-col h-full">
-          <div className="absolute top-0 right-0 p-6 opacity-5 text-brand-platinum">
+        <div 
+          onClick={() => setView(AppView.PROMPT_THINKING)}
+          className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full"
+        >
+          <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
             <MessageSquare className="w-24 h-24" />
           </div>
           <div className="relative z-10 flex-1">
             <div className="flex items-center gap-4 mb-5">
-              <div className="w-14 h-14 bg-brand-platinum/10 rounded-xl flex items-center justify-center border border-brand-platinum/20 shrink-0">
-                <Brain className="w-7 h-7 text-brand-platinum" />
+              <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                <Brain className="w-7 h-7 text-brand-green" />
               </div>
-              <h2 className="text-2xl font-bold text-brand-platinum leading-tight">Thinking in Prompts</h2>
+              <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Thinking in Prompts</h2>
             </div>
             <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
               Thinking in prompts is the habit of framing your thoughts as questions or instructions you could give to an AI.
             </p>
           </div>
-          <div className="relative z-10 mt-auto">
-            <div className="inline-block px-4 py-1 rounded-full bg-brand-navy text-brand-platinum/40 text-xs font-bold uppercase tracking-widest">
-              Coming Soon
-            </div>
+          <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
+            Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
           </div>
         </div>
 
@@ -2809,6 +2829,124 @@ const App: React.FC = () => {
     );
   };
 
+  const renderPromptThinking = () => {
+    return (
+      <div className="max-w-7xl mx-auto py-12 px-6 animate-in fade-in duration-700 min-h-screen">
+        <div className="mb-12">
+          <button onClick={() => setView(AppView.HUB)} className="text-brand-platinum/40 hover:text-brand-platinum transition-colors flex items-center gap-2 font-bold uppercase text-[10px] tracking-widest mb-4">
+            <ArrowLeft className="w-3 h-3" />
+            Back to Hub
+          </button>
+          <h1 className="text-5xl font-black tracking-tighter text-brand-platinum mb-2 uppercase">
+            Thinking in <span className="gradient-text">Prompts</span>
+          </h1>
+          <p className="text-brand-platinum/60 text-lg max-w-2xl">
+            Master the art of framing your thoughts as structured instructions. The quality of the output is a direct reflection of the clarity of your intent.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="space-y-8">
+            <div className="glass p-8 rounded-[40px] border-brand-platinum/5">
+              <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.4em] mb-6">The Goal</div>
+              <div className="text-xl font-bold text-brand-platinum leading-relaxed mb-6">
+                {promptGoal}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {['Coffee Brand', 'SaaS Tool', 'Event Plan', 'Code Refactor'].map(goal => (
+                  <button 
+                    key={goal}
+                    onClick={() => {
+                      setPromptGoal(`Create a ${goal.toLowerCase()} plan.`);
+                      setPromptResult(null);
+                      setPromptInput('');
+                    }}
+                    className="px-4 py-2 rounded-full bg-brand-platinum/5 border border-brand-platinum/10 text-xs font-bold hover:bg-brand-green/20 transition-all"
+                  >
+                    {goal}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="glass p-8 rounded-[40px] border-brand-platinum/5">
+              <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.4em] mb-6">Your Prompt</div>
+              <textarea 
+                value={promptInput}
+                onChange={(e) => setPromptInput(e.target.value)}
+                placeholder="Type your prompt here..."
+                className="w-full h-48 bg-brand-black/50 border border-brand-platinum/10 rounded-2xl p-6 text-brand-platinum focus:border-brand-green/50 transition-all outline-none resize-none mb-6"
+              />
+              <button 
+                onClick={handleEvaluatePrompt}
+                disabled={isEvaluatingPrompt || !promptInput.trim()}
+                className="w-full py-4 bg-brand-green text-brand-black rounded-full font-black uppercase tracking-[0.2em] text-xs hover:bg-white transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {isEvaluatingPrompt ? <RotateCcw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                Evaluate Prompt
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-8">
+            <AnimatePresence mode="wait">
+              {promptResult ? (
+                <motion.div 
+                  key="result"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-8"
+                >
+                  <div className="glass p-8 rounded-[40px] border-brand-platinum/5">
+                    <div className="flex justify-between items-center mb-6">
+                      <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.4em]">Score</div>
+                      <div className="text-4xl font-black text-brand-green">{promptResult.score}/100</div>
+                    </div>
+                    <div className="h-2 w-full bg-brand-platinum/5 rounded-full overflow-hidden mb-8">
+                      <motion.div 
+                        className="h-full bg-brand-green"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${promptResult.score}%` }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                      />
+                    </div>
+                    <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.4em] mb-4">Feedback</div>
+                    <p className="text-brand-platinum/80 leading-relaxed italic">
+                      "{promptResult.feedback}"
+                    </p>
+                  </div>
+
+                  <div className="glass p-8 rounded-[40px] border-brand-platinum/5 bg-brand-green/5">
+                    <div className="text-[10px] font-black text-brand-green uppercase tracking-[0.4em] mb-6">The Improved Version</div>
+                    <div className="p-6 bg-brand-black/50 border border-brand-green/20 rounded-2xl text-brand-platinum text-sm font-mono leading-relaxed">
+                      {promptResult.improved}
+                    </div>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="h-full flex flex-col items-center justify-center text-center p-12 glass rounded-[40px] border-brand-platinum/5 border-dashed"
+                >
+                  <div className="w-20 h-20 bg-brand-platinum/5 rounded-full flex items-center justify-center mb-6">
+                    <Brain className="w-10 h-10 text-brand-platinum/20" />
+                  </div>
+                  <h3 className="text-xl font-bold text-brand-platinum/40 mb-2">Awaiting Input</h3>
+                  <p className="text-brand-platinum/20 text-sm">
+                    Enter a prompt to see the evaluation and feedback.
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderContent = () => {
     switch (view) {
       case AppView.HUB: return renderHub();
@@ -2820,6 +2958,7 @@ const App: React.FC = () => {
       case AppView.LEARN: return renderLearn();
       case AppView.TASTE: return renderTaste();
       case AppView.DEFINE_THE_WHAT: return renderDefineTheWhat();
+      case AppView.PROMPT_THINKING: return renderPromptThinking();
       default: return renderHub();
     }
   };
