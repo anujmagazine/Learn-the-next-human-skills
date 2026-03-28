@@ -14,22 +14,6 @@ const DRILLS: DrillScenario[] = [
     difficulty: 'Extreme',
     description: 'Build a fully autonomous coding agent in a single afternoon. Manage 10 concurrent AI agents to architect, integrate, and ship a complex CLI tool at 25x speed. Inspired by the legendary 12-hour build of Claude Engineer.',
     agents: ['Terminal-1 (Core)', 'Terminal-2 (FS)', 'Terminal-3 (API)', 'Terminal-4 (Context)', 'Web-A (UI)', 'Web-B (Docs)', 'Web-C (Tests)', 'Mobile-Review']
-  },
-  {
-    id: 'crisis-1',
-    title: 'The Global Launch Pivot',
-    difficulty: 'Hard',
-    description: 'A major competitor just released a similar product 2 hours before your launch. Manage 4 agents to pivot the entire strategy in real-time.',
-    agents: ['Marketing Strategist', 'Technical Lead', 'Legal Counsel', 'PR Spokesperson'],
-    disabled: true
-  },
-  {
-    id: 'crisis-2',
-    title: 'Cyber-Security Breach',
-    difficulty: 'Extreme',
-    description: 'Active data exfiltration in progress. Coordinate Defense, PR, Customer Support, and Forensic teams simultaneously.',
-    agents: ['Infra Security', 'PR Manager', 'Support Lead', 'Legal'],
-    disabled: true
   }
 ];
 
