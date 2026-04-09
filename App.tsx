@@ -416,7 +416,7 @@ const App: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4">
         <button 
-          onClick={() => setView(AppView.LEARN)}
+          onClick={() => setView(AppView.LITERACY_GATEWAY)}
           className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full text-left w-full appearance-none"
         >
           <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
@@ -434,7 +434,7 @@ const App: React.FC = () => {
             </p>
           </div>
           <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
-            Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
+            Deep Dive <span className="group-hover:translate-x-2 transition-transform">→</span>
           </div>
         </button>
 
@@ -2813,6 +2813,58 @@ const App: React.FC = () => {
     );
   };
 
+  const renderLiteracyGateway = () => {
+    return (
+      <div className="min-h-screen bg-[#F9F8F6] text-[#2D3A2D] pt-24">
+        {/* Navigation Bar */}
+        <div className="absolute top-0 left-0 w-full bg-white/60 backdrop-blur-xl border-b border-[#E8E4E1] z-[60]">
+          <div className="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
+            <div className="flex items-center gap-10">
+              <button 
+                onClick={() => setView(AppView.HUB)}
+                className="text-[#2D3A2D] font-black uppercase tracking-tighter text-base group flex items-center gap-3"
+              >
+                <div className="w-10 h-10 bg-[#2D3A2D] rounded-xl flex items-center justify-center text-white transition-transform group-hover:scale-110">H</div>
+                Master the Next <span className="text-[#A65E4E]">Human Skills</span>
+              </button>
+              <div className="h-6 w-[1px] bg-[#E8E4E1]" />
+              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.4em]">
+                Literacy, not training
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-8 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <button 
+              onClick={() => setView(AppView.LEARN)}
+              className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full text-left w-full appearance-none bg-white"
+            >
+              <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
+                <Workflow className="w-24 h-24" />
+              </div>
+              <div className="relative z-10 flex-1">
+                <div className="flex items-center gap-4 mb-5">
+                  <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                    <Workflow className="w-7 h-7 text-brand-green" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Simulation</h2>
+                </div>
+                <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
+                  Experience the shift from operator to orchestrator. A multi-act simulation exploring the durable advantage of AI literacy.
+                </p>
+              </div>
+              <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
+                Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderPromptThinking = () => {
     return (
       <div className="max-w-7xl mx-auto py-12 px-6 animate-in fade-in duration-700 min-h-screen">
@@ -2939,6 +2991,7 @@ const App: React.FC = () => {
       case AppView.EVOLUTION: return renderEvolution();
       case AppView.VERIFICATION: return renderVerification();
       case AppView.VERIFICATION_GATEWAY: return renderVerificationGateway();
+      case AppView.LITERACY_GATEWAY: return renderLiteracyGateway();
       case AppView.LEARN: return renderLearn();
       case AppView.TASTE: return renderTaste();
       case AppView.DEFINE_THE_WHAT: return renderDefineTheWhat();

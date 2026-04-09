@@ -7,6 +7,7 @@ export enum AppView {
   EVOLUTION = 'evolution',
   VERIFICATION = 'verification',
   VERIFICATION_GATEWAY = 'verification_gateway',
+  LITERACY_GATEWAY = 'literacy_gateway',
   TASTE = 'taste',
   DEFINE_THE_WHAT = 'define_the_what',
   PROMPT_THINKING = 'prompt_thinking'
