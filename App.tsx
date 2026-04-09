@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Scatter, ComposedChart } from 'recharts';
-import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle, BookOpen, Layers, Sparkles, FlaskConical, MessageSquare, Shield, Workflow, GraduationCap } from 'lucide-react';
+import { Play, RotateCcw, User, Users, Laptop, Globe, Smartphone, CheckCircle2, AlertCircle, ArrowRight, Info, Folder, Headset, Layout as LayoutIcon, Search, ShieldAlert, XCircle, Zap, Clock, Brain, Eye, ShieldCheck, ArrowLeft, Compass, Navigation, Target, HelpCircle, BookOpen, Layers, Sparkles, FlaskConical, MessageSquare, Shield, Workflow, GraduationCap, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AppView, AgentStream, DrillScenario } from './types';
 import { orchestrationService } from './services/gemini';
@@ -2766,48 +2766,43 @@ const App: React.FC = () => {
 
   const renderVerificationGateway = () => {
     return (
-      <div className="min-h-screen bg-[#F9F8F6] text-[#2D3A2D] pt-24">
-        {/* Navigation Bar */}
-        <div className="absolute top-0 left-0 w-full bg-white/60 backdrop-blur-xl border-b border-[#E8E4E1] z-[60]">
-          <div className="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
-            <div className="flex items-center gap-10">
-              <button 
-                onClick={() => setView(AppView.HUB)}
-                className="text-[#2D3A2D] font-black uppercase tracking-tighter text-base group flex items-center gap-3"
-              >
-                <div className="w-10 h-10 bg-[#2D3A2D] rounded-xl flex items-center justify-center text-white transition-transform group-hover:scale-110">H</div>
-                Master the Next <span className="text-[#A65E4E]">Human Skills</span>
-              </button>
-              <div className="h-6 w-[1px] bg-[#E8E4E1]" />
-              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.4em]">
-                Verification Fatigue
-              </div>
-            </div>
-            <div className="flex gap-10">
-              <button 
-                className="text-[10px] font-black uppercase tracking-[0.2em] transition-all pb-2 border-b-2 text-[#A65E4E] border-[#A65E4E]"
-                onClick={() => setView(AppView.VERIFICATION)}
-              >
-                Launch Simulation
-              </button>
-            </div>
-          </div>
+      <div className="animate-in fade-in duration-700">
+        <div className="mb-12">
+          <button onClick={() => setView(AppView.HUB)} className="text-brand-platinum/40 hover:text-brand-platinum transition-colors flex items-center gap-2 font-bold uppercase text-[10px] tracking-widest mb-4">
+            <ArrowLeft className="w-3 h-3" />
+            Back to Hub
+          </button>
+          <h1 className="text-4xl font-black tracking-tight text-brand-platinum mb-2 uppercase">
+            Verification <span className="text-brand-green">Fatigue</span>
+          </h1>
+          <p className="text-brand-platinum/60 text-lg">
+            Master the ability to maintain sharpness in high-speed, high-volume AI environments.
+          </p>
         </div>
 
-        <div className="flex items-center justify-center h-[calc(100vh-96px)]">
-           <div className="text-center max-w-2xl px-6">
-              <h1 className="text-5xl font-black tracking-tighter text-[#2D3A2D] mb-6">Learn and Grow the skill</h1>
-              <p className="text-xl text-gray-500 mb-12">
-                Verification fatigue is the drift of human judgment as cognitive volume increases. 
-                Master the ability to maintain sharpness in high-speed environments.
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <button 
+            onClick={() => setView(AppView.VERIFICATION)}
+            className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full text-left w-full appearance-none"
+          >
+            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
+              <Activity className="w-24 h-24" />
+            </div>
+            <div className="relative z-10 flex-1">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                  <Activity className="w-7 h-7 text-brand-green" />
+                </div>
+                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Simulation</h2>
+              </div>
+              <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
+                Test your cognitive endurance against a rolling stream of AI outputs. Identify hallucinations before fatigue sets in.
               </p>
-              <button 
-                onClick={() => setView(AppView.VERIFICATION)}
-                className="px-10 py-4 bg-[#A65E4E] text-white rounded-full font-black uppercase tracking-widest text-sm hover:scale-105 transition-transform shadow-xl"
-              >
-                Launch Simulation
-              </button>
-           </div>
+            </div>
+            <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
+              Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
+            </div>
+          </button>
         </div>
       </div>
     );
@@ -2815,51 +2810,43 @@ const App: React.FC = () => {
 
   const renderLiteracyGateway = () => {
     return (
-      <div className="min-h-screen bg-[#F9F8F6] text-[#2D3A2D] pt-24">
-        {/* Navigation Bar */}
-        <div className="absolute top-0 left-0 w-full bg-white/60 backdrop-blur-xl border-b border-[#E8E4E1] z-[60]">
-          <div className="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
-            <div className="flex items-center gap-10">
-              <button 
-                onClick={() => setView(AppView.HUB)}
-                className="text-[#2D3A2D] font-black uppercase tracking-tighter text-base group flex items-center gap-3"
-              >
-                <div className="w-10 h-10 bg-[#2D3A2D] rounded-xl flex items-center justify-center text-white transition-transform group-hover:scale-110">H</div>
-                Master the Next <span className="text-[#A65E4E]">Human Skills</span>
-              </button>
-              <div className="h-6 w-[1px] bg-[#E8E4E1]" />
-              <div className="text-[10px] font-black text-[#A65E4E] uppercase tracking-[0.4em]">
-                Literacy, not training
-              </div>
-            </div>
-          </div>
+      <div className="animate-in fade-in duration-700">
+        <div className="mb-12">
+          <button onClick={() => setView(AppView.HUB)} className="text-brand-platinum/40 hover:text-brand-platinum transition-colors flex items-center gap-2 font-bold uppercase text-[10px] tracking-widest mb-4">
+            <ArrowLeft className="w-3 h-3" />
+            Back to Hub
+          </button>
+          <h1 className="text-4xl font-black tracking-tight text-brand-platinum mb-2 uppercase">
+            Literacy, <span className="text-brand-green">not training</span>
+          </h1>
+          <p className="text-brand-platinum/60 text-lg">
+            Deep dive into the strategic judgment required for the agentic age.
+          </p>
         </div>
 
-        <div className="max-w-7xl mx-auto px-8 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <button 
-              onClick={() => setView(AppView.LEARN)}
-              className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full text-left w-full appearance-none bg-white"
-            >
-              <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
-                <Workflow className="w-24 h-24" />
-              </div>
-              <div className="relative z-10 flex-1">
-                <div className="flex items-center gap-4 mb-5">
-                  <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
-                    <Workflow className="w-7 h-7 text-brand-green" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Simulation</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <button 
+            onClick={() => setView(AppView.LEARN)}
+            className="group relative glass p-8 rounded-[40px] border-brand-platinum/5 hover:border-brand-green/50 transition-all cursor-pointer overflow-hidden shadow-2xl hover:shadow-brand-green/10 flex flex-col h-full text-left w-full appearance-none"
+          >
+            <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-brand-green">
+              <Workflow className="w-24 h-24" />
+            </div>
+            <div className="relative z-10 flex-1">
+              <div className="flex items-center gap-4 mb-5">
+                <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
+                  <Workflow className="w-7 h-7 text-brand-green" />
                 </div>
-                <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
-                  Experience the shift from operator to orchestrator. A multi-act simulation exploring the durable advantage of AI literacy.
-                </p>
+                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Simulation</h2>
               </div>
-              <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
-                Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
-              </div>
-            </button>
-          </div>
+              <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
+                Experience the shift from operator to orchestrator. A multi-act simulation exploring the durable advantage of AI literacy.
+              </p>
+            </div>
+            <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
+              Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
+            </div>
+          </button>
         </div>
       </div>
     );
