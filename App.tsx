@@ -2793,14 +2793,14 @@ const App: React.FC = () => {
                 <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
                   <Activity className="w-7 h-7 text-brand-green" />
                 </div>
-                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Simulation</h2>
+                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Level 1: Simulation</h2>
               </div>
               <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
-                Test your cognitive endurance against a rolling stream of AI outputs. Identify hallucinations before fatigue sets in.
+                Understand the basics of what this skill is and internalize the core concept.
               </p>
             </div>
             <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
-              Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
+              Launch <span className="group-hover:translate-x-2 transition-transform">→</span>
             </div>
           </button>
         </div>
@@ -2837,14 +2837,14 @@ const App: React.FC = () => {
                 <div className="w-14 h-14 bg-brand-green/10 rounded-xl flex items-center justify-center border border-brand-green/20 group-hover:scale-110 transition-transform shrink-0">
                   <Workflow className="w-7 h-7 text-brand-green" />
                 </div>
-                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Simulation</h2>
+                <h2 className="text-2xl font-bold text-brand-platinum group-hover:text-brand-green transition-colors leading-tight">Level 1: Simulation</h2>
               </div>
               <p className="text-brand-platinum/70 text-base leading-relaxed mb-6">
-                Experience the shift from operator to orchestrator. A multi-act simulation exploring the durable advantage of AI literacy.
+                Understand the basics of what this skill is and internalize the core concept.
               </p>
             </div>
             <div className="relative z-10 mt-auto flex items-center gap-2 text-brand-green font-bold uppercase tracking-widest text-sm">
-              Launch Simulation <span className="group-hover:translate-x-2 transition-transform">→</span>
+              Launch <span className="group-hover:translate-x-2 transition-transform">→</span>
             </div>
           </button>
         </div>
