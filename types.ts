@@ -10,6 +10,7 @@ export enum AppView {
   LITERACY_GATEWAY = 'literacy_gateway',
   TASTE = 'taste',
   DEFINE_THE_WHAT = 'define_the_what',
+  DEFINE_THE_WHAT_GATEWAY = 'define_the_what_gateway',
   PROMPT_THINKING = 'prompt_thinking'
 }
 
